@@ -87,5 +87,5 @@ def filejoin(file=[])
 ```
 mysql=Mysql(host="localhost", user="root", pwd="6833066", db="doubanbook")
 mysql.ExecNonQuery("insert into `booktag` (bookname) values ('你哈') ")
-mysql.ExecQuery('SELECT bookname,bookkind,bookno FROM booktag limit 0,10;'
+mysql.ExecQuery('SELECT bookname,bookkind,bookno FROM booktag limit 0,10;')
 ```
