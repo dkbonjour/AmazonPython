@@ -2,15 +2,16 @@
 # -*-coding:utf-8-*-
 # Created by Smartdo Co.,Ltd. on 2016/10/10.
 # 功能:
-#  shshdh
+#  wrefef
 
-#dsvfjkdshkjjdjdjddjjdj
+#dsvfjkdfref
 import requests
 from action.proxy import *
 import random
 
-#cxdsfsdfdsffdsf
+#cxdsfsdfdsfffref
 
+#fdsf
 # 日志
 setup_logging()
 logger = logging.getLogger(__name__)
