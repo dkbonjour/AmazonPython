@@ -7,12 +7,19 @@ import os, time, re
 import http.cookies
 
 
-# 自己封装的抓取函数
-def getHtml(url, daili='', postdata={}, header=[]):
+# star 自己封装的抓取函数,单机应用
+def spider(url, daili='', postdata={}, headers={}):
     """
     抓取网页：支持cookie
     第一个参数为网址，第二个为POST的数据
     """
+
+    # 头部重包
+    header = []
+    for i in headers:
+        header.append((i, headers[i]))
+    # print(header)
+
     # COOKIE文件保存路径
     filename = 'cookie.txt'
 
@@ -68,6 +75,7 @@ def getHtml(url, daili='', postdata={}, header=[]):
     return html_bytes
 
 
+# star 数据URL转义
 def urlencode(postdata={}):
     return urllib.parse.urlencode(postdata)
 

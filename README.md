@@ -4,15 +4,24 @@
 使用Python开发，文件架构：
 
     tool 工具箱
-    spider 具体爬虫
+    acion 业务模块
+    spider 爬虫入口
     test 测试文件夹
     data 数据保存地
+    log 日志地
 
 ## 第三方库
 ```
 pip3 install xlsxwriter
 pip3 install pymysql
+pip3 install requests
 
+```
+
+## 设置环境变量
+```
+set PYTHONPATH="G:/smartdo"  Window
+export 变量="路径"  Linux
 ```
 
 ## 工具箱用法
@@ -41,13 +50,13 @@ def formatStrigToFile(filepath, sort=True, filesavepath="")
 
 ```
 自己封装的抓取函数
-getHtml(url, daili='', postdata={}, header=[])
+getHtml(url, daili='', postdata={}, header={})
 
 header:
-    [('User-Agent','Mozilla/5.0 (iPad; U; CPU OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5'),
-   ('Referer', 'http://s.m.taobao.com'),
-   ('Host', 'h5.m.taobao.com')
-  ]
+   {'User-Agent'：'Mozilla/5.0 (iPad; U; CPU OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5',
+   'Referer'：'http://s.m.taobao.com',
+   'Host'：'h5.m.taobao.com'
+  }
  
 postdata:
     {"dd":"dd"}
@@ -85,7 +94,8 @@ def filejoin(file=[])
 4.jmysql 数据库包
 
 ```
-mysql=Mysql(host="localhost", user="root", pwd="6833066", db="doubanbook")
+config = {"host": "localhost", "user": "root", "pwd": "6833066", "db": "doubanbook"}
+mysql=Mysql(config)
 mysql.ExecNonQuery("insert into `booktag` (bookname) values ('你哈') ")
 mysql.ExecQuery('SELECT bookname,bookkind,bookno FROM booktag limit 0,10;')
 ```

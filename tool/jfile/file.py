@@ -8,7 +8,7 @@ import os, time, re
 import xlsxwriter as wx
 
 
-# 找出文件夹下所有xml后缀的文件，可选择递归
+# star 找出文件夹下所有xml后缀的文件，可选择递归
 def listfiles(rootdir, prefix='.xml', iscur=False):
     file = []
     for parent, dirnames, filenames in os.walk(rootdir):
@@ -28,7 +28,7 @@ def listfiles(rootdir, prefix='.xml', iscur=False):
     return file
 
 
-# 将数据写入Excel
+# star 将数据写入Excel
 def writeexcel(path, dealcontent=[]):
     workbook = wx.Workbook(path)
     top = workbook.add_format(
@@ -57,22 +57,22 @@ def writeexcel(path, dealcontent=[]):
     workbook.close()
 
 
-# 去除标题中的非法字符 (Windows)
+# star 去除标题中的非法字符 (Windows)
 def validateTitle(title):
     rstr = r"[\/\\\:\*\?\"\<\>\|]"  # '/\:*?"<>|'
     new_title = re.sub(rstr, "", title)
     return new_title
 
 
-# 递归创建文件夹
+# star 递归创建文件夹
 def createjia(path):
     try:
         os.makedirs(path)
     except:
-        print('目录已经存在：' + path)
+        raise
 
 
-# 今天日期的字符串
+# star 今天日期的字符串
 #     %Y  Year with century as a decimal number.
 #     %m  Month as a decimal number [01,12].
 #     %d  Day of the month as a decimal number [01,31].
@@ -94,11 +94,11 @@ def todaystring(level=3):
     elif level == 2:
         formats = '%Y%m'
     elif level == 4:
-        formats = '%Y%m%d %H'
+        formats = '%Y%m%d-%H'
     elif level == 5:
-        formats = '%Y%m%d %H:%M'
+        formats = '%Y%m%d-%H:%M'
     elif level == 6:
-        formats = '%Y%m%d %H:%M:%S'
+        formats = '%Y%m%d-%H:%M:%S'
     else:
         pass
     today = time.strftime(formats, time.localtime())
@@ -145,7 +145,7 @@ def bytes2hex(bytes):
     return hexstr.upper()
 
 
-# 获取文件类型，传入文件名
+# star 获取文件类型，传入文件名
 def filetype(filename):
     binfile = open(filename, 'br')  # 必需二制字读取
     tl = typeList()
@@ -162,7 +162,7 @@ def filetype(filename):
     return ftype
 
 
-# 文件路径拼接
+# star 文件路径拼接
 def filejoin(file=[]):
     s = ""
     for i in file:

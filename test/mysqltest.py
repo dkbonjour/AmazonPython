@@ -6,7 +6,8 @@ from tool.jmysql.mysql import *
 
 
 def init():
-    return Mysql(host="localhost", user="root", pwd="6833066", db="doubanbook")
+    config = {"host": "localhost", "user": "root", "pwd": "6833066", "db": "doubanbook"}
+    return Mysql(config)
 
 
 def initdoubanbook():
@@ -64,7 +65,8 @@ def testinsert():
 
 def testselect():
     mysql1 = init()
-    print('第一条记录一个值：'+mysql1.ExecQuery('SELECT bookname,bookkind,bookno FROM booktag group by bookno limit 0,5;')[0][0])
+    print(
+        '第一条记录一个值：' + mysql1.ExecQuery('SELECT bookname,bookkind,bookno FROM booktag group by bookno limit 0,5;')[0][0])
     print(mysql1.ExecQuery('SELECT bookname,bookkind,bookno FROM booktag limit 0,5;'))
     print('-' * 50)
     print(mysql1.ExecQuery('SELECT bookname,bookkind,bookno FROM booktag limit 0,10;'))

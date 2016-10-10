@@ -5,16 +5,17 @@
 import pymysql
 
 
+# star 数据库对象
 class Mysql:
     """
     对pymysql的简单封装,实现基本的连接
     """
 
-    def __init__(self, host, user, pwd, db):
-        self.host = host
-        self.user = user
-        self.pwd = pwd
-        self.db = db
+    def __init__(self, config={}):
+        self.host = config["host"]
+        self.user = config["user"]
+        self.pwd = config["pwd"]
+        self.db = config["db"]
         self.cur = self.__GetConnect()
 
     def __GetConnect(self):
@@ -42,7 +43,6 @@ class Mysql:
                     print str(id),NickName
         """
         self.cur.execute(sql)
-        # print("查询语句："+sql)
         resList = self.cur.fetchall()
         return resList
 
@@ -58,10 +58,8 @@ class Mysql:
         try:
             self.cur.execute(sql)
             self.conn.commit()
-            print('执行语句成功')
         except Exception:  # 出现异常回滚
             self.conn.rollback()
-            print('执行SQL语句失败：' + sql)
             raise
 
     def __del__(self):
