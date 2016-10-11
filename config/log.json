@@ -12,13 +12,13 @@
   "handlers": {
     "console": {
       "class": "logging.StreamHandler",
-      "level": "DEBUG",
+      "level": "WARNING",
       "formatter": "simple",
       "stream": "ext://sys.stdout"
     },
     "proxyinfo_file_handler": {
       "class": "logging.handlers.RotatingFileHandler",
-      "level": "INFO",
+      "level": "WARNING",
       "formatter": "simple",
       "filename": "proxyinfos.log",
       "maxBytes": 10485760,
@@ -36,9 +36,9 @@
     },
     "info_file_handler": {
       "class": "logging.handlers.RotatingFileHandler",
-      "level": "INFO",
+      "level": "WARNING",
       "formatter": "simple",
-      "filename": "proxyinfos.log",
+      "filename": "spiderinfos.log",
       "maxBytes": 10485760,
       "backupCount": 20,
       "encoding": "utf8"
@@ -47,7 +47,7 @@
       "class": "logging.handlers.RotatingFileHandler",
       "level": "ERROR",
       "formatter": "simple",
-      "filename": "proxyerrors.log",
+      "filename": "spidererrors.log",
       "maxBytes": 10485760,
       "backupCount": 20,
       "encoding": "utf8"
@@ -55,14 +55,14 @@
   },
   "loggers": {
     "smart": {
-      "level": "DEBUG",
+      "level": "WARNING",
       "handlers": [
         "console"
       ],
       "propagate": 0
     },
     "proxy": {
-      "level": "DEBUG",
+      "level": "WARNING",
       "handlers": [
         "console",
         "proxyinfo_file_handler",
@@ -72,9 +72,8 @@
     }
   },
   "root": {
-    "level": "INFO",
+    "level": "WARNING",
     "handlers": [
-      "console",
       "info_file_handler",
       "error_file_handler"
     ]

@@ -13,9 +13,13 @@ from  tool.jfile.file import *
 # 全局变量，是否已经加载配置文件
 LOGSUCCESS = False
 
+# 根目录
+BASE_DIR = ""
+
 
 def setup_logging(default_path='log.json', default_level=logging.INFO, env_key='spiderlog'):
     global LOGSUCCESS
+    global BASE_DIR
     if LOGSUCCESS:
         return
     # 当前目录

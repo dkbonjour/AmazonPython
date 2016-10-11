@@ -3,9 +3,14 @@
 ## 源码架构
 使用Python开发，文件架构：
 
-    tool 工具箱
-    acion 业务模块
-    spider 爬虫入口
+    spider 爬虫模块
+         ---download 爬虫下载器
+         ---parse 爬虫解析器
+         ---logic 爬虫逻辑器
+    bin 爬虫执行文件
+    config 配置文件模块
+    tool 基础函数工具箱模块
+    acion 业务模块，如代理IP,Ua池等杂项
     test 测试文件夹
     data 数据保存地
     log 日志地
@@ -69,8 +74,8 @@ def urlencode(postdata={}):
 3.jfile　文件包
 
 ```
-找出文件夹下所有xml后缀的文件，可选择递归
-def listfiles(rootdir, prefix='.xml', iscur=False):
+找出文件夹下所有xml后缀的文件，可选择递归，选择全路径
+def listfiles(rootdir, prefix='.xml', isall=False, iscur=False)
 
 将数据写入Excel
 def writeexcel(path, dealcontent=[])
@@ -89,6 +94,16 @@ def filetype(filename)
 
 文件路径拼接
 def filejoin(file=[])
+
+从文件中读取行，变成列表
+def readfilelist(filepath)
+
+时间函数
+def timetochina(longtime, formats='{}天{}小时{}分钟{}秒')
+    today=time.strftime('%Y%m%d', time.localtime())
+    a=time.clock()
+    b=time.clock()
+    print('运行时间：'+timetochina(b-a))
 ```
 
 4.jmysql 数据库包

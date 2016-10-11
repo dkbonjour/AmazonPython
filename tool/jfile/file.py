@@ -8,21 +8,27 @@ import os, time, re
 import xlsxwriter as wx
 
 
-# star 找出文件夹下所有xml后缀的文件，可选择递归
-def listfiles(rootdir, prefix='.xml', iscur=False):
+# star 找出文件夹下所有xml后缀的文件，可选择递归，选择全路径
+def listfiles(rootdir, prefix='.xml', isall=False, iscur=False):
     file = []
     for parent, dirnames, filenames in os.walk(rootdir):
         if parent == rootdir:
             for filename in filenames:
                 if filename.endswith(prefix):
-                    file.append(rootdir + '/' + filename)
+                    if isall:
+                        file.append(rootdir + '/' + filename)
+                    else:
+                        file.append(filename)
             if not iscur:
                 return file
         else:
             if iscur:
                 for filename in filenames:
                     if filename.endswith(prefix):
-                        file.append(rootdir + '/' + filename)
+                        if isall:
+                            file.append(rootdir + '/' + filename)
+                        else:
+                            file.append(filename)
             else:
                 pass
     return file
@@ -69,7 +75,7 @@ def createjia(path):
     try:
         os.makedirs(path)
     except:
-        raise
+        pass
 
 
 # star 今天日期的字符串
@@ -170,6 +176,46 @@ def filejoin(file=[]):
     return s
 
 
+# 从文件中读取行，变成列表
+def readfilelist(filepath):
+    returnlist = []
+    try:
+        with open(filepath, "rt") as filename:
+            namelines = filename.readlines()
+            for line in namelines:
+                returnlist.append(line.replace("\n", ""))
+    except:
+        pass
+    return returnlist
+
+
+# 时间函数
+def timetochina(longtime, formats='{}天{}小时{}分钟{}秒'):
+    day = 0
+    hour = 0
+    minutue = 0
+    second = 0
+    try:
+        if longtime > 60:
+            second = longtime % 60
+            minutue = longtime // 60
+        else:
+            second = longtime
+        if minutue > 60:
+            hour = minutue // 60
+            minutue = minutue % 60
+        if hour > 24:
+            day = hour // 24
+            hour = hour % 24
+        return formats.format(day, hour, minutue, second)
+    except:
+        raise Exception('时间非法')
+
+
 if __name__ == "__main__":
+    today=time.strftime('%Y%m%d', time.localtime())
+    a=time.clock()
     print(filejoin(['.', "data", "test"]))
     print(todaystring(4))
+    b=time.clock()
+    print('运行时间：'+timetochina(b-a))

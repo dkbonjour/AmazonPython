@@ -2,7 +2,7 @@ CREATE DATABASE  IF NOT EXISTS `smart_base` /*!40100 DEFAULT CHARACTER SET utf8 
 USE `smart_base`;
 -- MySQL dump 10.13  Distrib 5.6.13, for Win32 (x86)
 --
--- Host: localhost    Database: smart_base
+-- Host: localhost    Database: smart_base 弃用！！！
 -- ------------------------------------------------------
 -- Server version	5.6.17
 
