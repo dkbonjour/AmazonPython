@@ -73,8 +73,8 @@ def savetomysql(filepath="config/IP.txt", config={}):
         try:
             mysql.ExecNonQuery(insertsql)
             logger.warning("执行sql语句成功:" + insertsql)
-        except:
-            logger.error("执行sql语句失败:" + insertsql)
+        except Exception as err:
+            logging.error(err, exc_info=1)
 
 
 # 需手工修改，选择保存数据库或本地文件

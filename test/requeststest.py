@@ -77,13 +77,28 @@ def testheader():
 
     print(bad_r.history)
 
+def testposta(url1):
+    header = {
+        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36",
+        'Referer': 'https://www.amazon.com/',
+        'Host': 'www.amazon.com'
+    }
+    payload = {"asin": "B009ZJ2M7G","pageAction":"load"}
+    r = requests.post(url1, data=payload,headers=header)
+    print(r.text)
+    with open("../test.html","wb") as f:
+        f.write(r.content)
+
 if __name__ == "__main__":
-    url = "http://www.baidu.com"
-    # testget(url)
+    # url = "http://www.baidu.com"
+    # # testget(url)
+    #
+    # url1 = "http://httpbin.org/post"
+    # # testpost(url1)
+    #
+    # # testcode()
+    #
+    # testheader()
 
-    url1 = "http://httpbin.org/post"
-    # testpost(url1)
-
-    # testcode()
-
-    testheader()
+    # url="https://www.amazon.com/gp/product/ajax-handlers/enhanced-content-popover-metrics.html"
+    # testposta(url)

@@ -17,14 +17,16 @@ KEEPDIR = tool.log.BASE_DIR + "/data/rateurl"
 
 # 保存文件,减少代码
 def savetofile(filepath, content=[]):
-    # 空内容
-    if not content:
-        return
     global KEEPDIR
     dir = KEEPDIR
     with open(dir + "/" + filepath, "w") as f:
         for i in content:
             f.write(i + "\n")
+    # 空内容
+    if not content:
+        logger.warning("空-保存到:"+filepath)
+    else:
+        logger.warning("保存到" + filepath)
 
 
 # 读取URL文件内容
@@ -66,7 +68,7 @@ def level2(arr_oneurl, arr_onename):
     for two in range(len(arr_oneurl)):
         # 已经抓过！
         if str(two + 1) + '-name.md' in allfile and str(two + 1) + "-url.md" in allfile:
-            logger.warning("已存在！已经抓取了第" + str(two + 1) + "个一级类目:" + arr_oneurl[two] + "的二级类目...")
+            logger.warning("已存在！第" + str(two + 1) + "个一级类目:" + arr_oneurl[two] + "的二级类目...")
             continue
 
         twocontent = ratedownload(arr_oneurl[two])
@@ -75,7 +77,7 @@ def level2(arr_oneurl, arr_onename):
         else:
             twocontent = twocontent.decode('utf-8', 'ignore')
         arr_twourl, arr_twoname = rateparse(twocontent, level=2)
-        logger.warning("已经抓取了第" + str(two + 1) + "个一级类目:" + arr_oneurl[two] + "的二级类目...")
+        logger.warning("正抓取！第" + str(two + 1) + "个一级类目:" + arr_oneurl[two] + "的二级类目...")
         logger.info(arr_twourl)
         savetofile("2urls/" + str(two + 1) + "-url.md", arr_twourl)
         savetofile("2urls/" + str(two + 1) + "-name.md", arr_twoname)
@@ -102,8 +104,9 @@ def level3():
             # 已经抓过！1-2-url.md
             if str(position + 1) + '-' + str(urlposition + 1) + '-name.md' in level3file and str(
                             position + 1) + '-' + str(urlposition + 1) + '-url.md' in level3file:
-                logger.warning("已存在！已经抓取了第" + str(position + 1) + "个一级类目，第" + str(urlposition + 1) + "个二级类目：" + urls[
-                urlposition] + "的三级类目...")
+                logger.warning("已存在！第" + str(position + 1) + "个一级类目:" + level2file[position] + ",第" + str(
+                        urlposition + 1) + "个二级类目：" + urls[
+                                   urlposition] + "的三级类目...")
                 continue
             threecontent = ratedownload(urls[urlposition])
             if threecontent == None:
@@ -112,8 +115,11 @@ def level3():
                 threecontent = threecontent.decode('utf-8', 'ignore')
 
             arr_threeurl, arr_threename = rateparse(threecontent, level=3)
-            logger.warning("已经抓取了第" + str(position + 1) + "个一级类目，第" + str(urlposition + 1) + "个二级类目：" + urls[
-                urlposition] + "的三级类目...")
+            logger.warning(
+                    "正抓取！第" + str(position + 1) + "个一级类目:" + level2file[position] + ",第" + str(
+                            urlposition + 1) + "个二级类目：" +
+                    urls[
+                        urlposition] + "的三级类目...")
             logger.info(arr_threeurl)
             savetofile("3urls/" + str(position + 1) + '-' + str(urlposition + 1) + '-url.md', arr_threeurl)
             savetofile("3urls/" + str(position + 1) + '-' + str(urlposition + 1) + '-name.md', arr_threename)
@@ -140,8 +146,9 @@ def level4():
             # 已经抓过！1-1-1-url.md
             if prefix + '-' + str(urlposition + 1) + '-name.md' in level4file and prefix + '-' + str(
                             urlposition + 1) + '-url.md' in level4file:
-                logger.warning("已存在！已经抓取了第" + str(position + 1) + "个二级类目，第" + str(urlposition + 1) + "个三级类目：" + urls[
-                urlposition] + "的四级类目...")
+                logger.warning("已存在！第" + str(position + 1) + "个二级类目:" + level3file[position] + ",第" + str(
+                        urlposition + 1) + "个三级类目：" + urls[
+                                   urlposition] + "的四级类目...")
                 continue
             fourcontent = ratedownload(urls[urlposition])
             if fourcontent == None:
@@ -149,8 +156,11 @@ def level4():
             else:
                 fourcontent = fourcontent.decode('utf-8', 'ignore')
             arr_foururl, arr_fourname = rateparse(fourcontent, level=4)
-            logger.warning("已经抓取了第" + str(position + 1) + "个二级类目，第" + str(urlposition + 1) + "个三级类目：" + urls[
-                urlposition] + "的四级类目...")
+            logger.warning(
+                    "正抓取！第" + str(position + 1) + "个二级类目:" + level3file[position] + ",第" + str(
+                        urlposition + 1) + "个三级类目：" +
+                    urls[
+                        urlposition] + "的四级类目...")
             logger.info(arr_foururl)
             savetofile("4urls/" + prefix + '-' + str(urlposition + 1) + '-url.md', arr_foururl)
             savetofile("4urls/" + prefix + '-' + str(urlposition + 1) + '-name.md', arr_fourname)
@@ -177,8 +187,9 @@ def level5():
             # 已经抓过！1-1-1-1-url.md
             if prefix + '-' + str(urlposition + 1) + '-name.md' in level5file and prefix + '-' + str(
                             urlposition + 1) + '-url.md' in level5file:
-                logger.warning("已存在！抓取了第" + str(position + 1) + "个三级类目，第" + str(urlposition + 1) + "个四级类目：" + urls[
-                urlposition] + "的五级类目...")
+                logger.warning("已存在！第" + str(position + 1) + "个三级类目:" + level4file[position] + "，第" + str(
+                    urlposition + 1) + "个四级类目：" + urls[
+                                   urlposition] + "的五级类目...")
                 continue
             fourcontent = ratedownload(urls[urlposition])
             if fourcontent == None:
@@ -186,8 +197,10 @@ def level5():
             else:
                 fourcontent = fourcontent.decode('utf-8', 'ignore')
             arr_foururl, arr_fourname = rateparse(fourcontent, level=5)
-            logger.warning("已经抓取了第" + str(position + 1) + "个三级类目，第" + str(urlposition + 1) + "个四级类目：" + urls[
-                urlposition] + "的五级类目...")
+            logger.warning(
+                "正抓取！第" + str(position + 1) + "个三级类目:" + level4file[position] + ",第" + str(urlposition + 1) + "个四级类目：" +
+                urls[
+                    urlposition] + "的五级类目...")
             logger.info(arr_foururl)
             savetofile("5urls/" + prefix + '-' + str(urlposition + 1) + '-url.md', arr_foururl)
             savetofile("5urls/" + prefix + '-' + str(urlposition + 1) + '-name.md', arr_fourname)

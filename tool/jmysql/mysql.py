@@ -12,10 +12,13 @@ class Mysql:
     """
 
     def __init__(self, config={}):
-        self.host = config["host"]
-        self.user = config["user"]
-        self.pwd = config["pwd"]
-        self.db = config["db"]
+        try:
+            self.host = config["host"]
+            self.user = config["user"]
+            self.pwd = config["pwd"]
+            self.db = config["db"]
+        except:
+            raise
         self.cur = self.__GetConnect()
 
     def __GetConnect(self):

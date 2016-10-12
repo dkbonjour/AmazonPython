@@ -11,12 +11,11 @@ import logging
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
-
-if __name__=="__main__":
-    a=time.clock()
+if __name__ == "__main__":
+    a = time.clock()
     try:
-        ausalogic(level="3-4")
+        ausalogic("3-4")
     except:
         pass
-    b=time.clock()
-    logger.warning('运行时间：'+timetochina(b-a))
+    b = time.clock()
+    logger.warning('运行时间：' + timetochina(b - a))
