@@ -17,6 +17,9 @@ KEEPDIR = tool.log.BASE_DIR + "/data/rateurl"
 
 # 保存文件,减少代码
 def savetofile(filepath, content=[]):
+    # 空内容
+    if not content:
+        return
     global KEEPDIR
     dir = KEEPDIR
     with open(dir + "/" + filepath, "w") as f:
@@ -43,10 +46,14 @@ def level1():
         # 下面是一级类目的抓取
         # 一级目录下的网址
         firsturl = "https://www.amazon.com/Best-Sellers/zgbs"
-        onecontent = ratedownload(firsturl).decode('utf-8', 'ignore')
+        onecontent = ratedownload(firsturl)
+        if onecontent == None:
+            raise
+        else:
+            onecontent = onecontent.decode('utf-8', 'ignore')
         arr_oneurl, arr_onename = rateparse(onecontent)
         savetofile("oneurl.md", arr_oneurl)
-        savetofile("onename.md", arr_oneurl)
+        savetofile("onename.md", arr_onename)
         logger.warning("已经抓取了一级类目:" + firsturl + "的所有url...")
         logger.info(arr_oneurl)
     return arr_oneurl, arr_onename
@@ -59,8 +66,14 @@ def level2(arr_oneurl, arr_onename):
     for two in range(len(arr_oneurl)):
         # 已经抓过！
         if str(two + 1) + '-name.md' in allfile and str(two + 1) + "-url.md" in allfile:
+            logger.warning("已存在！已经抓取了第" + str(two + 1) + "个一级类目:" + arr_oneurl[two] + "的二级类目...")
             continue
-        twocontent = ratedownload(arr_oneurl[two]).decode('utf-8', 'ignore')
+
+        twocontent = ratedownload(arr_oneurl[two])
+        if twocontent == None:
+            continue
+        else:
+            twocontent = twocontent.decode('utf-8', 'ignore')
         arr_twourl, arr_twoname = rateparse(twocontent, level=2)
         logger.warning("已经抓取了第" + str(two + 1) + "个一级类目:" + arr_oneurl[two] + "的二级类目...")
         logger.info(arr_twourl)
@@ -89,8 +102,15 @@ def level3():
             # 已经抓过！1-2-url.md
             if str(position + 1) + '-' + str(urlposition + 1) + '-name.md' in level3file and str(
                             position + 1) + '-' + str(urlposition + 1) + '-url.md' in level3file:
+                logger.warning("已存在！已经抓取了第" + str(position + 1) + "个一级类目，第" + str(urlposition + 1) + "个二级类目：" + urls[
+                urlposition] + "的三级类目...")
                 continue
-            threecontent = ratedownload(urls[urlposition]).decode('utf-8', 'ignore')
+            threecontent = ratedownload(urls[urlposition])
+            if threecontent == None:
+                continue
+            else:
+                threecontent = threecontent.decode('utf-8', 'ignore')
+
             arr_threeurl, arr_threename = rateparse(threecontent, level=3)
             logger.warning("已经抓取了第" + str(position + 1) + "个一级类目，第" + str(urlposition + 1) + "个二级类目：" + urls[
                 urlposition] + "的三级类目...")
@@ -113,15 +133,21 @@ def level4():
     # 遍历三级文件
     # position为文件序列
     for position in range(len(level3file)):
-        urls = readfile("3urls/" + level4file[position])
+        urls = readfile("3urls/" + level3file[position])
         prefix = level3file[position].replace("-url.md", "")  # 1-1-url.md
         # urlposition为链接序列
         for urlposition in range(len(urls)):
             # 已经抓过！1-1-1-url.md
             if prefix + '-' + str(urlposition + 1) + '-name.md' in level4file and prefix + '-' + str(
                             urlposition + 1) + '-url.md' in level4file:
+                logger.warning("已存在！已经抓取了第" + str(position + 1) + "个二级类目，第" + str(urlposition + 1) + "个三级类目：" + urls[
+                urlposition] + "的四级类目...")
                 continue
-            fourcontent = ratedownload(urls[urlposition]).decode('utf-8', 'ignore')
+            fourcontent = ratedownload(urls[urlposition])
+            if fourcontent == None:
+                continue
+            else:
+                fourcontent = fourcontent.decode('utf-8', 'ignore')
             arr_foururl, arr_fourname = rateparse(fourcontent, level=4)
             logger.warning("已经抓取了第" + str(position + 1) + "个二级类目，第" + str(urlposition + 1) + "个三级类目：" + urls[
                 urlposition] + "的四级类目...")
@@ -151,8 +177,14 @@ def level5():
             # 已经抓过！1-1-1-1-url.md
             if prefix + '-' + str(urlposition + 1) + '-name.md' in level5file and prefix + '-' + str(
                             urlposition + 1) + '-url.md' in level5file:
+                logger.warning("已存在！抓取了第" + str(position + 1) + "个三级类目，第" + str(urlposition + 1) + "个四级类目：" + urls[
+                urlposition] + "的五级类目...")
                 continue
-            fourcontent = ratedownload(urls[urlposition]).decode('utf-8', 'ignore')
+            fourcontent = ratedownload(urls[urlposition])
+            if fourcontent == None:
+                continue
+            else:
+                fourcontent = fourcontent.decode('utf-8', 'ignore')
             arr_foururl, arr_fourname = rateparse(fourcontent, level=5)
             logger.warning("已经抓取了第" + str(position + 1) + "个三级类目，第" + str(urlposition + 1) + "个四级类目：" + urls[
                 urlposition] + "的五级类目...")
@@ -189,4 +221,4 @@ def ausalogic(level="all"):
 
 
 if __name__ == "__main__":
-    ausalogic("2-3")
+    ausalogic("1-2")

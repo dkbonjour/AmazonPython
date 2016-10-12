@@ -7,9 +7,31 @@ import sys
 import traceback
 
 if __name__ == "__main__":
-
-    try:
-        1/0
-    except Exception as e:
-        exc_type, exc_value, exc_tb = sys.exc_info()
-        traceback.print_exception(exc_type, exc_value, exc_tb)
+    print([] is None)
+    print([]==None)
+    print(not [])
+    print(False==[])
+    print(False is [])
+    print('-'*10)
+    print({} is None)
+    print({}==None)
+    print(not {})
+    print(False=={})
+    print(False is {})
+    print('-'*10)
+    print('' is None)
+    print(''==None)
+    print(not '')
+    print(False=='')
+    print(False is '')
+    print('-'*10)
+    print(None is None)
+    print(None==None)
+    print(not None)
+    print(False==None)
+    print(False is None)
+    # try:
+    #     1/0
+    # except Exception as e:
+    #     exc_type, exc_value, exc_tb = sys.exc_info()
+    #     traceback.print_exception(exc_type, exc_value, exc_tb)

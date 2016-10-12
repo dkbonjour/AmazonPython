@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 def ratedownload(url, retrytime=5):
     if retrytime < 0:
-        return
+        return None
     # 制作头部
     uas = useragent()
     ua = uas[random.randint(0, len(uas) - 1)]
@@ -33,16 +33,16 @@ def ratedownload(url, retrytime=5):
 
     ips = proxy()
     ip = list(ips.keys())[random.randint(0, len(ips) - 1)]
+    if ip in ips.keys():
+        location = ips[ip]
+    else:
+        location = "unkonw"
+    proxies = {"http": "http://" + ip}
+    logger.warning(
+            "抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
+                                                                                ua=ua,
+                                                                                times=5 - retrytime))
     try:
-        if ip in ips.keys():
-            location = ips[ip]
-        else:
-            location = "unkonw"
-        proxies = {"http": "http://" + ip}
-        logger.info(
-                "抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
-                                                                                    ua=ua,
-                                                                                    times=5 - retrytime))
         res = requests.get(url=url, headers=header, proxies=proxies)
         # print(res.status_code)
         res.raise_for_status()
@@ -50,20 +50,24 @@ def ratedownload(url, retrytime=5):
         return resdata
     except Exception as err:
         # IPPOOL.pop(ip)
+        logger.error(
+                "抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
+                                                                                    ua=ua,
+                                                                                    times=5 - retrytime))
         logging.error(err, exc_info=1)
         return ratedownload(url, retrytime - 1)
 
 
 if __name__ == "__main__":
     # 一级
-    level=4
-    urls = {"1":"https://www.amazon.com/Best-Sellers/zgbs",
-           "2":"https://www.amazon.com/Best-Sellers-Appliances/zgbs/appliances/ref=zg_bs_nav_0/155-7707064-5178447",
-            "3":"https://www.amazon.com/Best-Sellers-Appliances-Freezers/zgbs/appliances/3741331/ref=zg_bs_nav_la_2_3741261",
-            "4":"https://www.amazon.com/Best-Sellers-Grocery-Gourmet-Food-Salad-Dressings/zgbs/grocery/16320901/ref=zg_bs_nav_gro_3_16319881"}
+    level = 4
+    urls = {"1": "https://www.amazon.com/Best-Sellers/zgbs",
+            "2": "https://www.amazon.com/Best-Sellers-Appliances/zgbs/appliances/ref=zg_bs_nav_0/155-7707064-5178447",
+            "3": "https://www.amazon.com/Best-Sellers-Appliances-Freezers/zgbs/appliances/3741331/ref=zg_bs_nav_la_2_3741261",
+            "4": "https://www.amazon.com/Best-Sellers-Grocery-Gourmet-Food-Salad-Dressings/zgbs/grocery/16320901/ref=zg_bs_nav_gro_3_16319881"}
     for url in urls:
-        if str(level)!=url:
+        if str(level) != url:
             continue
         content = ratedownload(urls[url])
-        with open(tool.log.BASE_DIR + "/data/rate"+url+".html", "wb") as f:
+        with open(tool.log.BASE_DIR + "/data/rate" + url + ".html", "wb") as f:
             f.write(content)

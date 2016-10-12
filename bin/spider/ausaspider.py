@@ -14,6 +14,9 @@ logger = logging.getLogger(__name__)
 
 if __name__=="__main__":
     a=time.clock()
-    ausalogic()
+    try:
+        ausalogic(level="3-4")
+    except:
+        pass
     b=time.clock()
     logger.warning('运行时间：'+timetochina(b-a))
