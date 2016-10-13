@@ -83,22 +83,21 @@ def testposta(url1):
         'Referer': 'https://www.amazon.com/',
         'Host': 'www.amazon.com'
     }
-    payload = {"asin": "B009ZJ2M7G","pageAction":"load"}
-    r = requests.post(url1, data=payload,headers=header)
-    print(r.text)
+    proxies = {"http": "http://107.190.231.236:808"}
+    r = requests.get(url1,headers=header,proxies=proxies)
     with open("../test.html","wb") as f:
         f.write(r.content)
 
 if __name__ == "__main__":
-    url = "http://www.baidu.com"
-    # testget(url)
+    # url = "http://www.baidu.com"
+    # # testget(url)
+    #
+    # url1 = "http://httpbin.org/post"
+    # # testpost(url1)
+    #
+    # # testcode()
+    #
+    # testheader()
 
-    url1 = "http://httpbin.org/post"
-    # testpost(url1)
-
-    # testcode()
-
-    testheader()
-
-    # url="https://www.amazon.com/gp/product/ajax-handlers/enhanced-content-popover-metrics.html"
-    # testposta(url)
+    url="https://www.amazon.com/dp/B00CON7A40"
+    testposta(url)

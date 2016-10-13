@@ -13,9 +13,12 @@ logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     a = time.clock()
-    try:
-        ausalogic("4-5")
-    except:
-        pass
+    isdead = False
+    while not isdead:
+        try:
+            ausalogic("4-5")
+            isdead = True
+        except:
+            pass
     b = time.clock()
     logger.warning('运行时间：' + timetochina(b - a))

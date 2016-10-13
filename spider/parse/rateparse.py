@@ -22,7 +22,11 @@ def rateparse(content, level=1):
     temp = ""
     for i in range(level):
         temp = temp + "ul/"
-
+    # <title dir="ltr">Robot Check</title>
+    robot = contents.xpath('//title[@dir="ltr"]/text()')
+    if "Robot Check" in robot:
+        logger.error("机器人")
+        raise
     urls = contents.xpath('//ul[@id="zg_browseRoot"]/' + temp + 'li/a/@href')
     # 将目录下的url储存到数组
     for url in urls:
