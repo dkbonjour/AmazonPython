@@ -71,7 +71,7 @@ def level2(arr_oneurl, arr_onename):
         # 已经抓过！
         prefix=str(two + 1)
         if prefix + '-url.mdxx' in emptyfile or (prefix + '-name.md' in allfile and prefix + "-url.md" in allfile):
-            logger.warning("已存在！第" + prefix + "个一级类目:" + arr_oneurl[two] + "的二级类目...")
+            logger.info("已存在！第" + prefix + "个一级类目:" + arr_oneurl[two] + "的二级类目...")
             continue
         twocontent = ratedownload(arr_oneurl[two])
         if twocontent == None:
@@ -112,7 +112,7 @@ def level3():
             # 已经抓过！1-2-url.md
             prefix = str(urlposition + 1)
             if weizhi + "-" + prefix + '-url.mdxx' in emptyfile or (weizhi + '-' + prefix + '-name.md' in level3file and weizhi + '-' + prefix + '-url.md' in level3file):
-                logger.warning("已存在！第" + weizhi + "个一级类目:" + filename + ",第" + prefix + "个二级类目：" + urls[urlposition] + "的三级类目...")
+                logger.info("已存在！第" + weizhi + "个一级类目:" + filename + ",第" + prefix + "个二级类目：" + urls[urlposition] + "的三级类目...")
                 continue
             threecontent = ratedownload(urls[urlposition])
             if threecontent == None:
@@ -154,7 +154,7 @@ def level4():
             # 已经抓过！1-1-1-url.md
             prefix = str(urlposition + 1)
             if weizhi + '-' + prefix + '-url.mdxx' in emptyfile or (weizhi + '-' + prefix + '-name.md' in level4file and weizhi + '-' + prefix + '-url.md' in level4file):
-                logger.warning("已存在！第" + str(position + 1) + "个二级类目:" + filename + ",第" + prefix + "个三级类目：" + urls[urlposition] + "的四级类目...")
+                logger.info("已存在！第" + str(position + 1) + "个二级类目:" + filename + ",第" + prefix + "个三级类目：" + urls[urlposition] + "的四级类目...")
                 continue
             fourcontent = ratedownload(urls[urlposition])
             if fourcontent == None:
@@ -194,7 +194,7 @@ def level5():
             # 已经抓过！1-1-1-1-url.md
             prefix = str(urlposition + 1)
             if weizhi + '-' + prefix + '-url.mdxx' in emptyfile  or (weizhi + '-' + prefix + '-name.md' in level5file and weizhi + '-' + prefix + '-url.md' in level5file):
-                logger.warning("已存在！第" + str(position + 1) + "个三级类目:" + filename + "，第" + prefix + "个四级类目：" + urls[urlposition] + "的五级类目...")
+                logger.info("已存在！第" + str(position + 1) + "个三级类目:" + filename + "，第" + prefix + "个四级类目：" + urls[urlposition] + "的五级类目...")
                 continue
             fourcontent = ratedownload(urls[urlposition])
             if fourcontent == None:
