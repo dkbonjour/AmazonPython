@@ -101,7 +101,7 @@ def dealurlfile():
     with open(tool.log.BASE_DIR + "/config/URL.txt", "wt") as hunterhug:
         for i in sorted(listtemp.keys()):
             hunterhug.write(i + "," + listtemp[i] + "\n")
-    logger.warning("目录记录数：" + str(len(listtemp)))
+    logger.warning("可用类目记录数：" + str(len(listtemp)))
     logging.warning("最小类目数" + str(len(lasturls)))
     with open(tool.log.BASE_DIR + "/config/CatchURL.txt", "wt") as hunterhug:
         for i in lasturls:

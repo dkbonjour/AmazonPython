@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 if __name__ == "__main__":
     a = time.clock()
     try:
-        ausalogic("3-4")
+        ausalogic("4-5")
     except:
         pass
     b = time.clock()

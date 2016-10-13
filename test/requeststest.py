@@ -90,15 +90,15 @@ def testposta(url1):
         f.write(r.content)
 
 if __name__ == "__main__":
-    # url = "http://www.baidu.com"
-    # # testget(url)
-    #
-    # url1 = "http://httpbin.org/post"
-    # # testpost(url1)
-    #
-    # # testcode()
-    #
-    # testheader()
+    url = "http://www.baidu.com"
+    # testget(url)
+
+    url1 = "http://httpbin.org/post"
+    # testpost(url1)
+
+    # testcode()
+
+    testheader()
 
     # url="https://www.amazon.com/gp/product/ajax-handlers/enhanced-content-popover-metrics.html"
     # testposta(url)
