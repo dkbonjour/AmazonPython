@@ -66,10 +66,11 @@ def level1():
 def level2(arr_oneurl, arr_onename):
     global KEEPDIR
     allfile = listfiles(KEEPDIR + "/2urls", ".md")
+    emptyfile = listfiles(KEEPDIR + "/2urls", "-url.mdxx")
     for two in range(len(arr_oneurl)):
         # 已经抓过！
         prefix=str(two + 1)
-        if fileexsit(KEEPDIR+"/2urls/"+prefix + '-url.mdxx') or (prefix + '-name.md' in allfile and prefix + "-url.md" in allfile):
+        if prefix + '-url.mdxx' in emptyfile or (prefix + '-name.md' in allfile and prefix + "-url.md" in allfile):
             logger.warning("已存在！第" + prefix + "个一级类目:" + arr_oneurl[two] + "的二级类目...")
             continue
         twocontent = ratedownload(arr_oneurl[two])
@@ -96,6 +97,7 @@ def level3():
 
     # 三级下所有文件
     level3file = listfiles(KEEPDIR + "/3urls", "md")
+    emptyfile = listfiles(KEEPDIR + "/3urls", "-url.mdxx")
 
     # 遍历二级文件
     # position为文件序列
@@ -109,7 +111,7 @@ def level3():
         for urlposition in range(len(urls)):
             # 已经抓过！1-2-url.md
             prefix = str(urlposition + 1)
-            if fileexsit(KEEPDIR+"/3urls/"+weizhi + "-" + prefix + '-url.mdxx') or (weizhi + '-' + prefix + '-name.md' in level3file and weizhi + '-' + prefix + '-url.md' in level3file):
+            if weizhi + "-" + prefix + '-url.mdxx' in emptyfile or (weizhi + '-' + prefix + '-name.md' in level3file and weizhi + '-' + prefix + '-url.md' in level3file):
                 logger.warning("已存在！第" + weizhi + "个一级类目:" + filename + ",第" + prefix + "个二级类目：" + urls[urlposition] + "的三级类目...")
                 continue
             threecontent = ratedownload(urls[urlposition])
@@ -122,8 +124,8 @@ def level3():
             logger.warning("正抓取！第" + weizhi + "个一级类目:" + filename + ",第" + prefix + "个二级类目：" +urls[urlposition] + "的三级类目...")
             logger.warning("本目录还剩" + str(len(urls) - urlposition + 1) + "个二级类目,排队" + str(len(level2file) - position + 1) + "个一级类目")
             logger.info(arr_threeurl)
-            savetofile("3urls/" + str(position + 1) + '-' + prefix + '-url.md', arr_threeurl)
-            savetofile("3urls/" + str(position + 1) + '-' + prefix + '-name.md', arr_threename)
+            savetofile("3urls/" + weizhi + '-' + prefix + '-url.md', arr_threeurl)
+            savetofile("3urls/" + weizhi + '-' + prefix + '-name.md', arr_threename)
     logger.warning("已经抓取了三级类目下的所有url...")
 
 
@@ -136,6 +138,7 @@ def level4():
 
     # 四级下所有文件
     level4file = listfiles(KEEPDIR + "/4urls", "md")
+    emptyfile = listfiles(KEEPDIR + "/4urls", "-url.mdxx")
 
     # 遍历三级文件
     # position为文件序列
@@ -150,7 +153,7 @@ def level4():
         for urlposition in range(len(urls)):
             # 已经抓过！1-1-1-url.md
             prefix = str(urlposition + 1)
-            if fileexsit(KEEPDIR+"/4urls/"+weizhi + '-' + prefix + '-url.mdxx') or (weizhi + '-' + prefix + '-name.md' in level4file and weizhi + '-' + prefix + '-url.md' in level4file):
+            if weizhi + '-' + prefix + '-url.mdxx' in emptyfile or (weizhi + '-' + prefix + '-name.md' in level4file and weizhi + '-' + prefix + '-url.md' in level4file):
                 logger.warning("已存在！第" + str(position + 1) + "个二级类目:" + filename + ",第" + prefix + "个三级类目：" + urls[urlposition] + "的四级类目...")
                 continue
             fourcontent = ratedownload(urls[urlposition])
@@ -176,6 +179,7 @@ def level5():
 
     # 五级下所有文件
     level5file = listfiles(KEEPDIR + "/5urls", "md")
+    emptyfile = listfiles(KEEPDIR + "/5urls", "-url.mdxx")
 
     # 遍历四级文件
     # position为文件序列
@@ -189,7 +193,7 @@ def level5():
         for urlposition in range(len(urls)):
             # 已经抓过！1-1-1-1-url.md
             prefix = str(urlposition + 1)
-            if fileexsit(KEEPDIR+"/5urls/"+weizhi + '-' + prefix + '-url.mdxx') or (weizhi + '-' + prefix + '-name.md' in level5file and weizhi + '-' + prefix + '-url.md' in level5file):
+            if weizhi + '-' + prefix + '-url.mdxx' in emptyfile  or (weizhi + '-' + prefix + '-name.md' in level5file and weizhi + '-' + prefix + '-url.md' in level5file):
                 logger.warning("已存在！第" + str(position + 1) + "个三级类目:" + filename + "，第" + prefix + "个四级类目：" + urls[urlposition] + "的五级类目...")
                 continue
             fourcontent = ratedownload(urls[urlposition])
@@ -236,4 +240,4 @@ def ausalogic(level="all"):
 
 
 if __name__ == "__main__":
-    ausalogic("4-5")
+    ausalogic("1-2")

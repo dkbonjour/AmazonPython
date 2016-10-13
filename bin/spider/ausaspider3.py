@@ -16,7 +16,7 @@ if __name__ == "__main__":
     isdead = False
     while not isdead:
         try:
-            ausalogic("1-2")
+            ausalogic("4-5")
             isdead = True
         except:
             pass
