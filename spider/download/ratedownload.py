@@ -9,6 +9,7 @@ from action.proxy import *
 import random
 from action.useragent import *
 import tool.log
+from spider.parse.rateparse import *
 
 # 日志
 tool.log.setup_logging()
@@ -47,6 +48,7 @@ def ratedownload(url, retrytime=5):
         # print(res.status_code)
         res.raise_for_status()
         resdata = res.content
+        robot(resdata)
         return resdata
     except Exception as err:
         # IPPOOL.pop(ip)

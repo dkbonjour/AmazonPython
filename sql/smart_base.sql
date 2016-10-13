@@ -12,8 +12,12 @@ CREATE TABLE `smart_category` (
   `col1` varchar(255) DEFAULT NULL COMMENT '预留字段',
   `col2` varchar(255) DEFAULT NULL,
   `col3` varchar(255) DEFAULT NULL,
+  `bigpname` varchar(255) DEFAULT NULL COMMENT '大类名字',
+  `bigpid` varchar(100) DEFAULT NULL COMMENT '大类ID',
+  `ismall` tinyint(4) DEFAULT '0' COMMENT '是否最小类',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='类目';
+
 
 CREATE TABLE `smart_ip` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

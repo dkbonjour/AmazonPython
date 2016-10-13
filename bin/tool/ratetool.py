@@ -98,18 +98,19 @@ def dealurlfile():
         for i in range(min(len(t5), len(t5name))):
             listtemp[position + "-" + str(i + 1) + str(i + 1)] = t5name[i].replace(",", "_") + "," + t5[
                 i] + "," + position + ",5"
-    with open(tool.log.BASE_DIR + "/config/URL.txt", "wt") as hunterhug:
-        for i in sorted(listtemp.keys()):
-            hunterhug.write(i + "," + listtemp[i] + "\n")
+            lasturls.append(position + "-" + str(i + 1) + str(i + 1))
+
     logger.warning("可用类目记录数：" + str(len(listtemp)))
     logging.warning("最小类目数" + str(len(lasturls)))
-    with open(tool.log.BASE_DIR + "/config/CatchURL.txt", "wt") as hunterhug:
-        for i in lasturls:
-            try:
-                hunterhug.write(i + ":"+listtemp[i]+"\n")
-            except:
-                logging.error(i)
-                pass
+
+    with open(tool.log.BASE_DIR + "/config/URL.txt", "wt") as hunterhug:
+        for i in sorted(listtemp.keys()):
+            bigpid = i.split("-")[0]
+            bigpname = t1name[int(bigpid) - 1]
+            if i in lasturls:
+                hunterhug.write(i + "," + listtemp[i] + "," + bigpid + "," + bigpname + ",1" + "\n")
+            else:
+                hunterhug.write(i + "," + listtemp[i] + "," + bigpid + "," + bigpname + ",0" + "\n")
 
 
 # star 保存代理IP信息到本地文件
@@ -118,8 +119,9 @@ def keeptomysql(filepath="config/URL.txt", config={}):
     urls = readfilelist(tool.log.BASE_DIR + "/" + filepath)
     for url in urls:
         sqlzone = url.split(",")
-        sql = 'insert into smart_category (`id`,`url`,`name`,`level`,`pid`,`createtime`) values("{id}","{url}","{name}","{level}","{pid}",CURRENT_TIMESTAMP) on duplicate key update updatetime = CURRENT_TIMESTAMP'
-        insertsql = sql.format(id=sqlzone[0], url=sqlzone[2], name=sqlzone[1], level=sqlzone[4], pid=sqlzone[3])
+        sql = 'insert into smart_category (`id`,`url`,`name`,`level`,`pid`,`createtime`,`bigpname`,`bigpid`,`ismall`) values("{id}","{url}","{name}",{level},"{pid}",CURRENT_TIMESTAMP,"{bigpname}","{bigpid}",{ismall}) on duplicate key update updatetime = CURRENT_TIMESTAMP'
+        insertsql = sql.format(id=sqlzone[0], url=sqlzone[2], name=sqlzone[1], level=sqlzone[4], pid=sqlzone[3],
+                               bigpname=sqlzone[6], bigpid=sqlzone[5], ismall=sqlzone[7])
         try:
             mysql.ExecNonQuery(insertsql)
             logger.warning("执行sql语句成功:" + insertsql)
@@ -133,5 +135,5 @@ if __name__ == "__main__":
     dealurlfile()
 
     # 保存入数据库
-    # config = {"host": "localhost", "user": "root", "pwd": "6833066", "db": "smart_base"}
-    # keeptomysql(config=config)
+    config = {"host": "localhost", "user": "root", "pwd": "6833066", "db": "smart_base"}
+    keeptomysql(config=config)
