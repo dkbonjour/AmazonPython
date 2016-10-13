@@ -5,6 +5,7 @@
 #  
 import sys
 import traceback
+from tool.jfile.file import *
 
 if __name__ == "__main__":
     print([] is None)
@@ -35,3 +36,6 @@ if __name__ == "__main__":
     # except Exception as e:
     #     exc_type, exc_value, exc_tb = sys.exc_info()
     #     traceback.print_exception(exc_type, exc_value, exc_tb)
+
+    for i in listfiles("../data/rateurl/2urls", "-url.md"):
+        print(i)

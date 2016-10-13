@@ -51,7 +51,6 @@ def dealurlfile():
 
         # 如果为空,跳过
         if t2 == [] or t2name == []:
-            lasturls.append(position)
             continue
         for i in range(min(len(t2), len(t2name))):
             listtemp[position + "-" + str(i + 1)] = t2name[i].replace(",", "_") + "," + t2[i] + "," + position + ",2"
@@ -65,7 +64,6 @@ def dealurlfile():
 
         # 如果为空,跳过
         if t3 == [] or t3name == []:
-            lasturls.append(position)
             continue
         for i in range(min(len(t3), len(t3name))):
             listtemp[position + "-" + str(i + 1)] = t3name[i].replace(",", "_") + "," + t3[i] + "," + position + ",3"
@@ -79,7 +77,6 @@ def dealurlfile():
 
         # 如果为空,跳过
         if t4 == [] or t4name == []:
-            lasturls.append(position)
             continue
         for i in range(min(len(t4), len(t4name))):
             listtemp[position + "-" + str(i + 1)] = t4name[i].replace(",", "_") + "," + t4[i] + "," + position + ",4"
@@ -93,12 +90,15 @@ def dealurlfile():
 
         # 如果为空,跳过
         if t5 == [] or t5name == []:
-            lasturls.append(position)
             continue
         for i in range(min(len(t5), len(t5name))):
-            listtemp[position + "-" + str(i + 1) + str(i + 1)] = t5name[i].replace(",", "_") + "," + t5[
+            listtemp[position + "-" + str(i + 1)] = t5name[i].replace(",", "_") + "," + t5[
                 i] + "," + position + ",5"
-            lasturls.append(position + "-" + str(i + 1) + str(i + 1))
+            lasturls.append(position + "-" + str(i + 1))
+
+    temp = listfiles(rootdir=level1,iscur=True,prefix="-url.mdxx")
+    for i in temp:
+        lasturls.append(i.replace("-url.mdxx",""))
 
     logger.warning("可用类目记录数：" + str(len(listtemp)))
     logging.warning("最小类目数" + str(len(lasturls)))
@@ -135,5 +135,5 @@ if __name__ == "__main__":
     dealurlfile()
 
     # 保存入数据库
-    config = {"host": "localhost", "user": "root", "pwd": "6833066", "db": "smart_base"}
-    keeptomysql(config=config)
+    # config = {"host": "localhost", "user": "root", "pwd": "6833066", "db": "smart_base"}
+    # keeptomysql(config=config)

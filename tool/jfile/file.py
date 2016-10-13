@@ -212,6 +212,11 @@ def timetochina(longtime, formats='{}天{}小时{}分钟{}秒'):
         raise Exception('时间非法')
 
 
+# 判断文件是否存在
+def fileexsit(path):
+    return os.path.exists(path)
+
+
 if __name__ == "__main__":
     today=time.strftime('%Y%m%d', time.localtime())
     a=time.clock()
@@ -219,3 +224,5 @@ if __name__ == "__main__":
     print(todaystring(4))
     b=time.clock()
     print('运行时间：'+timetochina(b-a))
+
+    print(fileexsit("///\\\Ge.md"))
