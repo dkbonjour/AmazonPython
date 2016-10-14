@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 # https://www.amazon.com/Best-Sellers-Home-Kitchen-Slumber-Bags/zgbs/home-garden/166452011/ref=zg_bs_nav_hg_3_1063268/159-5712866-5514666 类目页
 # 翻页+?pg=2
 
-def ratedownload(url, retrytime=5,timeout = 60):
+def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
     if retrytime < 0:
         return None
     # 制作头部
@@ -32,17 +32,13 @@ def ratedownload(url, retrytime=5,timeout = 60):
         'Host': 'www.amazon.com'
     }
 
-    ips = proxy()
+    ips = proxy(where=where, config=config)
     ip = list(ips.keys())[random.randint(0, len(ips) - 1)]
     if ip in ips.keys():
         location = ips[ip]
     else:
         location = "unkonw"
     proxies = {"http": "http://" + ip}
-    logger.warning(
-            "抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
-                                                                                ua=ua,
-                                                                                times=5 - retrytime))
     try:
         res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
         # print(res.status_code)
@@ -50,11 +46,16 @@ def ratedownload(url, retrytime=5,timeout = 60):
         resdata = res.content
         res.close()
         robot(resdata)
+
+        logger.warning(
+                "抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
+                                                                                    ua=ua,
+                                                                                    times=5 - retrytime))
         return resdata
     except Exception as err:
         # IPPOOL.pop(ip)
         logger.error(
-                "抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
+                "抓取URL错误:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
                                                                                     ua=ua,
                                                                                     times=5 - retrytime))
         logging.error(err, exc_info=1)

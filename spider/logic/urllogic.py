@@ -8,6 +8,7 @@ from tool.jfile.file import *
 import tool.log
 from spider.download.ratedownload import *
 from spider.parse.rateparse import *
+from concurrent.futures import ThreadPoolExecutor
 
 # 日志
 tool.log.setup_logging()
@@ -89,11 +90,16 @@ def level2(arr_oneurl, arr_onename):
 
 
 # 三级类目 从此处难度加大，出错，我干死自己
-def level3():
+def level3(catchfiles=[]):
     global KEEPDIR
     # 1-url.md 2-url.md
     # 二级所有URL文件
-    level2file = listfiles(KEEPDIR + "/2urls", "url.md")
+    # 并发文件，如果传入文件，那么并发
+    if not catchfiles:
+        level2file = listfiles(KEEPDIR + "/2urls", "url.md")
+    else:
+        logger.warning("并发文件")
+        level2file = catchfiles
 
     # 三级下所有文件
     level3file = listfiles(KEEPDIR + "/3urls", "md")
@@ -130,11 +136,16 @@ def level3():
 
 
 # 四级类目 从此处难度加大,对！！！！
-def level4():
+def level4(catchfiles=[]):
     global KEEPDIR
     # 1-1-url.md 1-2-url.md
     # 三级所有URL文件
-    level3file = listfiles(KEEPDIR + "/3urls", "url.md")
+    # 并发文件，如果传入文件，那么并发
+    if not catchfiles:
+        level3file = listfiles(KEEPDIR + "/3urls", "url.md")
+    else:
+        logger.warning("并发文件")
+        level3file = catchfiles
 
     # 四级下所有文件
     level4file = listfiles(KEEPDIR + "/4urls", "md")
@@ -171,11 +182,16 @@ def level4():
 
 
 # 五级类目
-def level5():
+def level5(catchfiles=[]):
     global KEEPDIR
     # 1-1-1-url.md 1-1-2-url.md
     # 四级所有URL文件
-    level4file = listfiles(KEEPDIR + "/4urls", "url.md")
+    # 并发文件，如果传入文件，那么并发
+    if not catchfiles:
+        level4file = listfiles(KEEPDIR + "/4urls", "url.md")
+    else:
+        logger.warning("并发文件")
+        level4file = catchfiles
 
     # 五级下所有文件
     level5file = listfiles(KEEPDIR + "/5urls", "md")
@@ -210,8 +226,20 @@ def level5():
             savetofile("5urls/" + weizhi + '-' + prefix + '-url.md', arr_foururl)
             savetofile("5urls/" + weizhi + '-' + prefix + '-name.md', arr_fourname)
     logger.warning("已经抓取了五级类目下的所有url...")
+    return "ok!!!----"
 
 
+# 多线程
+def fastlevel5(num=3):
+    files = listfiles(KEEPDIR + "/4urls", "url.md")
+    urls=devidelist(files,num)
+    with ThreadPoolExecutor(max_workers=num) as e:
+        for i in range(num):
+            e.submit(level5,urls[i])
+
+
+
+# 单线程
 def ausalogic(level="all"):
     logger.warning("开跑："+level)
     global KEEPDIR
@@ -240,4 +268,5 @@ def ausalogic(level="all"):
 
 
 if __name__ == "__main__":
-    ausalogic("1-2")
+    # ausalogic("1-2")
+    fastlevel5()

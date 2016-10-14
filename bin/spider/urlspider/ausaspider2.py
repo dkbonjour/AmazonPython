@@ -3,7 +3,7 @@
 # Created by Smartdo Co.,Ltd. on 2016/10/11.
 # 功能:
 #   美国亚马逊类目Url爬虫
-from spider.logic.ratelogic import *
+from spider.logic.urllogic import *
 import tool.log
 import logging
 

@@ -104,6 +104,12 @@ def timetochina(longtime, formats='{}天{}小时{}分钟{}秒')
     a=time.clock()
     b=time.clock()
     print('运行时间：'+timetochina(b-a))
+    
+判断文件是否存在
+def fileexsit(path)
+
+切分文件列表
+def devidelist(files=[],num=0)
 ```
 
 4.jmysql 数据库包
