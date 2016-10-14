@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 # https://www.amazon.com/Best-Sellers-Home-Kitchen-Slumber-Bags/zgbs/home-garden/166452011/ref=zg_bs_nav_hg_3_1063268/159-5712866-5514666 类目页
 # 翻页+?pg=2
 
-def ratedownload(url, retrytime=5):
+def ratedownload(url, retrytime=5,timeout = 60):
     if retrytime < 0:
         return None
     # 制作头部
@@ -44,10 +44,11 @@ def ratedownload(url, retrytime=5):
                                                                                 ua=ua,
                                                                                 times=5 - retrytime))
     try:
-        res = requests.get(url=url, headers=header, proxies=proxies)
+        res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
         # print(res.status_code)
         res.raise_for_status()
         resdata = res.content
+        res.close()
         robot(resdata)
         return resdata
     except Exception as err:
