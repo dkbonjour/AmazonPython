@@ -13,4 +13,6 @@ select id,url,name,level,page,pid,bigpname,bigpid,ismall,isvalid from smart_cate
 lines terminated by '\r\n';
 
 
-SELECT id,url,name,level,page,pid,bigpid,bigpname FROM smart_base.smart_category where ismall=1 and isvalid=1;
+SELECT id,url,name,level,page,pid,bigpid,bigpname FROM smart_base.smart_category where ismall=1 and isvalid=1 and bigpname="Appliances";
+
+SELECT id,url,name,page,bigpname FROM smart_category where ismall=1 and isvalid=1 and (bigpname="Appliances" or bigpname="Industrial & Scientific")
