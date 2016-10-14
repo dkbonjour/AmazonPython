@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-from lxml import etree
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -38,10 +37,10 @@ def openpath():
 
 
 # 定义一个数组
-price = []
+FBAs = []
 
 
-def getprice(name):
+def getFBA(name):
     # html保存的位置
     htmlpath = "H:/smartdo/data/"
 
@@ -49,43 +48,24 @@ def getprice(name):
         # 读取html文件的内容
         filecontents = open(htmlpath + name, "rb")
         html = filecontents.read().decode('UTF-8', 'ignore').replace("\r", "")
+        print(name)
 
-        # xpath解析需要的东西
-        content = etree.HTML(html)
-
-        if 'id="priceblock_saleprice"' in html:
-            # xpath解析得到当页商品价格
-            prices = content.xpath('//span[@id="priceblock_saleprice"]/text()')
-            price.append(prices[0].strip())
-
-        elif 'id="priceblock_ourprice"' in html:
-            # xpath解析得到当页商品价格
-            prices = content.xpath('//span[@id="priceblock_ourprice"]/text()')
-            price.append(prices[0].strip())
-
-        elif 'class="a-color-price"' in html:
-            # xpath解析得到当页商品价格
-            prices = content.xpath('//span[@class="a-color-price"]/text()')
-            price.append(prices[0].strip())
-
+        if "Fulfilled by Amazon" in html:
+            FBAs.append("FBA")
         else:
-            price.append("Price information is unavailable")
+            FBAs.append("NO")
 
-        print(price)
-        # 这里返回的是price
-        # 返回的顺序
-        # 可以在这里写导入数据库
-        # 或者另开一个函数写导入数据库
-        return price
+        print(FBAs)
+        print(len(FBAs))
 
 
 # 开启多线程
-# 以5个线程跑解析函数getprice
-def threadingprice():
+# 以5个线程跑解析函数getFBA
+def threadingFBA():
     pool = ThreadPoolExecutor(5)
     for name in openpath():
-        pool.submit(getprice, name)
+        pool.submit(getFBA, name)
 
 
 if __name__ == '__main__':
-    threadingprice()
+    threadingFBA()

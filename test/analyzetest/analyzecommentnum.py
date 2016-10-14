@@ -3,6 +3,7 @@
 
 import os
 from lxml import etree
+from concurrent.futures import ThreadPoolExecutor
 
 
 # 读取文件夹下面的文件
@@ -24,61 +25,80 @@ def listfiles(rootdir, prefix='.xml', iscur=False):
                 pass
     return file
 
-
-def getcommentnum():
+def openpath():
     # html保存的位置
     htmlpath = "H:/smartdo/data/"
+
     # 读取到文件夹下所有的html文件
     htmlnames = listfiles(htmlpath, "html")
+    # print(htmlnames)
 
-    comment = []
+    return htmlnames
 
-    for name in htmlnames:
+# 定义一个数组
+commentnum = []
 
-        if "detail" in name:
+def getcommentnum(name):
+    # html保存的位置
+    htmlpath = "H:/smartdo/data/"
 
-            # 建立一个临时数组储存
-            tempcomment = []
+    if "detail" in name:
 
-            # 读取html文件的内容
-            filecontents = open(htmlpath + name, "rb")
-            html = filecontents.read().decode('UTF-8', 'ignore').replace("\r", "")
+        # 建立一个临时数组储存
+        tempcomment = []
 
-            print(name)
+        # 读取html文件的内容
+        filecontents = open(htmlpath + name, "rb")
+        html = filecontents.read().decode('UTF-8', 'ignore').replace("\r", "")
 
-            # 判断是否有评分
-            # 没有评分就没有评论
-            if "There are no customer reviews yet" in html:
-                tempcomment.append("There are no customer reviews yet")
-            elif 'id="acrCustomerReviewText"' in html:
-                # xpath解析需要的东西
-                content = etree.HTML(html)
+        #print(name)
 
-                # xpath解析得到当页商品评论
-                comments = content.xpath('//span[@id="acrCustomerReviewText"]/text()')
-                # print(comments)
+        # 判断是否有评分
+        # 没有评分就没有评论
+        if "There are no customer reviews yet" in html:
+            tempcomment.append("There are no customer reviews yet")
+        elif 'id="acrCustomerReviewText"' in html:
+            # xpath解析需要的东西
+            content = etree.HTML(html)
 
-                # 原文117 customer reviews
-                # 剔除 customer reviews
-                temp = comments[0]
-                tempcomment.append(temp.replace(" customer reviews", ""))
-            elif 'class="a-size-small"' in html:
-                # xpath解析需要的东西
-                content = etree.HTML(html)
+            # xpath解析得到当页商品评论
+            commentnums = content.xpath('//span[@id="acrCustomerReviewText"]/text()')
+            # print(comments)
 
-                # xpath解析得到当页商品评论
-                comments = content.xpath(
-                        '//span[@class="dpProductDetailB00WPRE0HA"]/span[@class="a-size-small"]/a[@class="a-link-normal"]/text()')
-                print(comments)
+            # 原文117 customer reviews
+            # 剔除 customer reviews
+            temp = commentnums[0]
+            tempcomment.append(temp.replace(" customer reviews", ""))
+        elif 'class="a-size-small"' in html:
+            # xpath解析需要的东西
+            content = etree.HTML(html)
 
-                # 原文117 customer reviews
-                # 剔除 customer reviews
-                temp = comments[0]
-                tempcomment.append(temp.replace(" customer reviews", "").strip())
+            # xpath解析得到当页商品评论数量
+            commentnums = content.xpath(
+                    '//span[@class="dpProductDetailB00WPRE0HA"]/span[@class="a-size-small"]/a[@class="a-link-normal"]/text()')
+            print(commentnums)
 
-            comment.append(tempcomment)
-    print(comment)
+            # 原文117 customer reviews
+            # 剔除 customer reviews
+            temp = commentnums[0]
+            tempcomment.append(temp.replace(" customer reviews", "").strip())
+
+        commentnum.append(tempcomment)
+    print(commentnum)
+    # 这里返回的是commentnum
+    # 返回的顺序
+    # 可以在这里写导入数据库
+    # 或者另开一个函数写导入数据库
+    return commentnum
+
+
+# 开启多线程
+# 以5个线程跑解析函数getcommentnum
+def threadingcommentnum():
+    pool = ThreadPoolExecutor(5)
+    for name in openpath():
+        pool.submit(getcommentnum, name)
 
 
 if __name__ == '__main__':
-    getcommentnum()
+    threadingcommentnum()
