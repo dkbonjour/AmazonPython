@@ -9,7 +9,7 @@ union
 select * from smart_category where id=103
 
 
-select id,url,name,level,page,pid,bigpname,bigpid,ismall,isvalid from smart_category limit 20000 into outfile 'G:/amzonurl.csv' fields terminated by ',' optionally enclosed by '"' escaped by '"'
+select CONCAT("'",id),url,name,level,page,CONCAT("'",pid),bigpname,bigpid,ismall,isvalid from smart_category limit 40000 into outfile 'G:/amzonurl.csv' fields terminated by ',' optionally enclosed by '"' escaped by '"'
 lines terminated by '\r\n';
 
 
