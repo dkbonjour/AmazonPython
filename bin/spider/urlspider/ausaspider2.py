@@ -18,7 +18,8 @@ if __name__ == "__main__":
         try:
             ausalogic("3-4")
             # isdead = True
-        except:
+        except Exception as err:
+            logging.error(err, exc_info=1)
             pass
         time.sleep(3600)
         logger.error("一分钟后又跑一次")

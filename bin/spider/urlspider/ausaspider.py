@@ -16,9 +16,9 @@ if __name__ == "__main__":
     isdead = False
     while not isdead:
         try:
-            ausalogic("2-3")
+            ausalogic("1-2")
             isdead = True
-        except:
-            pass
+        except Exception as err:
+            logging.error(err, exc_info=1)
     b = time.clock()
     logger.error('运行时间：' + timetochina(b - a))

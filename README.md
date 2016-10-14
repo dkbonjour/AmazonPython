@@ -114,3 +114,12 @@ mysql=Mysql(config)
 mysql.ExecNonQuery("insert into `booktag` (bookname) values ('你哈') ")
 mysql.ExecQuery('SELECT bookname,bookkind,bookno FROM booktag limit 0,10;')
 ```
+
+
+```
+Beautiful is better than ugly.(美丽优于丑陋)
+Explicit is better than implicit.(直白优于含蓄)
+Simple is better than complex.(简单优于复杂)
+Complex is better than complicated.(复杂优于繁琐)
+Readability counts.(可读性很重要)
+```
