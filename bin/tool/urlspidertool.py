@@ -109,9 +109,9 @@ def dealurlfile():
             bigpid = i.split("-")[0]
             bigpname = t1name[int(bigpid) - 1]
             if i in lasturls:
-                hunterhug.write(i + "," + listtemp[i] + "," + bigpid + "," + bigpname + ",1" + "\n")
+                hunterhug.write(i + "," + listtemp[i] + "," + bigpid + "," + bigpname.replace(",","_") + ",1" + "\n")
             else:
-                hunterhug.write(i + "," + listtemp[i] + "," + bigpid + "," + bigpname + ",0" + "\n")
+                hunterhug.write(i + "," + listtemp[i] + "," + bigpid + "," + bigpname.replace(",","_") + ",0" + "\n")
 
 
 # star 保存代理IP信息到本地文件
