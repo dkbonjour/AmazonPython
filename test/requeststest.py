@@ -4,6 +4,15 @@
 # http://docs.python-requests.org/zh_CN/latest/user/advanced.html#advanced
 
 import requests
+import time
+import tool.log
+import logging
+import random
+from action.proxy import *
+
+# 日志
+tool.log.setup_logging()
+logger = logging.getLogger(__name__)
 # 遇到网络问题（如：DNS 查询失败、拒绝连接等）时，Requests 会抛出一个 ConnectionError 异常。
 #
 # 如果 HTTP 请求返回了不成功的状态码， Response.raise_for_status() 会抛出一个 HTTPError 异常。
@@ -78,15 +87,32 @@ def testheader():
     print(bad_r.history)
 
 def testposta(url1):
-    header = {
-        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36",
-        'Referer': 'https://www.amazon.com/',
-        'Host': 'www.amazon.com'
-    }
-    proxies = {"http": "http://107.190.231.236:808"}
-    r = requests.get(url1,headers=header,proxies=proxies)
-    with open("../test.html","wb") as f:
-        f.write(r.content)
+    try:
+        nowtime = time.strftime('%Y%m%d%H%M%S', time.localtime())
+
+        header = {
+            'User-Agent': "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0",
+            'Referer': 'https://www.amazon.com/',
+            'Host': 'www.amazon.com'
+        }
+
+        # 加载代理ip
+        #ips = proxy()
+        #ip = list(ips.keys())[random.randint(0, len(ips) - 1)]
+        #if ip in ips.keys():
+        #    location = ips[ip]
+        #else:
+        #    location = "unkonw"
+        #proxies = {"http": "http://" + ip}
+
+        # 不加载代理ip
+        proxies = {"http": "http://107.190.231.236:808"}
+        r = requests.get(url1,headers=header,proxies=proxies)
+        with open("../data/detail" + str(nowtime) + ".html","wb") as f:
+            f.write(r.content)
+            f.close()
+    except:
+        testposta(url1)
 
 if __name__ == "__main__":
     # url = "http://www.baidu.com"
@@ -99,5 +125,15 @@ if __name__ == "__main__":
     #
     # testheader()
 
-    url="https://www.amazon.com/dp/B00CON7A40"
-    testposta(url)
+    #url="https://www.amazon.com/dp/B00CON7A40"
+    #testposta(url)
+
+    file = open(tool.log.BASE_DIR + "/data/detailurl.txt")
+    urlsline = file.readlines()
+
+    for line in urlsline:
+        url = line.strip()
+        print(url)
+        testposta(url)
+    file.close()
+

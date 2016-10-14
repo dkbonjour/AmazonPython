@@ -5,7 +5,7 @@
 from tool.jhttp.spider import *
 
 if __name__ == "__main__":
-    print(getHtml("http://www.baidu.com").decode("utf-8", "ignore"))
+    print(spider("http://www.baidu.com").decode("utf-8", "ignore"))
 
     url = "http://dd.com?" + urlencode({"dd": "Ddd", "你好": 3})
     print(url)
