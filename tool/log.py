@@ -8,7 +8,7 @@
 import json
 import logging.config
 import os
-from  tool.jfile.file import *
+from tool.jfile.file import *
 
 # 全局变量，是否已经加载配置文件
 LOGSUCCESS = False

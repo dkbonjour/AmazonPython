@@ -1,7 +1,7 @@
 # -*-coding:utf-8-*-
 # Created by 一只尼玛 on 2016/10/10.
 # 功能:
-#   读取代理IP
+#   读取代理IP，可选择本地读取或者数据库读取
 
 from tool.jmysql.mysql import *
 import logging
@@ -19,12 +19,13 @@ IPPOOLSUCCESS = False
 
 # star 读取代理IP,格式为IP为键，地址为值，如104.143.159.232:808 美国加利福尼亚州洛杉矶
 # {"125.1.1.1":"美国"}
-def proxy(where="local", filepath="config/IP.txt", failtimes=0):
+# 代理可以选择从数据库读，但是要填数据库配置
+def proxy(where="local", config={}, filepath="config/base/IP.txt", failtimes=0):
     filepath = tool.log.BASE_DIR + "/" + filepath
     global IPPOOL
     global IPPOOLSUCCESS
     if IPPOOLSUCCESS:
-        smartlogger.info("IP已经加载过了")
+        smartlogger.debug("IP已经加载过了")
         return IPPOOL
     ips = []
     if where == "local":
@@ -35,7 +36,6 @@ def proxy(where="local", filepath="config/IP.txt", failtimes=0):
         ips = context.splitlines()
     else:
         logger.warning("加载数据库代理IP文件")
-        config = {"host": "localhost", "user": "root", "pwd": "6833066", "db": "smart_base"}
         mysql = Mysql(config)
         selectsql = "SELECT ip,zone,failtimes FROM smart_ip limit 1000;"
         result = mysql.ExecQuery(selectsql)
@@ -87,7 +87,11 @@ def ipfilter(ips=[]):
     return returnips
 
 
+# 只做测试！！！
 if __name__ == "__main__":
     # 获取代理IP池
-    ips= proxy("mysql")
-    smartlogger.warning(ips)
+    config = {"host": "localhost", "user": "root", "pwd": "6833066", "db": "smart_base"}
+    ips = proxy(where="mysql", config=config)
+    print(ips)
+    ips = proxy()
+    print(ips)

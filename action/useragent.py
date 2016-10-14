@@ -17,11 +17,11 @@ UAPOOLSUCCESS = False
 
 
 # star 读取Ua
-def useragent(filepath="config/UA.txt"):
+def useragent(filepath="config/base/UA.txt"):
     global UAPOOL
     global UAPOOLSUCCESS
     if UAPOOLSUCCESS:
-        smartlogger.info("Ua已经加载过了")
+        smartlogger.debug("Ua已经加载过了")
         return UAPOOL
     with open(tool.log.BASE_DIR + "/" + filepath, "rt") as f:
         uas = f.readlines()
@@ -31,6 +31,7 @@ def useragent(filepath="config/UA.txt"):
         return UAPOOL
 
 
+# 只做测试
 if __name__ == "__main__":
-    smartlogger.warning(useragent())
-    smartlogger.warning(useragent())
+    print(useragent())
+    print(useragent())

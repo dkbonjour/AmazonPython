@@ -3,7 +3,7 @@
 # Created by Smartdo Co.,Ltd. on 2016/10/11.
 # 功能:
 #   美国亚马逊类目Url爬虫
-from spider.logic.ratelogic import *
+from spider.logic.urllogic import *
 import tool.log
 import logging
 
@@ -16,9 +16,9 @@ if __name__ == "__main__":
     isdead = False
     while not isdead:
         try:
-            ausalogic("4-5")
+            ausalogic("1-2")
             isdead = True
-        except:
-            pass
+        except Exception as err:
+            logging.error(err, exc_info=1)
     b = time.clock()
-    logger.warning('运行时间：' + timetochina(b - a))
+    logger.error('运行时间：' + timetochina(b - a))

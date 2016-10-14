@@ -104,6 +104,12 @@ def timetochina(longtime, formats='{}天{}小时{}分钟{}秒')
     a=time.clock()
     b=time.clock()
     print('运行时间：'+timetochina(b-a))
+    
+判断文件是否存在
+def fileexsit(path)
+
+切分文件列表
+def devidelist(files=[],num=0)
 ```
 
 4.jmysql 数据库包
@@ -113,4 +119,20 @@ config = {"host": "localhost", "user": "root", "pwd": "6833066", "db": "doubanbo
 mysql=Mysql(config)
 mysql.ExecNonQuery("insert into `booktag` (bookname) values ('你哈') ")
 mysql.ExecQuery('SELECT bookname,bookkind,bookno FROM booktag limit 0,10;')
+```
+
+
+```
+Beautiful is better than ugly.(美丽优于丑陋)
+Explicit is better than implicit.(直白优于含蓄)
+Simple is better than complex.(简单优于复杂)
+Complex is better than complicated.(复杂优于繁琐)
+Readability counts.(可读性很重要)
+```
+
+## 翻墙必备
+
+```
+C:\Windows\System32\drivers\etc 放host
+Windows: 按下 Windows+R 键，运行 cmd ，在命令提示符运行命令 ipconfig /flushdns
 ```

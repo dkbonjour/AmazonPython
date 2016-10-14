@@ -8,6 +8,7 @@ import tool.log
 import logging
 from tool.jfile.file import *
 from tool.jmysql.mysql import *
+from config.config import *
 
 # 日志
 tool.log.setup_logging()
@@ -103,7 +104,7 @@ def dealurlfile():
     logger.warning("可用类目记录数：" + str(len(listtemp)))
     logging.warning("最小类目数" + str(len(lasturls)))
 
-    with open(tool.log.BASE_DIR + "/config/URL.txt", "wt") as hunterhug:
+    with open(tool.log.BASE_DIR + "/config/base/URL.txt", "wt") as hunterhug:
         for i in sorted(listtemp.keys()):
             bigpid = i.split("-")[0]
             bigpname = t1name[int(bigpid) - 1]
@@ -114,7 +115,7 @@ def dealurlfile():
 
 
 # star 保存代理IP信息到本地文件
-def keeptomysql(filepath="config/URL.txt", config={}):
+def keeptomysql(filepath="config/base/URL.txt", config={}):
     mysql = Mysql(config)
     urls = readfilelist(tool.log.BASE_DIR + "/" + filepath)
     for url in urls:
@@ -136,4 +137,9 @@ if __name__ == "__main__":
 
     # 保存入数据库
     # config = {"host": "localhost", "user": "root", "pwd": "6833066", "db": "smart_base"}
-    # keeptomysql(config=config)
+    allconfig = getconfig()
+    try:
+        config = allconfig["basedb"]
+        keeptomysql(config=config)
+    except:
+        raise Exception("数据库配置出错")

@@ -217,6 +217,22 @@ def fileexsit(path):
     return os.path.exists(path)
 
 
+# 切分文件列表
+def devidelist(files=[],num=0):
+    length=len(files)
+    split={}
+    if length<=0:
+        return split
+    if num >= length:
+        raise Exception("文件列表切分过小")
+    process=length//num
+    for i in range(num):
+        if i!=num-1:
+            split[i]=(files[i*process:(i+1)*process])
+        else:
+            split[i]=(files[i*process:])
+    return split
+
 if __name__ == "__main__":
     today=time.strftime('%Y%m%d', time.localtime())
     a=time.clock()
@@ -226,3 +242,6 @@ if __name__ == "__main__":
     print('运行时间：'+timetochina(b-a))
 
     print(fileexsit("///\\\Ge.md"))
+
+    files=[1,11,111,2,22,222,3,33,333]
+    print(devidelist(files,4))
