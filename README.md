@@ -123,3 +123,10 @@ Simple is better than complex.(简单优于复杂)
 Complex is better than complicated.(复杂优于繁琐)
 Readability counts.(可读性很重要)
 ```
+
+## 翻墙必备
+
+```
+C:\Windows\System32\drivers\etc 放host
+Windows: 按下 Windows+R 键，运行 cmd ，在命令提示符运行命令 ipconfig /flushdns
+```
