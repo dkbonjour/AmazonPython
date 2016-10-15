@@ -10,10 +10,12 @@ import random
 from action.useragent import *
 import tool.log
 from spider.parse.rateparse import *
+from bs4 import BeautifulSoup
 
 # 日志
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
+
 
 
 # 用来解析网页的函数
@@ -45,7 +47,8 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         res.raise_for_status()
         resdata = res.content
         res.close()
-        robot(resdata)
+        if not robot(resdata):
+            return None
 
         logger.warning(
                 "抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
@@ -73,5 +76,11 @@ if __name__ == "__main__":
         if str(level) != url:
             continue
         content = ratedownload(urls[url])
-        with open(tool.log.BASE_DIR + "/data/rate" + url + ".html", "wb") as f:
+        with open(tool.log.BASE_DIR + "/data/test/rate" + url + ".html", "wb") as f:
             f.write(content)
+
+
+    ajaxurl ="https://www.amazon.com/Best-Sellers-Clothing-Mother-Bride-Dresses/zgbs/apparel/2969490011/161-2441050-2846244?_encoding=UTF8&pg=2&ajax=1&isAboveTheFold=0"
+    content = ratedownload(ajaxurl)
+    with open(tool.log.BASE_DIR + "/data/test/ajax" + ".html", "wb") as f:
+        f.write(content)

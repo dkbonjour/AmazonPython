@@ -76,6 +76,7 @@ def createjia(path):
         os.makedirs(path)
     except:
         pass
+    return path
 
 
 # star 今天日期的字符串
@@ -106,7 +107,7 @@ def todaystring(level=3):
     elif level == 6:
         formats = '%Y%m%d-%H:%M:%S'
     else:
-        pass
+        formats = '%Y%m%d'
     today = time.strftime(formats, time.localtime())
     return today
 
@@ -183,7 +184,10 @@ def readfilelist(filepath):
         with open(filepath, "rt") as filename:
             namelines = filename.readlines()
             for line in namelines:
-                returnlist.append(line.replace("\n", ""))
+                content = line.replace("\n", "")
+                if not content:
+                    continue
+                returnlist.append(content)
     except:
         pass
     return returnlist
@@ -218,31 +222,41 @@ def fileexsit(path):
 
 
 # 切分文件列表
-def devidelist(files=[],num=0):
-    length=len(files)
-    split={}
-    if length<=0:
+def devidelist(files, num=0):
+    filestype=type(files)
+    if not filestype==type([]):
+        raise Exception("文件切分只能是列表")
+    length = len(files)
+    split = {}
+    if length <= 0:
         return split
     if num >= length:
         raise Exception("文件列表切分过小")
-    process=length//num
+    process = length // num
     for i in range(num):
-        if i!=num-1:
-            split[i]=(files[i*process:(i+1)*process])
-        else:
-            split[i]=(files[i*process:])
+        split[i] = (files[i * process:(i + 1) * process])
+    remain = files[num * process:]
+    for i in range(len(remain)):
+        split[i % num].append(remain[i])
     return split
 
+
 if __name__ == "__main__":
-    today=time.strftime('%Y%m%d', time.localtime())
-    a=time.clock()
+    today = time.strftime('%Y%m%d', time.localtime())
+    a = time.clock()
     print(filejoin(['.', "data", "test"]))
     print(todaystring(4))
-    b=time.clock()
-    print('运行时间：'+timetochina(b-a))
+    b = time.clock()
+    print('运行时间：' + timetochina(b - a))
 
     print(fileexsit("///\\\Ge.md"))
 
+<<<<<<< HEAD
     files=[1,11,111,2,22,222,3,33,333]
     print(files)
     print(devidelist(files,2))
+=======
+    files = [1, 11, 111, 2, 22, 222, 3, 33, 333, 4, 44, 444, 5, 55, 555]
+    print(files)
+    print(devidelist(files, 9))
+>>>>>>> master

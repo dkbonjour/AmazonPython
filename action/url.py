@@ -23,7 +23,7 @@ def usaurl(config={}, category=[]):
             condition = condition + 'bigpname="' + category[i] + '"'
         else:
             condition = condition + 'bigpname="' + category[i] + '" or '
-    selectsql = 'SELECT id,url,name,page,bigpname FROM smart_category where ismall=1 and isvalid=1 and (' + condition + ')'
+    selectsql = 'SELECT id,url,name,page,bigpname,level FROM smart_category where isvalid=1 and (' + condition + ')'
     logger.warning(selectsql)
     result = mysql.ExecQuery(selectsql)
     return result

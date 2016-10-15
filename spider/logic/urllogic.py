@@ -55,7 +55,7 @@ def level1():
             raise
         else:
             onecontent = onecontent.decode('utf-8', 'ignore')
-        arr_oneurl, arr_onename = rateparse(onecontent)
+        arr_oneurl, arr_onename = urlparse(onecontent)
         savetofile("oneurl.md", arr_oneurl)
         savetofile("onename.md", arr_onename)
         logger.warning("已经抓取了一级类目:" + firsturl + "的所有url...")
@@ -79,7 +79,7 @@ def level2(arr_oneurl, arr_onename):
             continue
         else:
             twocontent = twocontent.decode('utf-8', 'ignore')
-        arr_twourl, arr_twoname = rateparse(twocontent, level=2)
+        arr_twourl, arr_twoname = urlparse(twocontent, level=2)
         logger.warning("正抓取！第" + prefix + "个一级类目:" + arr_oneurl[two] + "的二级类目...")
         logger.warning("还剩下" + str(len(arr_oneurl) - two + 1) + "个一级类目")
         logger.info(arr_twourl)
@@ -126,7 +126,7 @@ def level3(catchfiles=[]):
             else:
                 threecontent = threecontent.decode('utf-8', 'ignore')
 
-            arr_threeurl, arr_threename = rateparse(threecontent, level=3)
+            arr_threeurl, arr_threename = urlparse(threecontent, level=3)
             logger.warning("正抓取！第" + weizhi + "个一级类目:" + filename + ",第" + prefix + "个二级类目：" +urls[urlposition] + "的三级类目...")
             logger.warning("本目录还剩" + str(len(urls) - urlposition + 1) + "个二级类目,排队" + str(len(level2file) - position + 1) + "个一级类目")
             logger.info(arr_threeurl)
@@ -172,7 +172,7 @@ def level4(catchfiles=[]):
                 continue
             else:
                 fourcontent = fourcontent.decode('utf-8', 'ignore')
-            arr_foururl, arr_fourname = rateparse(fourcontent, level=4)
+            arr_foururl, arr_fourname = urlparse(fourcontent, level=4)
             logger.warning("正抓取！第" + str(position + 1) + "个二级类目:" + filename + ",第" + prefix + "个三级类目：" +urls[urlposition] + "的四级类目...")
             logger.warning("本目录还剩"+str(len(urls) - urlposition + 1) + "个三级类目,排队" + str(len(level3file) - position + 1) + "个二级类目")
             logger.info(arr_foururl)
@@ -217,7 +217,7 @@ def level5(catchfiles=[]):
                 continue
             else:
                 fourcontent = fourcontent.decode('utf-8', 'ignore')
-            arr_foururl, arr_fourname = rateparse(fourcontent, level=5)
+            arr_foururl, arr_fourname = urlparse(fourcontent, level=5)
             logger.warning("正抓取！第" + str(position + 1) + "个三级类目:" + filename + ",第" + prefix + "个四级类目：" +
                     urls[
                         urlposition] + "的五级类目...")

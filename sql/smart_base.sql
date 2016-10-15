@@ -6,7 +6,7 @@ CREATE TABLE `smart_category` (
   `pid` varchar(100) DEFAULT NULL COMMENT '父类id',
   `createtime` datetime DEFAULT NULL COMMENT '创建时间',
   `updatetime` datetime DEFAULT NULL COMMENT '更新时间',
-  `isvalid` tinyint(4) DEFAULT '1' COMMENT '是否有效',
+  `isvalid` tinyint(4) DEFAULT '0' COMMENT '是否有效',
   `page` tinyint(4) DEFAULT '5' COMMENT '抓取页数',
   `database` varchar(255) DEFAULT NULL COMMENT '存储数据库',
   `col1` varchar(255) DEFAULT NULL COMMENT '预留字段',
