@@ -24,7 +24,6 @@ def setup_logging(default_path='log.json', default_level=logging.INFO, env_key='
         return
     # 当前目录
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    print(BASE_DIR)
 
     # 配置文件位置
     default_path = BASE_DIR + "/config/" + default_path
