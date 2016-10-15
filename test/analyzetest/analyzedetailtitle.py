@@ -49,21 +49,23 @@ def gettitle():
     htmlnames = listfiles(tool.log.BASE_DIR + "/data/","html")
     # 建立一个数组来储存解析得到的详情页title
     gettitles = []
-    for htmlname in htmlnames:
-        htmlpath = htmlname
-        #print(htmlpath)
-        file = open(tool.log.BASE_DIR + "/data/" + htmlpath,"rb")
-        htmlcontent = file.read().decode("UTF-8","ignore")
+    for name in htmlnames:
+        if "detail" in name:
+            htmlpath = name
+            #print(htmlpath)
+            file = open(tool.log.BASE_DIR + "/data/" + htmlpath,"rb")
+            htmlcontent = file.read().decode("UTF-8","ignore")
 
-        # xpath解析需要的东西
-        content = etree.HTML(htmlcontent)
-        # xpath解析得到当页商品的标题title
-        titles = content.xpath('//div[@class="zg_title"]/a/text()')
+            # xpath解析需要的东西
+            content = etree.HTML(htmlcontent)
+            # xpath解析得到当页商品的标题title
+            titles = content.xpath('//h1[@id="title"]/span/text()')
 
-        for item in titles:
-            gettitles.append(item.strip())
+            for item in titles:
+                gettitles.append(titles[0].strip())
 
     return gettitles
 
 if __name__ == "__main__":
     print(gettitle())
+    print(len(gettitle()))

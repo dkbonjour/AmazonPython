@@ -6,6 +6,18 @@ from lxml import etree
 import re
 from spider.logic.urllogic import *
 
+'''
+# 抓取dp的正则表达式
+def getdp(string):
+    reg = r'(http.+?/dp/)(.+?)(/ref)'
+    all = re.compile(reg)
+    alllist = re.findall(all, string)
+    try:
+        return alllist[0][1]
+    except:
+        return "NO ASIN"
+'''
+
 
 # 正则大类排名
 def getrank2reg(string):
@@ -86,13 +98,31 @@ def Analyzedetail():
             # xpath解析需要的东西
             content = etree.HTML(html)
 
-            ## 得到大类排名
+
+           ## 得到大类排名
             # 正则查找匹配的排名字段
             try:
                 tempcontent.append(getrank2reg(html))
             except Exception as err:
                 print(err)
                 tempcontent.append("Nothing")
+
+
+             ## 得到商品名称
+            # xpath解析得到当页商品的标题title
+            titles = content.xpath('//h1[@id="title"]/span/text()')
+
+            for item in titles:
+                tempcontent.append(titles[0].strip())
+
+
+            '''
+            ## 得到ASIN
+            ## 如果得到详情页的url，就可以在这里写下解析ASIN
+            url = ""
+            tempcontent.append(getdp(url.strip()))
+            '''
+
 
             ## 得到评分等级
             # 判断是否有评分
@@ -214,6 +244,12 @@ def Analyzedetail():
                 tempcontent.append("FBA")
             else:
                 tempcontent.append("NO")
+
+
+            '''
+            ## 得到网址
+            tempcontent.append("http://www.amazon.com/dp/" + getdp(url.strip()) + "/")
+            '''
 
             analyzecontent.append(tempcontent)
     return analyzecontent
