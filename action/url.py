@@ -30,6 +30,6 @@ def usaurl(config={}, category=[]):
 
 
 if __name__ == "__main__":
-    config = {"host": "localhost", "user": "root", "pwd": "6833066", "db": "smart_base"}
+    config = {"host": "192.168.0.152", "user": "bai", "pwd": "123456", "db": "smart_base"}
     category = ["Industrial & Scientific", "Appliances"]
     print(usaurl(config, category=category))

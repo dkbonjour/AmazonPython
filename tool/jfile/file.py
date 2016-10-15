@@ -244,4 +244,5 @@ if __name__ == "__main__":
     print(fileexsit("///\\\Ge.md"))
 
     files=[1,11,111,2,22,222,3,33,333]
-    print(devidelist(files,4))
+    print(files)
+    print(devidelist(files,2))

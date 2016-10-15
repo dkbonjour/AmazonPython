@@ -90,7 +90,7 @@ def ipfilter(ips=[]):
 # 只做测试！！！
 if __name__ == "__main__":
     # 获取代理IP池
-    config = {"host": "localhost", "user": "root", "pwd": "6833066", "db": "smart_base"}
+    config = {"host": "192.168.0.152", "user": "bai", "pwd": "123456", "db": "smart_base"}
     ips = proxy(where="mysql", config=config)
     print(ips)
     ips = proxy()

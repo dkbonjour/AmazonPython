@@ -38,8 +38,7 @@ def openpath():
 
 
 # 定义一个数组
-price = []
-
+price = {}
 
 def getprice(name):
     # html保存的位置
@@ -56,22 +55,22 @@ def getprice(name):
         if 'id="priceblock_saleprice"' in html:
             # xpath解析得到当页商品价格
             prices = content.xpath('//span[@id="priceblock_saleprice"]/text()')
-            price.append(prices[0].strip())
+            price[name]= prices[0].strip()
 
         elif 'id="priceblock_ourprice"' in html:
             # xpath解析得到当页商品价格
             prices = content.xpath('//span[@id="priceblock_ourprice"]/text()')
-            price.append(prices[0].strip())
+            price[name]= prices[0].strip()
 
         elif 'class="a-color-price"' in html:
             # xpath解析得到当页商品价格
             prices = content.xpath('//span[@class="a-color-price"]/text()')
-            price.append(prices[0].strip())
+            price[name]= prices[0].strip()
 
         else:
-            price.append("Price information is unavailable")
+            price[name]= "Price information is unavailable"
 
-        print(price)
+        #print(price)
         # 这里返回的是price
         # 返回的顺序
         # 可以在这里写导入数据库
@@ -85,7 +84,9 @@ def threadingprice():
     pool = ThreadPoolExecutor(5)
     for name in openpath():
         pool.submit(getprice, name)
-
+    return pool.submit(getprice, name).result()
 
 if __name__ == '__main__':
-    threadingprice()
+    print(threadingprice())
+    for i in threadingprice():
+        print(i)

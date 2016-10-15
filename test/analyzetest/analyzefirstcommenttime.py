@@ -67,7 +67,9 @@ def getfirstcommenttime(name):
 
             # 剔除\n
             temp = commenttimes[3]
-            firstcommenttime.append(temp.strip())
+            if temp.strip():
+                firstcommenttime.append(temp.strip())
+
 
         print(firstcommenttime)
         print(len(firstcommenttime))
