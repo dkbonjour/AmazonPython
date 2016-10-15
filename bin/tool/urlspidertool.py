@@ -15,7 +15,7 @@ tool.log.setup_logging()
 logger = logging.getLogger("smart")
 
 
-def dealurlfile():
+def dealurlfile(rubbish="/161-2441050-2846244"):
     # 最小级目录
     lasturls = []
 
@@ -41,7 +41,8 @@ def dealurlfile():
     t1 = readfilelist(dir + "/oneurl.md")
     t1name = readfilelist(dir + "/onename.md")
     for i in range(min(len(t1), len(t1name))):
-        listtemp[str(i + 1)] = t1name[i].replace(",", "_") + "," + t1[i] + ",0,1"
+        # /ref=zg_bs_nav_la_1_la/161-2441050-2846244
+        listtemp[str(i + 1)] = t1name[i].replace(",", "_") + "," + t1[i].replace(rubbish,"") + ",0,1"
 
     # 二级
     file2 = listfiles(level2, "-url.md")
@@ -54,7 +55,7 @@ def dealurlfile():
         if t2 == [] or t2name == []:
             continue
         for i in range(min(len(t2), len(t2name))):
-            listtemp[position + "-" + str(i + 1)] = t2name[i].replace(",", "_") + "," + t2[i] + "," + position + ",2"
+            listtemp[position + "-" + str(i + 1)] = t2name[i].replace(",", "_") + "," + t2[i].replace(rubbish,"") + "," + position + ",2"
 
     # 三级
     file3 = listfiles(level3, "-url.md", "")
@@ -67,7 +68,7 @@ def dealurlfile():
         if t3 == [] or t3name == []:
             continue
         for i in range(min(len(t3), len(t3name))):
-            listtemp[position + "-" + str(i + 1)] = t3name[i].replace(",", "_") + "," + t3[i] + "," + position + ",3"
+            listtemp[position + "-" + str(i + 1)] = t3name[i].replace(",", "_") + "," + t3[i].replace(rubbish,"") + "," + position + ",3"
 
     # 四级
     file4 = listfiles(level4, "-url.md")
@@ -80,7 +81,7 @@ def dealurlfile():
         if t4 == [] or t4name == []:
             continue
         for i in range(min(len(t4), len(t4name))):
-            listtemp[position + "-" + str(i + 1)] = t4name[i].replace(",", "_") + "," + t4[i] + "," + position + ",4"
+            listtemp[position + "-" + str(i + 1)] = t4name[i].replace(",", "_") + "," + t4[i].replace(rubbish,"") + "," + position + ",4"
 
     # 五级
     file5 = listfiles(level5, "-url.md")
@@ -93,8 +94,7 @@ def dealurlfile():
         if t5 == [] or t5name == []:
             continue
         for i in range(min(len(t5), len(t5name))):
-            listtemp[position + "-" + str(i + 1)] = t5name[i].replace(",", "_") + "," + t5[
-                i] + "," + position + ",5"
+            listtemp[position + "-" + str(i + 1)] = t5name[i].replace(",", "_") + "," + t5[i].replace(rubbish,"") + "," + position + ",5"
             lasturls.append(position + "-" + str(i + 1))
 
     temp = listfiles(rootdir=level1,iscur=True,prefix="-url.mdxx")

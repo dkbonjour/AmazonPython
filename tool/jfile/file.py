@@ -76,6 +76,7 @@ def createjia(path):
         os.makedirs(path)
     except:
         pass
+    return path
 
 
 # star 今天日期的字符串
@@ -106,7 +107,7 @@ def todaystring(level=3):
     elif level == 6:
         formats = '%Y%m%d-%H:%M:%S'
     else:
-        pass
+        formats = '%Y%m%d'
     today = time.strftime(formats, time.localtime())
     return today
 
@@ -183,7 +184,10 @@ def readfilelist(filepath):
         with open(filepath, "rt") as filename:
             namelines = filename.readlines()
             for line in namelines:
-                returnlist.append(line.replace("\n", ""))
+                content = line.replace("\n", "")
+                if not content:
+                    continue
+                returnlist.append(content)
     except:
         pass
     return returnlist

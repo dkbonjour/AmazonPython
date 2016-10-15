@@ -20,7 +20,7 @@
 pip3 install xlsxwriter
 pip3 install pymysql
 pip3 install requests
-
+pip3 install bs4
 ```
 
 ## 设置环境变量
