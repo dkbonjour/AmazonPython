@@ -84,7 +84,7 @@ def getcommentnum(name):
             tempcomment.append(temp.replace(" customer reviews", "").strip())
 
         commentnum.append(tempcomment)
-    print(commentnum)
+    #print(commentnum)
     # 这里返回的是commentnum
     # 返回的顺序
     # 可以在这里写导入数据库
@@ -97,8 +97,11 @@ def getcommentnum(name):
 def threadingcommentnum():
     pool = ThreadPoolExecutor(5)
     for name in openpath():
-        pool.submit(getcommentnum, name)
-
+        results=pool.submit(getcommentnum, name)
+    return results.result()
 
 if __name__ == '__main__':
-    threadingcommentnum()
+    a = []
+
+    a.append(threadingcommentnum())
+    print(a)
