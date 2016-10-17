@@ -2,6 +2,7 @@
 # -*-coding:utf-8-*-
 # Created by Smartdo Co.,Ltd. on 2016/10/15.
 # 功能:
+#   导入需要抓取的类目
 #  
 import tool.log
 import logging
@@ -19,7 +20,7 @@ def validurlchangemysql(config):
     validurl = readfilelist(tool.log.BASE_DIR + "/config/base/ValidURL.txt")
     mysql = Mysql(config)
     for url in validurl:
-        sql = 'update smart_category set isvalid=1 where url like "' + url + '" limit 1';
+        sql = 'update smart_category set isvalid=1 ,`database`="ratedb1" where url like "' + url.split("/ref")[0] + '%" limit 1';
         try:
             mysql.ExecNonQuery(sql)
             logger.warning("执行sql语句成功:" + sql)

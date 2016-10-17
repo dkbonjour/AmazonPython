@@ -58,19 +58,19 @@ def robot(content):
 # 暂时用xpath，以后要使用BeautifulSoup
 def rateparse(content):
     returncontent = {}
-    soup = BeautifulSoup(content, 'html.parser') # 开始解析
+    soup = BeautifulSoup(content, 'html.parser')  # 开始解析
 
-    items = soup.find_all('div',attrs={"class": "zg_itemImmersion"})
+    items = soup.find_all('div', attrs={"class": "zg_itemImmersion"})
     for item in items:
         try:
             temp = BeautifulSoup(str(item), 'html.parser')
-            rank=temp.find('span',attrs={"class": "zg_rankNumber"}).string
-            rank=rank.replace(".","")
-            link=temp.find('div',attrs={"class":"zg_title"}).a["href"]
-            link="https://www.amazon.com/dp/"+link.strip().split("/dp/")[1].split("/")[0]
-            title=temp.find('div',attrs={"class":"zg_title"}).a.string
-            title=title.replace(",","")
-            returncontent[rank]=[rank,link,title]
+            rank = temp.find('span', attrs={"class": "zg_rankNumber"}).string
+            rank = rank.replace(".", "")
+            link = temp.find('div', attrs={"class": "zg_title"}).a["href"]
+            asin = link.strip().split("/dp/")[1].split("/")[0]
+            title = temp.find('div', attrs={"class": "zg_title"}).a.string
+            title = title.replace(",", "")
+            returncontent[rank] = [rank, asin,title]
         except:
             continue
     # contents = etree.HTML(content)
@@ -99,6 +99,6 @@ if __name__ == "__main__":
 
     itemfile = dirpath + "/ajax.html"
     with open(itemfile, "rb") as f:
-        items=rateparse(f.read().decode("utf-8", "ignore"))
+        items = rateparse(f.read().decode("utf-8", "ignore"))
         for item in items:
-            print(items[item])
+            print(item, items[item])

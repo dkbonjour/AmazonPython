@@ -11,25 +11,35 @@ from tool.jjson.basejson import *
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
+CONFIG = None
+CONFIGSUCCESS = False
+
 
 def getconfig(filepath="config/config.json"):
+    global CONFIG
+    global CONFIGSUCCESS
+    if CONFIGSUCCESS:
+        return CONFIG
     with open(tool.log.BASE_DIR + "/" + filepath, "rb") as f:
-        content = f.read().decode("utf-8","ignore")
+        content = f.read().decode("utf-8", "ignore")
         error, right = isRightJson(content, True)
         if not right:
             raise error
         else:
-            return stringToObject(content)
+            CONFIG = stringToObject(content)
+            CONFIGSUCCESS = True
+            return CONFIG
+
 
 def copyright(info):
-    us=getconfig()
-    temp={}
-    temp["info"]=info
+    us = getconfig()
+    temp = {}
+    temp["info"] = info
     temp["version"] = us["version"]
-    temp["company"]=us["company"]
-    temp["people"]=us["developer"]
-    temp["time"]=us["time"]
-    hehe='''
+    temp["company"] = us["company"]
+    temp["people"] = us["developer"]
+    temp["time"] = us["time"]
+    hehe = '''
     所属公司：{company}
     开发人员：{people}
     编译时间：{time}

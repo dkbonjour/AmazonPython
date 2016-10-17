@@ -18,7 +18,9 @@ logger = logging.getLogger(__name__)
 
 
 # 单类目抓取
-def unitlogic(url):
+def unitlogic(url, mysqlconfig):
+    # url: ('1-1', 'https://www.amazon.com/Best-Sellers-Appliances-Cooktops/zgbs/appliances/3741261/ref=zg_bs_nav_la_1_la/161-2441050-2846244', 'Cooktops', 2, 5, '1', '1', 'Appliances')
+
     # 抓取的类目URL
     catchurl = url[1]
     # 类目名
@@ -32,65 +34,99 @@ def unitlogic(url):
     # 级别
     level = url[5]
 
+    # 数据库
+    db = url[6]
+
+    # if not dbexist(db, id):
+    #     return
+
     # 2016/Appl/20160606/
-    keepdir = createjia(tool.log.BASE_DIR + "/data/items/" + todaystring(1) + "/" + bigpname + "/" + todaystring(3) + "/" + id)
+    keepdir = createjia(
+            tool.log.BASE_DIR + "/data/items/" + todaystring(1) + "/" + bigpname + "/" + todaystring(3) + "/" + id)
+
+    detaildir = createjia(
+            tool.log.BASE_DIR + "/data/detail/" + todaystring(1) + "/" + bigpname + "/" + todaystring(3) + "/" + id)
+
+    detailall = {}
+
     for i in range(min(page, 5)):
-        itempath = keepdir+"/"+str(i+1)+".md"
+        itempath = keepdir + "/" + str(i + 1) + ".md"
         if fileexsit(itempath):
-            logger.warning("已存在:" + id + "(" + str(i+1) + ")-" + bigpname + ":" + catchname + "(" + str(level) + ") --" + catchurl)
+            logger.warning("已存在:" + id + "(" + str(i + 1) + ")-" + bigpname + ":" + catchname + "(" + str(
+                    level) + ") --" + catchurl)
+            temp = readfilelist(itempath)
+            for i in temp:
+                temptemp = i.split(",")
+                detailall[temptemp[0]] = temptemp[1]
             continue
         else:
-            logger.warning("抓取:" + id + "(" + str(i+1) + ")-" + bigpname + ":" + catchname + "(" + str(level) + ") --" + catchurl)
+            logger.warning("抓取:" + id + "(" + str(i + 1) + ")-" + bigpname + ":" + catchname + "(" + str(
+                    level) + ") --" + catchurl)
         # 构造页数
         # ?_encoding=UTF8&pg=1&ajax=1   3个商品
         # ?_encoding=UTF8&pg=1&ajax=1&isAboveTheFold=0 17个商品
         items3 = "?_encoding=UTF8&ajax=1&pg=" + str(i + 1)
         items17 = "?_encoding=UTF8&&isAboveTheFold=0&ajax=1&pg=" + str(i + 1)
-        content3 = ratedownload(catchurl + items3)
-        content17 = ratedownload(catchurl + items17)
-        if content3==None:
+        content3 = ratedownload(url=catchurl + items3, where="mysql", config=mysqlconfig)
+        content17 = ratedownload(url=catchurl + items17, where="mysql", config=mysqlconfig)
+        if content3 == None:
             continue
-        if content17==None:
+        if content17 == None:
             continue
         try:
+            # {'91':['91', 'https://www.amazon.com/dp/B003Z968T0', 'WhisperKOOL® Platinum Split System 80...']}
             temp3 = rateparse(content3)
             temp17 = rateparse(content17)
-            with open(itempath,"wb") as f:
+            with open(itempath, "wb") as f:
                 for i in sorted(temp3.keys()):
-                    f.write((",".join(temp3[i])+"\n").encode("utf-8"))
+                    detailall[i] = temp3[i][1]
+                    f.write((",".join(temp3[i]) + "\n").encode("utf-8"))
                 for j in sorted(temp17.keys()):
-                    f.write((",".join(temp17[j])+"\n").encode("utf-8"))
+                    detailall[i] = temp17[j][1]
+                    f.write((",".join(temp17[j]) + "\n").encode("utf-8"))
         except Exception as err:
             logging.error(err, exc_info=1)
             pass
-
+    for rank in detailall:
+        rankeep = detaildir + "/" + rank + "-" + detailall[rank]
+        if fileexsit(rankeep + ".md"):
+            continue
+        detailpage = ratedownload(url="https://www.amazon.com/dp/"+detailall[rank], where="mysql", config=mysqlconfig)
+        if detailpage == None:
+            continue
+        with open(rankeep+".html","wb") as f:
+            f.write(detailpage)
 
 
 # 单进程抓取
-def processlogic(processurls):
+def processlogic(processurls, mysqlconfig):
     logger.debug(processurls)
     for url in processurls:
         try:
-            unitlogic(url)
+            # url: ('1-1', 'https://www.amazon.com/Best-Sellers-Appliances-Cooktops/zgbs/appliances/3741261/ref=zg_bs_nav_la_1_la/161-2441050-2846244', 'Cooktops', 2, 5, '1', '1', 'Appliances')
+            unitlogic(url, mysqlconfig)
         except Exception as err:
             logging.error(err, exc_info=1)
 
 
 # 多进程抓取
-def ratelogic(category=["Appliances"], processnum=1):
+def ratelogic(category=["Appliances"], processnum=1, limitnum="20000"):
     allconfig = getconfig()
     try:
-        config = allconfig["basedb"]
+        mysqlconfig = allconfig["basedb"]
     except:
-        raise Exception("数据库配置出错")
-    urls = list(usaurl(config, category))
+        raise Exception("基础数据库配置出错")
+    urls = list(usaurl(config=mysqlconfig, category=category, limitnum=limitnum))
     tasklist = devidelist(urls, processnum)
     with ProcessPoolExecutor(max_workers=processnum) as e:
         for task in tasklist:
-            e.submit(processlogic, tasklist[task])
+            e.submit(processlogic, tasklist[task], mysqlconfig)
 
 
 if __name__ == "__main__":
-    category = ["Appliances"]
+    a=time.clock()
+    category = ["Appliances", "Arts_ Crafts & Sewing"]
     processnum = 5
-    ratelogic(category, processnum)
+    ratelogic(category, processnum, "6")
+    b=time.clock()
+    print('运行时间：'+timetochina(b-a))

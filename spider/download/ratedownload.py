@@ -11,11 +11,11 @@ from action.useragent import *
 import tool.log
 from spider.parse.rateparse import *
 from bs4 import BeautifulSoup
+from config.config import *
 
 # 日志
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
-
 
 
 # 用来解析网页的函数
@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 # 翻页+?pg=2
 
 def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
+    if where != "local" and not config:
+        config = getconfig()["basedb"]
     if retrytime < 0:
         return None
     # 制作头部
@@ -59,10 +61,10 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         # IPPOOL.pop(ip)
         logger.error(
                 "抓取URL错误:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
-                                                                                    ua=ua,
-                                                                                    times=5 - retrytime))
+                                                                                      ua=ua,
+                                                                                      times=5 - retrytime))
         logging.error(err, exc_info=1)
-        return ratedownload(url, retrytime - 1)
+        return ratedownload(url=url, where=where, config=config, retrytime=retrytime - 1, timeout=timeout)
 
 
 if __name__ == "__main__":
@@ -79,8 +81,7 @@ if __name__ == "__main__":
         with open(tool.log.BASE_DIR + "/data/test/rate" + url + ".html", "wb") as f:
             f.write(content)
 
-
-    ajaxurl ="https://www.amazon.com/Best-Sellers-Clothing-Mother-Bride-Dresses/zgbs/apparel/2969490011/161-2441050-2846244?_encoding=UTF8&pg=2&ajax=1&isAboveTheFold=0"
+    ajaxurl = "https://www.amazon.com/Best-Sellers-Clothing-Mother-Bride-Dresses/zgbs/apparel/2969490011/161-2441050-2846244?_encoding=UTF8&pg=2&ajax=1&isAboveTheFold=0"
     content = ratedownload(ajaxurl)
     with open(tool.log.BASE_DIR + "/data/test/ajax" + ".html", "wb") as f:
         f.write(content)
