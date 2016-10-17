@@ -45,6 +45,8 @@ def pinfoparse(content):
     header = soup.find("div", attrs={"id": "centerCol"})
     if header == None:
         header = soup.find("div", attrs={"id": "leftCol"})
+    if header == None:
+        header = soup.find("div", attrs={"id": "ppdBuyBox"})
     title = header.find("span", attrs={"id": "productTitle"})
     dafen = header.find("span", attrs={"id": "acrPopover"})
     commentnum = header.find("span", attrs={"id": "acrCustomerReviewText"})
@@ -109,25 +111,28 @@ def pinfoparse(content):
     returnlist["shipby"] = s2
 
     if commenttime == "None":
-        returnlist["commentime"] = commenttime
+        returnlist["commenttime"] = commenttime
     else:
         # revMH
         small = ""
         timetemp = soup.find("div", attrs={"id": "revMH"})
-        element = timetemp.findAll("span", attrs={"class", "a-color-secondary"})
-        smallyear = 3000
-        for i in element:
-            try:
-                j = i.get_text().strip()
-                if "on" in j:
-                    tempyoukonw = int(j.split("on ")[1].split(",")[1])
-                    # print(tempyoukonw)
-                    if tempyoukonw < smallyear:
-                        small = j.split("on ")[1]
-                        smallyear = tempyoukonw
-            except:
-                pass
-        returnlist["commentime"] = small.replace(",", "-")
+        if timetemp == None:
+            pass
+        else:
+            element = timetemp.findAll("span", attrs={"class", "a-color-secondary"})
+            smallyear = 3000
+            for i in element:
+                try:
+                    j = i.get_text().strip()
+                    if "on" in j:
+                        tempyoukonw = int(j.split("on ")[1].split(",")[1])
+                        # print(tempyoukonw)
+                        if tempyoukonw < smallyear:
+                            small = j.split("on ")[1]
+                            smallyear = tempyoukonw
+                except:
+                    pass
+        returnlist["commenttime"] = small.replace(",", "-")
     return returnlist
 
 

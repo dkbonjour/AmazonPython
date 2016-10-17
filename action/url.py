@@ -8,6 +8,7 @@ import tool.log
 import logging
 from tool.jmysql.mysql import *
 from config.config import *
+import pymysql
 
 # 日志
 tool.log.setup_logging()
@@ -34,36 +35,47 @@ def dbexist(dbconfig, tablename):
     try:
         temp = getconfig()[dbconfig]
         db = Mysql(temp)
-        sql = "SELECT * from " + tablename + " limit 1"
+        sql = "SELECT * from `" + tablename + "` limit 1"
         db.ExecQuery(sql)
     except:
-        logger.error(dbconfig + "数据库不存在，或者表" + tablename + "找不到")
+        logger.error(dbconfig + "数据库不存在，或者表" + tablename + "找不到" + sql)
         return False
     return True
 
 
-def insertpmysql(pmap, db, tablename):
-    # {'url': 'https://www.amazon.com/dp/B0164D6HOE',
-    # 'rank': 314411,
-    # 'shipby': '',
-    # 'commentnum': 1,
-    # 'price': -1,
-    # 'asin': 'B0164D6HOE',
-    #  'commentime': 'January 7- 2016',
-    # 'soldby': '',
-    # 'score': 5.0,
-    # 'smallrank': 94,
-    # 'title': 'Drhob® New Arrival Silicone Bracelet - All Size and Color Bangles for Ladies and Women (X-Large- White)'}
+def insertpmysql(pmap, dbname, tablename):
+    # {
+    #     "asin": "B004BPOPXS",
+    #     "bigname": "Arts_ Crafts & Sewing",
+    #     "commentime": "December 16- 2011",
+    #     "commentnum": 15,
+    #     "name": "Beading Cords & Threads",
+    #     "price": 2.99,
+    #     "rank": 10750,
+    #     "score": 4.1,
+    #     "shipby": "FBA",
+    #     "smallrank": 63,
+    #     "soldby": "Amazon.com",
+    #     "title": "Pepperell Premium Quality Hippie Hemp Cord for Jewelry Making- 380-Feet- Natural",
+    #     "url": "https://www.amazon.com/dp/B004BPOPXS"
+    # }
+    sql = ""
     try:
-        config = getconfig()[db]
+        pmap["tablename"] = tablename
+        pmap["title"] = pymysql.escape_string(pmap["title"])
+        config = getconfig()[dbname]
         db = Mysql(config)
-        sql=""
+        sql = "INSERT IGNORE INTO `{tablename}`(`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`," \
+              "`shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`)" \
+              "VALUES({smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
+              "'{shipby}',{price},{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);".format_map(pmap)
         db.ExecNonQuery(sql)
-    except:
-        logger.error("插数据库出错")
-        raise
-    print(pmap)
-    pass
+        logger.warning("插数据库成功,数据库:" + dbname + "，表:" + pmap["tablename"])
+        return True
+    except Exception as err:
+        logger.error("插数据库出错" + sql)
+        logger.error(err)
+    return False
 
 
 if __name__ == "__main__":

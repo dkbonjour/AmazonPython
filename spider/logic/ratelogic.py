@@ -93,11 +93,16 @@ def unitlogic(url, mysqlconfig):
         if fileexsit(rankeep + ".md"):
             continue
         url = "https://www.amazon.com/dp/" + detailall[rank]
-        detailpage = ratedownload(url=url, where="mysql", config=mysqlconfig)
-        if detailpage == None:
-            continue
-        with open(rankeep + ".html", "wb") as f:
-            f.write(detailpage)
+        if fileexsit(rankeep + ".html"):
+            with open(rankeep + ".html", "rb") as ff:
+                detailpage = ff.read()
+        else:
+            detailpage = ratedownload(url=url, where="mysql", config=mysqlconfig)
+            if detailpage == None:
+                continue
+            else:
+                with open(rankeep + ".html", "wb") as f:
+                    f.write(detailpage)
         pinfo = pinfoparse(detailpage.decode("utf-8", "ignore"))
         try:
             pinfo["smallrank"] = int(rank)
