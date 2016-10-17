@@ -42,6 +42,30 @@ def dbexist(dbconfig, tablename):
     return True
 
 
+def insertpmysql(pmap, db, tablename):
+    # {'url': 'https://www.amazon.com/dp/B0164D6HOE',
+    # 'rank': 314411,
+    # 'shipby': '',
+    # 'commentnum': 1,
+    # 'price': -1,
+    # 'asin': 'B0164D6HOE',
+    #  'commentime': 'January 7- 2016',
+    # 'soldby': '',
+    # 'score': 5.0,
+    # 'smallrank': 94,
+    # 'title': 'Drhob® New Arrival Silicone Bracelet - All Size and Color Bangles for Ladies and Women (X-Large- White)'}
+    try:
+        config = getconfig()[db]
+        db = Mysql(config)
+        sql=""
+        db.ExecNonQuery(sql)
+    except:
+        logger.error("插数据库出错")
+        raise
+    print(pmap)
+    pass
+
+
 if __name__ == "__main__":
     config = {"host": "192.168.0.152", "user": "bai", "pwd": "123456", "db": "smart_base"}
     category = ["Industrial & Scientific", "Appliances"]

@@ -8,11 +8,11 @@ select * from smart_category where id=101
 union
 select * from smart_category where id=103
 
-
+# 导出
 select CONCAT("'",id),url,name,level,page,CONCAT("'",pid),bigpname,bigpid,ismall,isvalid from smart_category limit 40000 into outfile 'G:/amzonurl.csv' fields terminated by ',' optionally enclosed by '"' escaped by '"'
 lines terminated by '\r\n';
 
+# 抓取的类目
+SELECT id,url,name,level,page,pid,bigpid,bigpname FROM smart_base.smart_category where isvalid=1 and bigpname="Appliances";
 
-SELECT id,url,name,level,page,pid,bigpid,bigpname FROM smart_base.smart_category where ismall=1 and isvalid=1 and bigpname="Appliances";
-
-SELECT id,url,name,page,bigpname FROM smart_category where ismall=1 and isvalid=1 and (bigpname="Appliances" or bigpname="Industrial & Scientific")
+SELECT id,url,name,page,bigpname FROM smart_category where isvalid=1 and (bigpname="Appliances" or bigpname="Industrial & Scientific")

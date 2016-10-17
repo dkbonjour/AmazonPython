@@ -24,183 +24,139 @@ def getdp(string):
 '''
 
 
+# 评论数 打分 评分
+# id=productDetails_detailBullets_sections1
+def pinfoparse(content):
+    returnlist = {}
+    soup = BeautifulSoup(content, 'html.parser')  # 开始解析
+
+    temp = soup.find('table', attrs={"id": "productDetails_detailBullets_sections1"})
+    # SalesRank
+    try:
+        try:
+            text = temp.get_text()
+        except:
+            text = soup.find("li", attrs={"id": "SalesRank"}).get_text()
+        returnlist["rank"] = getrank2reg(text)
+    except Exception as err:
+        logger.info(err, exc_info=1)
+        returnlist["rank"] = -1
+
+    header = soup.find("div", attrs={"id": "centerCol"})
+    if header == None:
+        header = soup.find("div", attrs={"id": "leftCol"})
+    title = header.find("span", attrs={"id": "productTitle"})
+    dafen = header.find("span", attrs={"id": "acrPopover"})
+    commentnum = header.find("span", attrs={"id": "acrCustomerReviewText"})
+    price = header.find("span", attrs={"id": "priceblock_ourprice"})
+
+    soldby = header.find("div", attrs={"id": "merchant-info"})
+    commenttime = ""
+
+    # 标题
+    try:
+        returnlist["title"] = title.get_text().strip().replace(",", "-")
+    except Exception as err:
+        logger.info(err, exc_info=1)
+        returnlist["title"] = ""
+    # 打分
+    try:
+        dafentemp = float(dafen["title"].replace(" out of 5 stars", ""))
+        returnlist["score"] = dafentemp
+
+    except Exception as err:
+        logger.info(err, exc_info=1)
+        returnlist["score"] = -1
+    # 评论数
+    try:
+        # 1个人没有复数
+        returnlist["commentnum"] = int(commentnum.get_text().replace(" customer review", "").replace("s", ""))
+    except Exception as err:
+        logger.info(err, exc_info=1)
+        returnlist["commentnum"] = -1
+        commenttime = "None"
+    # 价格
+    try:
+        returnlist["price"] = float(price.get_text().replace("$", ""))
+    except Exception as err:
+        logger.info(err, exc_info=1)
+        returnlist["price"] = -1
+
+        # sold by who and FBA
+        # Sold by Beadnova and Fulfilled by Amazon
+        # Ships from and sold by CleverDelights
+        # Ships from and sold by Amazon.com.
+    s1 = ""
+    s2 = ""
+    try:
+        soldtemp = soldby.get_text().strip()
+
+        if "Fulfilled by Amazon" in soldtemp:
+            s2 = "FBA"
+        if "sold by Amazon.com" in soldtemp:
+            s2 = "FBA"
+            s1 = "Amazon.com"
+        else:
+            # https://www.amazon.com/sp?seller=A1RDLBSMJ0S327
+            # /gp/help/seller/at-a-glance.html/ref=dp_merchant_link?ie=UTF8&seller=AJ11J3FSAZ6XV&isAmazonFulfilled=1
+            try:
+                s1 = geturlattr(soldby.find("a")["href"])["seller"]
+            except:
+                pass
+    except Exception as err:
+        logger.info(err, exc_info=1)
+    returnlist["soldby"] = s1
+    returnlist["shipby"] = s2
+
+    if commenttime == "None":
+        returnlist["commentime"] = commenttime
+    else:
+        # revMH
+        small = ""
+        timetemp = soup.find("div", attrs={"id": "revMH"})
+        element = timetemp.findAll("span", attrs={"class", "a-color-secondary"})
+        smallyear = 3000
+        for i in element:
+            try:
+                j = i.get_text().strip()
+                if "on" in j:
+                    tempyoukonw = int(j.split("on ")[1].split(",")[1])
+                    # print(tempyoukonw)
+                    if tempyoukonw < smallyear:
+                        small = j.split("on ")[1]
+                        smallyear = tempyoukonw
+            except:
+                pass
+        returnlist["commentime"] = small.replace(",", "-")
+    return returnlist
+
+
 # 正则大类排名
 def getrank2reg(string):
     # 这里正则只是选取1-5个字段，然后就匹配 in 。  (#######I live in)
     # 防止抓取到其他的东西，一定要用{1,5}
-    reg = r'(#)(.{1,8})( in )'
+    reg = r'#(.{1,8}) in '
     all = re.compile(reg)
     alllist = re.findall(all, string)
     try:
-        return alllist[0][1]
+        # 加强版
+        rank = int(alllist[0].replace(",", ""))
+        return rank
     except:
-        return "No ranking"
-
-
-# 正则Sold by
-def getsoldbyreg(string):
-    # 这里正则只是选取1-15个字段，然后就匹配.。
-    # 防止抓取到其他的东西，一定要用{1,15}
-    reg = r'(old by )(.*?)(\.)'
-    all = re.compile(reg)
-    alllist = re.findall(all, string)
-    try:
-        if alllist[0][1]:
-            return alllist[0][1]
-        else:
-            return "No Sold by"
-    except:
-        return "No Sold by"
-
-
-def detailparse(html):
-    tempcontent = []
-    content = etree.HTML(html)
-
-    ## 得到大类排名
-    # 正则查找匹配的排名字段
-    try:
-        tempcontent.append(getrank2reg(html))
-    except Exception as err:
-        print(err)
-        tempcontent.append("Nothing")
-
-    ## 得到商品名称
-    # xpath解析得到当页商品的标题title
-    titles = content.xpath('//h1[@id="title"]/span/text()')
-
-    for item in titles:
-        tempcontent.append(titles[0].strip())
-
-    '''
-    ## 得到ASIN
-    ## 如果得到详情页的url，就可以在这里写下解析ASIN
-    url = ""
-    tempcontent.append(getdp(url.strip()))
-    '''
-
-    ## 得到评分等级
-    # 判断是否有评分
-    if "There are no customer reviews yet" in html:
-        tempcontent.append("There are no customer reviews yet")
-
-    elif 'id="acrPopover"' in html:
-
-        # xpath解析得到当页商品等级
-        stars = content.xpath('//span[@id="acrPopover"]/@title')
-
-        # 原文4.2 out of 5 stars
-        # 剔除 out of 5 stars
-        temp = stars[0]
-        tempcontent.append(temp.replace(" out of 5 stars", ""))
-
-    elif 'class="a-icon a-icon-star a-star-5' in html:
-
-        # xpath解析得到当页商品等级
-        stars = content.xpath('//i[@class="a-icon a-icon-star a-star-5"]/span[@class="a-icon-alt"]/text()')
-
-        # 原文4.2 out of 5 stars
-        # 剔除 out of 5 stars
-        temp = stars[0]
-        tempcontent.append(temp.replace(" out of 5 stars", ""))
-    else:
-        tempcontent.append("Nothing")
-
-    ## 得到评价数
-    # 判断是否有评分
-    # 没有评分就没有评论
-    if "There are no customer reviews yet" in html:
-        tempcontent.append("There are no customer reviews yet")
-    elif 'id="acrCustomerReviewText"' in html:
-
-        # xpath解析得到当页商品评论
-        commentnums = content.xpath('//span[@id="acrCustomerReviewText"]/text()')
-
-        # 原文117 customer reviews
-        # 剔除 customer reviews
-        temp = commentnums[0]
-        tempcontent.append(temp.replace(" customer reviews", ""))
-    elif 'class="a-size-small"' in html:
-        # xpath解析需要的东西
-        content = etree.HTML(html)
-
-        # xpath解析得到当页商品评论数量
-        commentnums = content.xpath(
-                '//span[@class="dpProductDetailB00WPRE0HA"]/span[@class="a-size-small"]/a[@class="a-link-normal"]/text()')
-
-        # 原文117 customer reviews
-        # 剔除 customer reviews
-        temp = commentnums[0]
-        tempcontent.append(temp.replace(" customer reviews", "").strip())
-    else:
-        tempcontent.append("Nothing")
-
-    ## 得到价格
-    if 'id="priceblock_saleprice"' in html:
-        # xpath解析得到当页商品价格
-        prices = content.xpath('//span[@id="priceblock_saleprice"]/text()')
-        tempcontent.append(prices[0].strip())
-
-    elif 'id="priceblock_ourprice"' in html:
-        # xpath解析得到当页商品价格
-        prices = content.xpath('//span[@id="priceblock_ourprice"]/text()')
-
-    elif 'class="a-color-price"' in html:
-        # xpath解析得到当页商品价格
-        prices = content.xpath('//span[@class="a-color-price"]/text()')
-        tempcontent.append(prices[0].strip())
-
-    else:
-        tempcontent.append("Price information is unavailable")
-
-    ## 得到第一次评论时间
-    # 判断是否有评分
-    # 没有评分就没有评论
-    if "There are no customer reviews yet" in html:
-        tempcontent.append("There are no customer reviews yet")
-    elif 'class="a-section celwidget"' in html:
-
-        # xpath解析得到当页商品第一次评论时间
-        commenttimes = content.xpath('//div[@class="a-section celwidget"][1]/div[1]/span/span/text()')
-
-        # 剔除\n
-        temp = commenttimes[3]
-        if temp.strip():
-            tempcontent.append(temp.strip())
-        else:
-            tempcontent.append("Nothing")
-
-    ## 得到Sold by
-    if 'id="shipsFromSoldBy_feature_div"' in html:
-
-        # xpath解析得到当页商品评论
-        soldbys = content.xpath('//div[@id="shipsFromSoldBy_feature_div"]/div/a/text()')
-
-        if soldbys:
-            temp = soldbys[0]
-
-            # 写入数组
-            tempcontent.append(temp)
-        else:
-            tempcontent.append("No Sold by")
-
-    else:
-        # 正则匹配
-        temp = getsoldbyreg(html)
-        tempcontent.append(temp)
-
-    ## 得到FBA
-    if "Fulfilled by Amazon" in html:
-        tempcontent.append("FBA")
-    else:
-        tempcontent.append("NO")
+        pass
+    return -1
 
 
 if __name__ == '__main__':
     a = time.clock()
-    filepath = tool.log.BASE_DIR + "/data/detail/2016/Arts_ Crafts & Sewing/20161017/3-1-1-2/1-B00HC2MEKI.html"
-    with open(filepath, "rb") as f:
-        content = f.read()
-    print(detailparse(content))
+    filepath = tool.log.BASE_DIR + "/data/detail/2016/Arts_ Crafts & Sewing/20161017/3-1-10-1-1/"
+    files = listfiles(filepath, ".html")
+    for i in files:
+        print(i)
+        temp = filepath + i
+        with open(temp, "rb") as f:
+            content = f.read().decode("utf-8", "ignore")
+            # print(content)
+        print(pinfoparse(content))
     b = time.clock()
     print('运行时间：' + timetochina(b - a))

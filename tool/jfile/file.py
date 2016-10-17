@@ -223,8 +223,8 @@ def fileexsit(path):
 
 # 切分文件列表
 def devidelist(files, num=0):
-    filestype=type(files)
-    if not filestype==type([]):
+    filestype = type(files)
+    if not filestype == type([]):
         raise Exception("文件切分只能是列表")
     length = len(files)
     split = {}
@@ -241,6 +241,34 @@ def devidelist(files, num=0):
     return split
 
 
+# 取得URL参数
+def geturlattr(url):
+    # p/seller/at-a-glance.html/ref=dp_merchant_link?ie=UTF8&seller=AJ11J3FSAZ6XV&isAmazonFulfilled=
+    returnmap = {}
+    try:
+        temp = url.split("?")[1].split("&")
+        for i in temp:
+            temptemp = i.split("=")
+            try:
+                returnmap[temptemp[0]] = temptemp[1]
+            except:
+                pass
+    except:
+        pass
+    return returnmap
+
+
+# 拼接参数join
+def joinany(things, sep=","):
+    temp = ""
+    for i in range(len(things)):
+        if i == len(things) - 1:
+            temp = temp + str(things[i])
+        else:
+            temp = temp + str(things[i]) + sep
+    return temp
+
+
 if __name__ == "__main__":
     today = time.strftime('%Y%m%d', time.localtime())
     a = time.clock()
@@ -254,3 +282,7 @@ if __name__ == "__main__":
     files = [1, 11, 111, 2, 22, 222, 3, 33, 333, 4, 44, 444, 5, 55, 555]
     print(files)
     print(devidelist(files, 9))
+
+    print(geturlattr("p/seller/at-a-glance.html/ref=dp_merchant_link?ie=UTF8&seller=AJ11J3FSAZ6XV&isAmazonFulfilled="))
+
+    print(joinany(files))

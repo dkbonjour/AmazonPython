@@ -110,6 +110,12 @@ def fileexsit(path)
 
 切分文件列表
 def devidelist(files=[],num=0)
+
+取得URL参数
+def geturlattr(url)
+
+拼接参数join
+def joinany(things, sep=",")
 ```
 
 4.jmysql 数据库包

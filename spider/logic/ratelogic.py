@@ -11,6 +11,7 @@ from tool.jfile.file import *
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import ProcessPoolExecutor
 from spider.download.ratedownload import *
+from spider.parse.analydetail import *
 
 # 日志
 tool.log.setup_logging()
@@ -37,8 +38,8 @@ def unitlogic(url, mysqlconfig):
     # 数据库
     db = url[6]
 
-    # if not dbexist(db, id):
-    #     return
+    if not dbexist(db, id):
+        return
 
     # 2016/Appl/20160606/
     keepdir = createjia(
@@ -91,11 +92,24 @@ def unitlogic(url, mysqlconfig):
         rankeep = detaildir + "/" + rank + "-" + detailall[rank]
         if fileexsit(rankeep + ".md"):
             continue
-        detailpage = ratedownload(url="https://www.amazon.com/dp/"+detailall[rank], where="mysql", config=mysqlconfig)
+        url = "https://www.amazon.com/dp/" + detailall[rank]
+        detailpage = ratedownload(url=url, where="mysql", config=mysqlconfig)
         if detailpage == None:
             continue
-        with open(rankeep+".html","wb") as f:
+        with open(rankeep + ".html", "wb") as f:
             f.write(detailpage)
+        pinfo = pinfoparse(detailpage.decode("utf-8", "ignore"))
+        try:
+            pinfo["smallrank"] = int(rank)
+        except:
+            pinfo["smallrank"] = -1
+        pinfo["asin"] = detailall[rank]
+        pinfo["url"] = url
+        pinfo["name"] = catchname
+        pinfo["bigname"] = bigpname
+        if insertpmysql(pinfo, db, id):
+            with open(rankeep + ".md", "wb") as f:
+                f.write(objectToString(pinfo).encode("utf-8"))
 
 
 # 单进程抓取
@@ -124,9 +138,9 @@ def ratelogic(category=["Appliances"], processnum=1, limitnum="20000"):
 
 
 if __name__ == "__main__":
-    a=time.clock()
+    a = time.clock()
     category = ["Appliances", "Arts_ Crafts & Sewing"]
     processnum = 5
     ratelogic(category, processnum, "6")
-    b=time.clock()
-    print('运行时间：'+timetochina(b-a))
+    b = time.clock()
+    print('运行时间：' + timetochina(b - a))

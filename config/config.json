@@ -13,7 +13,7 @@
     "host": "192.168.0.152",
     "user": "bai",
     "pwd": "123456",
-    "db": "smart_base"
+    "db": "smart_item1"
   },
   "ratedb2": {
     "host": "192.168.0.152",
