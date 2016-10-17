@@ -47,6 +47,8 @@ def pinfoparse(content):
         header = soup.find("div", attrs={"id": "leftCol"})
     if header == None:
         header = soup.find("div", attrs={"id": "ppdBuyBox"})
+    if header == None:
+        logger.error("强制标记：" + content)
     title = header.find("span", attrs={"id": "productTitle"})
     dafen = header.find("span", attrs={"id": "acrPopover"})
     commentnum = header.find("span", attrs={"id": "acrCustomerReviewText"})
