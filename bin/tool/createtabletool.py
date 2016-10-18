@@ -17,7 +17,7 @@ def createtable(config, tables):
     db=Mysql(config)
     for table in tables:
         sql = '''
-  CREATE TABLE `{tablename}` (
+CREATE TABLE `{tablename}` (
   `id` VARCHAR(255),
   `smallrank` INT NULL COMMENT '小类排名',
   `name` VARCHAR(255) NULL COMMENT '小类名',
@@ -33,8 +33,7 @@ def createtable(config, tables):
   `commentnum` INT NULL COMMENT '评论数',
   `commenttime` VARCHAR(255) NULL COMMENT '第一条评论时间',
   `createtime` DATETIME NULL,
-  PRIMARY KEY (`id`)
-COMMENT = '类目表';
+  PRIMARY KEY (`id`) )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='类目表';
     '''.format(tablename=table)
         print(sql)
         try:
