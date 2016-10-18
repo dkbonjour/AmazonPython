@@ -1,34 +1,34 @@
-# 爬虫代码
+# An Amazon Crawler
 
-## 源码架构
-使用Python开发，文件架构：
+## Source Framework
+Develope by Python, Look at the following：
 
-    spider 爬虫模块
-        --- download 爬虫下载器
-        --- parse 爬虫解析器
-        --- logic 爬虫逻辑器
-    bin 爬虫执行文件
-        --- spider 爬虫入口
-        --- tool 辅助工具
-    config 配置文件模块
-        --- base 配置文件
+    spider (Crawler module)
+        --- download  (Crawler Download Module)
+        --- parse     (Crawler Parser Module)
+        --- logic     (Crawler Logic Module)
+    bin (Crawler Execution File)
+        --- spider (Crawler Entrance)
+        --- tool   (Auxiliary Tool)
+    config (Config Module)
+        --- base  (Config File)
         --- config.py
             config.json
             log.json
-    tool 基础函数工具箱模块
+    tool (Basic Tool)
         --- jfile
         --- jhttp
         --- jjson
         --- jmysql
         --- log.py
-    acion 业务模块，如代理IP,Ua池等杂项
-    test 测试文件夹
-    data 数据保存地
-    log 日志地
+    acion (Action Module，Such as proxy IP,Useragent...)
+    test (Test Dir)
+    data (Data Keep)
+    log  (Log Keep)
     
-    doc 帮助文档
+    doc (Help Doc)
 
-## 第三方库(需安装）
+## Third Party Library (to be installed)
 ```
 pip3 install xlsxwriter
 pip3 install pymysql
@@ -36,16 +36,16 @@ pip3 install requests
 pip3 install bs4
 ```
 
-## 设置环境变量
+## Setting Environment Variables
 ```
 set PYTHONPATH="G:/smartdo"  Window
-export 变量="路径"  Linux
+export name="path"  Linux
 ```
 
-## 工具箱用法
-请查看test文件夹用法
+## Using of the Basic Tool
+Please look at the test dir for example
 
-1.jjson json处理库的封装
+1.jjson (JSON Deal Package)
 
 ```
 json字符串解析成对象
@@ -64,7 +64,7 @@ def formatStringToString(jstring, sort=True)
 def formatStrigToFile(filepath, sort=True, filesavepath="")
 ```
 
-2.jhttp　网络包
+2.jhttp　(Network Package)
 
 ```
 自己封装的抓取函数
@@ -84,7 +84,7 @@ def urlencode(postdata={}):
     
 ```
 
-3.jfile　文件包
+3.jfile　(File Package)
 
 ```
 找出文件夹下所有xml后缀的文件，可选择递归，选择全路径
@@ -131,7 +131,7 @@ def geturlattr(url)
 def joinany(things, sep=",")
 ```
 
-4.jmysql 数据库包
+4.jmysql (Database Package)
 
 ```
 config = {"host": "localhost", "user": "root", "pwd": "6833066", "db": "doubanbook"}
@@ -142,18 +142,19 @@ mysql.ExecQuery('SELECT bookname,bookkind,bookno FROM booktag limit 0,10;')
 
 
 ```
-Beautiful is better than ugly.(美丽优于丑陋)
-Explicit is better than implicit.(直白优于含蓄)
-Simple is better than complex.(简单优于复杂)
-Complex is better than complicated.(复杂优于繁琐)
-Readability counts.(可读性很重要)
+Beautiful is better than ugly.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Readability counts.
 ```
 
-## 翻墙必备
+## Over the wall(In China)
 
 ```
-C:\Windows\System32\drivers\etc 放host
-Windows: 按下 Windows+R 键，运行 cmd ，在命令提示符运行命令 ipconfig /flushdns
+C:\Windows\System32\drivers\etc put host
+Windows: press Windows+R key，run cmd ，Run command at the command prompt: ipconfig /flushdns
 ```
 
-## 爬虫使用参见doc
+## How to Use?
+Doc!!!
