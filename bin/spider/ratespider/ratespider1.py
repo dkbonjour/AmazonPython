@@ -17,10 +17,10 @@ if __name__ == "__main__":
     category = ["Appliances", "Arts_ Crafts & Sewing"]
 
     # 并行数量
-    processnum = 1
+    processnum = 10
 
     # 类目抓取数量
-    limit = "10"
+    limit = "500"
 
     # 开抓，ko
     ratelogic(category, processnum, limit)

@@ -37,16 +37,16 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         'Host': 'www.amazon.com'
     }
 
-    ips = proxy(where=where, config=config,failtimes=getconfig()["ipnum"])
+    ips = proxy(where=where, config=config, failtimes=getconfig()["ipnum"])
 
     # TODO
     # 并行真随机数，需要！！
     randomnum = allrandom(len(ips))
     try:
         if getconfig()["sleep"]:
-            tt = random.randint(0,3)
+            tt = random.randint(0, 3)
             time.sleep(tt)
-            logger.error("暂停:"+str(tt))
+            logger.error("暂停:" + str(tt) + ":" + url)
     except:
         logger.error("dddddd")
         exit()
@@ -62,7 +62,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         res.raise_for_status()
         resdata = res.content
         res.close()
-        if not robot(resdata,ip):
+        if not robot(resdata, ip):
             return None
 
         logger.warning(
