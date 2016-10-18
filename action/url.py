@@ -65,7 +65,7 @@ def insertpmysql(pmap, dbname, tablename):
         pmap["title"] = pymysql.escape_string(pmap["title"])
         config = getconfig()[dbname]
         db = Mysql(config)
-        sql = "INSERT IGNORE INTO `{tablename}`(`id`,``smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`," \
+        sql = "INSERT IGNORE INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`," \
               "`shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`)" \
               "VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
               "'{shipby}',{price},{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);".format_map(pmap)

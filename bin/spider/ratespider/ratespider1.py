@@ -17,7 +17,7 @@ if __name__ == "__main__":
     category = ["Appliances", "Arts_ Crafts & Sewing"]
 
     # 并行数量
-    processnum = 5
+    processnum = 15
 
     # 类目抓取数量
     limit = "500"
