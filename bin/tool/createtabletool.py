@@ -18,7 +18,7 @@ def createtable(config, tables):
     for table in tables:
         sql = '''
   CREATE TABLE `{tablename}` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id` VARCHAR(255),
   `smallrank` INT NULL COMMENT '小类排名',
   `name` VARCHAR(255) NULL COMMENT '小类名',
   `bigname` VARCHAR(255) NULL COMMENT '大类名',
@@ -33,8 +33,7 @@ def createtable(config, tables):
   `commentnum` INT NULL COMMENT '评论数',
   `commenttime` VARCHAR(255) NULL COMMENT '第一条评论时间',
   `createtime` DATETIME NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `smallrank_UNIQUE` (`smallrank` ASC))
+  PRIMARY KEY (`id`)
 COMMENT = '类目表';
     '''.format(tablename=table)
         print(sql)

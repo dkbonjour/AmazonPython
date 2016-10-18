@@ -42,11 +42,12 @@ def unitlogic(url, mysqlconfig):
         return
 
     # 2016/Appl/20160606/
+    todays = todaystring(3)
     keepdir = createjia(
-            tool.log.BASE_DIR + "/data/items/" + todaystring(1) + "/" + bigpname + "/" + todaystring(3) + "/" + id)
+            tool.log.BASE_DIR + "/data/items/" + todaystring(1) + "/" + bigpname + "/" + todays + "/" + id)
 
     detaildir = createjia(
-            tool.log.BASE_DIR + "/data/detail/" + todaystring(1) + "/" + bigpname + "/" + todaystring(3) + "/" + id)
+            tool.log.BASE_DIR + "/data/detail/" + todaystring(1) + "/" + bigpname + "/" + todays+ "/" + id)
 
     detailall = {}
 
@@ -89,7 +90,8 @@ def unitlogic(url, mysqlconfig):
             logging.error(err, exc_info=1)
             pass
     for rank in detailall:
-        rankeep = detaildir + "/" + rank + "-" + detailall[rank]
+        detailname = rank + "-" + detailall[rank]
+        rankeep = detaildir + "/" + detailname
         if fileexsit(rankeep + ".md"):
             continue
         url = "https://www.amazon.com/dp/" + detailall[rank]
@@ -112,6 +114,7 @@ def unitlogic(url, mysqlconfig):
         pinfo["url"] = url
         pinfo["name"] = catchname
         pinfo["bigname"] = bigpname
+        pinfo["id"] = todays + "-" + detailname
         if insertpmysql(pinfo, db, id):
             with open(rankeep + ".md", "wb") as f:
                 f.write(objectToString(pinfo).encode("utf-8"))
