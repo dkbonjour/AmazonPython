@@ -59,6 +59,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         return resdata
     except Exception as err:
         # IPPOOL.pop(ip)
+        logger.error("重试次数:{times}".format(times=5 - retrytime))
         logger.error(
                 "抓取URL错误:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
                                                                                       ua=ua,
