@@ -6,7 +6,8 @@
 import struct
 import os, time, re
 import xlsxwriter as wx
-
+import random
+from concurrent.futures import ProcessPoolExecutor
 
 # star 找出文件夹下所有xml后缀的文件，可选择递归，选择全路径
 def listfiles(rootdir, prefix='.xml', isall=False, iscur=False):
@@ -103,9 +104,9 @@ def todaystring(level=3):
     elif level == 4:
         formats = '%Y%m%d-%H'
     elif level == 5:
-        formats = '%Y%m%d-%H:%M'
+        formats = '%Y%m%d-%H%M'
     elif level == 6:
-        formats = '%Y%m%d-%H:%M:%S'
+        formats = '%Y%m%d-%H%M%S'
     else:
         formats = '%Y%m%d'
     today = time.strftime(formats, time.localtime())
@@ -269,20 +270,40 @@ def joinany(things, sep=","):
     return temp
 
 
+# 随机数，足够复杂
+def allrandom(num):
+    try:
+        temp=str(os.urandom(num))+str(os.getpid())+str(random.randint(0,num-1))
+        random.seed(temp)
+        returnd = random.randint(0,num-1)
+    except:
+        random.seed()
+        returnd = random.randint(0,num-1)
+    # print(returnd)
+    return returnd
+
+def test():
+    j= 50
+    with ProcessPoolExecutor(max_workers=j) as e:
+        for i in range(j):
+            e.submit(allrandom,600)
+
 if __name__ == "__main__":
-    today = time.strftime('%Y%m%d', time.localtime())
-    a = time.clock()
-    print(filejoin(['.', "data", "test"]))
-    print(todaystring(4))
-    b = time.clock()
-    print('运行时间：' + timetochina(b - a))
+    # today = time.strftime('%Y%m%d', time.localtime())
+    # a = time.clock()
+    # print(filejoin(['.', "data", "test"]))
+    # print(todaystring(4))
+    # b = time.clock()
+    # print('运行时间：' + timetochina(b - a))
+    #
+    # print(fileexsit("///\\\Ge.md"))
+    #
+    # files = [1, 11, 111, 2, 22, 222, 3, 33, 333, 4, 44, 444, 5, 55, 555]
+    # print(files)
+    # print(devidelist(files, 9))
+    #
+    # print(geturlattr("p/seller/at-a-glance.html/ref=dp_merchant_link?ie=UTF8&seller=AJ11J3FSAZ6XV&isAmazonFulfilled="))
+    #
+    # print(joinany(files))
 
-    print(fileexsit("///\\\Ge.md"))
-
-    files = [1, 11, 111, 2, 22, 222, 3, 33, 333, 4, 44, 444, 5, 55, 555]
-    print(files)
-    print(devidelist(files, 9))
-
-    print(geturlattr("p/seller/at-a-glance.html/ref=dp_merchant_link?ie=UTF8&seller=AJ11J3FSAZ6XV&isAmazonFulfilled="))
-
-    print(joinany(files))
+    test()

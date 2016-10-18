@@ -12,6 +12,7 @@ import tool.log
 from spider.parse.rateparse import *
 from bs4 import BeautifulSoup
 from config.config import *
+from tool.jfile.file import *
 
 # 日志
 tool.log.setup_logging()
@@ -36,8 +37,20 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         'Host': 'www.amazon.com'
     }
 
-    ips = proxy(where=where, config=config)
-    ip = list(ips.keys())[random.randint(0, len(ips) - 1)]
+    ips = proxy(where=where, config=config,failtimes=getconfig()["ipnum"])
+
+    # TODO
+    # 并行真随机数，需要！！
+    randomnum = allrandom(len(ips))
+    try:
+        if getconfig()["sleep"]:
+            tt = random.randint(0,3)
+            time.sleep(tt)
+            logger.error("暂停:"+str(tt))
+    except:
+        logger.error("dddddd")
+        exit()
+    ip = list(ips.keys())[randomnum]
     if ip in ips.keys():
         location = ips[ip][0]
     else:

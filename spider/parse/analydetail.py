@@ -34,9 +34,9 @@ def pinfoparse(content):
     # SalesRank
     try:
         try:
-            text = temp.get_text()
+            text = temp.get_text().strip()
         except:
-            text = soup.find("li", attrs={"id": "SalesRank"}).get_text()
+            text = soup.find("li", attrs={"id": "SalesRank"}).get_text().strip()
         returnlist["rank"] = getrank2reg(text)
     except Exception as err:
         logger.info(err, exc_info=1)
@@ -48,12 +48,26 @@ def pinfoparse(content):
     if header == None:
         header = soup.find("div", attrs={"id": "ppdBuyBox"})
     if header == None:
-        logger.error("强制标记：" + content)
-    title = header.find("span", attrs={"id": "productTitle"})
-    dafen = header.find("span", attrs={"id": "acrPopover"})
-    commentnum = header.find("span", attrs={"id": "acrCustomerReviewText"})
-    price = header.find("span", attrs={"id": "priceblock_ourprice"})
+        header = soup.find("div", attrs={"id": "center-col"})
+    if header == None:
+        k = tool.log.BASE_DIR + "/data/errordetail/" + todaystring(6) + ".html"
+        with open(k, "wb") as f:
+            f.write(content.encode("utf-8"))
+        logger.error("强制标记:" + k)
 
+    title = header.find("span", attrs={"id": "productTitle"})
+    if title==None:
+        title = header.find("span", attrs={"id": "btAsinTitle"})
+
+    dafen = header.find("span", attrs={"id": "acrPopover"})
+    if dafen==None:
+        dafen = header.find("i", attrs={"class": "a-icon-star"})
+    commentnum = header.find("span", attrs={"class": "a-size-small"})
+    if commentnum==None:
+        commentnum = header.find("span", attrs={"id": "acrCustomerReviewText"})
+    price = header.find("span", attrs={"id": "priceblock_ourprice"})
+    if price==None:
+        price=header.find("strong",attrs={"class":"priceLarge"})
     soldby = header.find("div", attrs={"id": "merchant-info"})
     commenttime = ""
 
@@ -62,26 +76,30 @@ def pinfoparse(content):
         returnlist["title"] = title.get_text().strip().replace(",", "-")
     except Exception as err:
         logger.info(err, exc_info=1)
-        returnlist["title"] = ""
+        returnlist["title"] = "No title"
     # 打分
     try:
         dafentemp = float(dafen["title"].replace(" out of 5 stars", ""))
         returnlist["score"] = dafentemp
 
     except Exception as err:
-        logger.info(err, exc_info=1)
-        returnlist["score"] = -1
+        try:
+            dafentemp = float(dafen.get_text().strip().replace(" out of 5 stars", ""))
+            returnlist["score"] = dafentemp
+        except Exception as err:
+            logger.info(err, exc_info=1)
+            returnlist["score"] = -1
     # 评论数
     try:
         # 1个人没有复数
-        returnlist["commentnum"] = int(commentnum.get_text().replace(" customer review", "").replace("s", ""))
+        returnlist["commentnum"] = int(commentnum.get_text().strip().replace(" customer review", "").replace("s", ""))
     except Exception as err:
         logger.info(err, exc_info=1)
         returnlist["commentnum"] = -1
         commenttime = "None"
     # 价格
     try:
-        returnlist["price"] = float(price.get_text().replace("$", ""))
+        returnlist["price"] = float(price.get_text().strip().replace("$", ""))
     except Exception as err:
         logger.info(err, exc_info=1)
         returnlist["price"] = -1
@@ -156,7 +174,9 @@ def getrank2reg(string):
 
 if __name__ == '__main__':
     a = time.clock()
-    filepath = tool.log.BASE_DIR + "/data/detail/2016/Arts_ Crafts & Sewing/20161017/3-1-10-1-1/"
+    filepath = tool.log.BASE_DIR + "/data/errordetail/"
+
+    # G:\smartdo\data\errordetail\20161018-135309.html
     files = listfiles(filepath, ".html")
     for i in files:
         print(i)

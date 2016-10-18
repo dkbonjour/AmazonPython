@@ -31,12 +31,15 @@ def usaurl(config={}, category=[], limitnum="20000"):
     return result
 
 
-def dbexist(dbconfig, tablename):
+def dbexist(dbconfig, tablename, todays):
     try:
         temp = getconfig()[dbconfig]
         db = Mysql(temp)
-        sql = "SELECT * from `" + tablename + "` limit 1"
-        db.ExecQuery(sql)
+        sql = 'SELECT count(*) from `' + tablename + '` where id like "' + todays + '%"'
+        num = db.ExecQuery(sql)
+        if num[0][0] >= 99:
+            logger.error(todays + "|" + dbconfig + ":" + tablename + " completed")
+            return False
     except:
         logger.error(dbconfig + "数据库不存在，或者表" + tablename + "找不到" + sql)
         return False
@@ -82,5 +85,5 @@ if __name__ == "__main__":
     config = {"host": "192.168.0.152", "user": "bai", "pwd": "123456", "db": "smart_base"}
     category = ["Industrial & Scientific", "Appliances"]
     print(usaurl(config, category=category))
-    dbexist("basedb", "smart_ip")
-    dbexist("basedb", "smart_")
+    dbexist("basedb", "smart_ip", "20161018")
+    dbexist("ratedb1", "3-1-1-1", "20161018")
