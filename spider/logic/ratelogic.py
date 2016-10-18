@@ -17,7 +17,6 @@ from spider.parse.analydetail import *
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
-
 # 单类目抓取
 def unitlogic(url, mysqlconfig):
     # url: ('1-1', 'https://www.amazon.com/Best-Sellers-Appliances-Cooktops/zgbs/appliances/3741261/ref=zg_bs_nav_la_1_la/161-2441050-2846244', 'Cooktops', 2, 5, '1', '1', 'Appliances')
@@ -44,10 +43,10 @@ def unitlogic(url, mysqlconfig):
     # 2016/Appl/20160606/
     todays = todaystring(3)
     keepdir = createjia(
-            tool.log.BASE_DIR + "/data/items/" + todaystring(1) + "/" + bigpname + "/" + todays + "/" + id)
+            tool.log.DATA_DIR + "/data/items/" + todaystring(1) + "/" + bigpname + "/" + todays + "/" + id)
 
     detaildir = createjia(
-            tool.log.BASE_DIR + "/data/detail/" + todaystring(1) + "/" + bigpname + "/" + todays+ "/" + id)
+            tool.log.DATA_DIR + "/data/detail/" + todaystring(1) + "/" + bigpname + "/" + todays+ "/" + id)
 
     detailall = {}
 

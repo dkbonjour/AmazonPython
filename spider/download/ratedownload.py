@@ -39,7 +39,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
     ips = proxy(where=where, config=config)
     ip = list(ips.keys())[random.randint(0, len(ips) - 1)]
     if ip in ips.keys():
-        location = ips[ip]
+        location = ips[ip][0]
     else:
         location = "unkonw"
     proxies = {"http": "http://" + ip}
@@ -49,7 +49,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         res.raise_for_status()
         resdata = res.content
         res.close()
-        if not robot(resdata):
+        if not robot(resdata,ip):
             return None
 
         logger.warning(

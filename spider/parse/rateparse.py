@@ -7,6 +7,7 @@ from lxml import etree
 import tool.log
 import logging
 from bs4 import BeautifulSoup
+import action.proxy
 
 # 日志
 tool.log.setup_logging()
@@ -40,7 +41,7 @@ def urlparse(content, level=1):
     return returnurl, returnname
 
 
-def robot(content):
+def robot(content, ip, koip=True):
     # xpath解析需要的东西
     contents = etree.HTML(content)
     # <title dir="ltr">Robot Check</title>
@@ -50,7 +51,14 @@ def robot(content):
         logger.error("页数不足，机器人检测失败")
         return False
     if "Robot Check" in robot:
-        logger.error("机器人")
+        if koip:
+            try:
+                action.proxy.IPPOOL.pop(ip)
+                logger.error("机器人，剔除IP：" + ip + ",IP池还剩：" + str(len(action.proxy.IPPOOL)))
+                action.proxy.IPDEAD.append(ip)
+                action.proxy.koipmysql(ip)
+            except:
+                pass
         raise Exception("机器人")
     return True
 
@@ -70,7 +78,7 @@ def rateparse(content):
             asin = link.strip().split("/dp/")[1].split("/")[0]
             title = temp.find('div', attrs={"class": "zg_title"}).a.string
             title = title.replace(",", "")
-            returncontent[rank] = [rank, asin,title]
+            returncontent[rank] = [rank, asin, title]
         except:
             continue
     # contents = etree.HTML(content)

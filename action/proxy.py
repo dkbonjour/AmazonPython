@@ -6,6 +6,7 @@
 from tool.jmysql.mysql import *
 import logging
 import tool.log
+from config.config import *
 
 # 日志
 tool.log.setup_logging()
@@ -15,6 +16,7 @@ smartlogger = logging.getLogger("smart")
 # 全局变量保证读取代理IP只有一次
 IPPOOL = {}
 IPPOOLSUCCESS = False
+IPDEAD = []
 
 
 # star 读取代理IP,格式为IP为键，地址为值，如104.143.159.232:808 美国加利福尼亚州洛杉矶
@@ -24,8 +26,12 @@ def proxy(where="local", config={}, filepath="config/base/IP.txt", failtimes=0):
     filepath = tool.log.BASE_DIR + "/" + filepath
     global IPPOOL
     global IPPOOLSUCCESS
+    global IPDEAD
     if IPPOOLSUCCESS:
         smartlogger.debug("IP已经加载过了")
+        if len(IPPOOL) == 0:
+            logger.error("IP池用完")
+            exit()
         return IPPOOL
     ips = []
     if where == "local":
@@ -45,6 +51,7 @@ def proxy(where="local", config={}, filepath="config/base/IP.txt", failtimes=0):
             else:
                 ips.append(ip[0] + "-" + ip[1])
     IPPOOL = ipfilter(ips)
+    # logger.error(IPPOOL)
     IPPOOLSUCCESS = True
     return IPPOOL
 
@@ -83,8 +90,17 @@ def ipfilter(ips=[]):
                     break
             if haserror == False:
                 # logger.warning(ip + "_正确！")
-                returnips[ip] = location
+                returnips[ip] = [location]
     return returnips
+
+
+def koipmysql(ip):
+    try:
+        mysql = Mysql(getconfig()["basedb"])
+        sql = 'update smart_ip set failtimes=failtimes+1 where ip="' + ip + '"'
+        mysql.ExecNonQuery(sql)
+    except:
+        logger.error("删除数据库IP" + ip + "失败！！")
 
 
 # 只做测试！！！
@@ -95,3 +111,6 @@ if __name__ == "__main__":
     print(ips)
     ips = proxy()
     print(ips)
+
+    ips.pop('146.148.220.248:808')
+    ips.pop('146.148.220.248:808')

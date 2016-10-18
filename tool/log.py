@@ -16,10 +16,14 @@ LOGSUCCESS = False
 # 根目录
 BASE_DIR = ""
 
+# 文件目录
+DATA_DIR = "G:"
+
 
 def setup_logging(default_path='log.json', default_level=logging.INFO, env_key='spiderlog'):
     global LOGSUCCESS
     global BASE_DIR
+    global DATA_DIR
     if LOGSUCCESS:
         return
     # 当前目录

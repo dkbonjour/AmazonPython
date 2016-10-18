@@ -3,6 +3,7 @@
   "version": "v1",
   "developer": "陶彦百，陈锦瀚",
   "time": "2016-11",
+  "datadir":"G:",
   "basedb": {
     "host": "192.168.0.152",
     "user": "bai",

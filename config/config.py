@@ -7,10 +7,6 @@ import tool.log
 import logging
 from tool.jjson.basejson import *
 
-# 日志
-tool.log.setup_logging()
-logger = logging.getLogger(__name__)
-
 CONFIG = None
 CONFIGSUCCESS = False
 

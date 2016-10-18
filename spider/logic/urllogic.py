@@ -9,11 +9,14 @@ import tool.log
 from spider.download.ratedownload import *
 from spider.parse.rateparse import *
 from concurrent.futures import ThreadPoolExecutor
+from config.config import *
 
 # 日志
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
-KEEPDIR = tool.log.BASE_DIR + "/data/rateurl"
+
+# 文件位置
+KEEPDIR = tool.log.DATA_DIR + "/data/rateurl"
 
 
 # 保存文件,减少代码
