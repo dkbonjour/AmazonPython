@@ -4,18 +4,31 @@
 使用Python开发，文件架构：
 
     spider 爬虫模块
-         ---download 爬虫下载器
-         ---parse 爬虫解析器
-         ---logic 爬虫逻辑器
+        --- download 爬虫下载器
+        --- parse 爬虫解析器
+        --- logic 爬虫逻辑器
     bin 爬虫执行文件
+        --- spider 爬虫入口
+        --- tool 辅助工具
     config 配置文件模块
+        --- base 配置文件
+        --- config.py
+            config.json
+            log.json
     tool 基础函数工具箱模块
+        --- jfile
+        --- jhttp
+        --- jjson
+        --- jmysql
+        --- log.py
     acion 业务模块，如代理IP,Ua池等杂项
     test 测试文件夹
     data 数据保存地
     log 日志地
+    
+    doc 帮助文档
 
-## 第三方库
+## 第三方库(需安装）
 ```
 pip3 install xlsxwriter
 pip3 install pymysql
@@ -142,3 +155,5 @@ Readability counts.(可读性很重要)
 C:\Windows\System32\drivers\etc 放host
 Windows: 按下 Windows+R 键，运行 cmd ，在命令提示符运行命令 ipconfig /flushdns
 ```
+
+## 爬虫使用参见doc

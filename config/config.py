@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 CONFIG = None
 CONFIGSUCCESS = False
 
-
 def getconfig(filepath="config/config.json"):
     global CONFIG
     global CONFIGSUCCESS

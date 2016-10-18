@@ -17,9 +17,11 @@ from spider.parse.analydetail import *
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
+DATA_DIR = getconfig()["datadir"]
 
 # 单类目抓取
 def unitlogic(url, mysqlconfig):
+    global DATA_DIR
     # url: ('1-1', 'https://www.amazon.com/Best-Sellers-Appliances-Cooktops/zgbs/appliances/3741261/ref=zg_bs_nav_la_1_la/161-2441050-2846244', 'Cooktops', 2, 5, '1', '1', 'Appliances')
 
     # 抓取的类目URL
@@ -44,10 +46,10 @@ def unitlogic(url, mysqlconfig):
     if not dbexist(db, id, todays):
         return
     keepdir = createjia(
-            tool.log.DATA_DIR + "/data/items/" + todaystring(1) + "/" + bigpname + "/" + todays + "/" + id)
+            DATA_DIR + "/data/items/" + todaystring(1) + "/" + bigpname + "/" + todays + "/" + id)
 
     detaildir = createjia(
-            tool.log.DATA_DIR + "/data/detail/" + todaystring(1) + "/" + bigpname + "/" + todays + "/" + id)
+            DATA_DIR + "/data/detail/" + todaystring(1) + "/" + bigpname + "/" + todays + "/" + id)
 
     detailall = {}
 
@@ -151,7 +153,7 @@ def ratelogic(category=["Appliances"], processnum=1, limitnum="20000"):
 if __name__ == "__main__":
     a = time.clock()
     category = ["Appliances", "Arts_ Crafts & Sewing"]
-    processnum = 5
+    processnum = 2
     ratelogic(category, processnum, "6")
     b = time.clock()
     print('运行时间：' + timetochina(b - a))

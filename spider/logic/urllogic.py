@@ -16,8 +16,7 @@ tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
 # 文件位置
-KEEPDIR = tool.log.DATA_DIR + "/data/rateurl"
-
+KEEPDIR = getconfig()["datadir"] + "/data/rateurl"
 
 # 保存文件,减少代码
 def savetofile(filepath, content=[]):
