@@ -87,7 +87,7 @@ Watches|	22|	17
 ## 1.编辑配置文件
 ```
 {
-  "company": "智干电子商务有限公司",
+  "company": "xx",
   "version": "v1",
   "developer": "陶彦百，陈锦瀚",
   "time": "2016-11",
