@@ -36,19 +36,23 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         'Referer': 'https://www.amazon.com/',
         'Host': 'www.amazon.com'
     }
-
-    ips = proxy(where=where, config=config, failtimes=getconfig()["ipnum"])
+    try:
+        iperror = getconfig()["iperror"]
+    except:
+        logger.error("配置文件出错")
+        exit()
+    ips = proxy(where=where, config=config, failtimes=iperror)
 
     # TODO
     # 并行真随机数，需要！！
     randomnum = allrandom(len(ips))
     try:
         if getconfig()["sleep"]:
-            tt = random.randint(0, 3)
+            tt = random.randint(1, 3)
             time.sleep(tt)
-            logger.error("暂停:" + str(tt) + ":" + url)
+            logger.error("暂停:" + str(tt) + "秒:" + url)
     except:
-        logger.error("dddddd")
+        logger.error("配置文件出错")
         exit()
     ip = list(ips.keys())[randomnum]
     if ip in ips.keys():
@@ -62,7 +66,12 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         res.raise_for_status()
         resdata = res.content
         res.close()
-        if not robot(resdata, ip):
+        try:
+            koip=getconfig()["koip"]
+        except:
+            logger.error("配置文件出错")
+            exit()
+        if not robot(resdata, ip,koip):
             return None
 
         logger.warning(

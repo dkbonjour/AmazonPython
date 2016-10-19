@@ -20,7 +20,7 @@ if __name__ == "__main__":
     processnum = 10
 
     # 类目抓取数量
-    limit = "500"
+    limit = "11"
 
     # 开抓，ko
     ratelogic(category, processnum, limit)
