@@ -25,7 +25,7 @@ def usaurl(config={}, category=[], limitnum="20000"):
             condition = condition + 'bigpname="' + category[i] + '"'
         else:
             condition = condition + 'bigpname="' + category[i] + '" or '
-    selectsql = 'SELECT id,url,name,page,bigpname,level,`database` FROM smart_category where isvalid=1 and (' + condition + ') limit ' + limitnum
+    selectsql = 'SELECT id,url,name,page,bigpname,level,`database` FROM smart_category where isvalid=1 and (' + condition + ') limit 0,' + limitnum
     logger.warning(selectsql)
     result = mysql.ExecQuery(selectsql)
     return result
@@ -37,7 +37,7 @@ def dbexist(dbconfig, tablename, todays):
         db = Mysql(temp)
         sql = 'SELECT count(*) from `' + tablename + '` where id like "' + todays + '%"'
         num = db.ExecQuery(sql)
-        if num[0][0] >= 99:
+        if num[0][0] >= getconfig()["itemnum"]:
             logger.error(todays + "|" + dbconfig + ":" + tablename + " completed")
             return False
     except:

@@ -5,6 +5,7 @@
   "time": "2016-11",
   "datadir":"G:",
   "iperror":50,
+  "itemnum":90,
   "sleep":true,
   "koip":false,
   "basedb": {

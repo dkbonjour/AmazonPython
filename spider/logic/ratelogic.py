@@ -42,14 +42,14 @@ def unitlogic(url, mysqlconfig):
 
     # 2016/Appl/20160606/
     todays = todaystring(3)
+    year=todaystring(1)
 
     if not dbexist(db, id, todays):
         return
-    keepdir = createjia(
-            DATA_DIR + "/data/items/" + todaystring(1) + "/" + bigpname + "/" + todays + "/" + id)
 
-    detaildir = createjia(
-            DATA_DIR + "/data/detail/" + todaystring(1) + "/" + bigpname + "/" + todays + "/" + id)
+    keepdir = createjia(DATA_DIR + "/data/items/" + year + "/" + bigpname + "/" + todays + "/" + id)
+
+    detaildir = createjia(DATA_DIR + "/data/detail/" + year + "/" + bigpname + "/" + todays + "/" + id)
 
     detailall = {}
 
@@ -91,12 +91,16 @@ def unitlogic(url, mysqlconfig):
         except Exception as err:
             logging.error(err, exc_info=1)
             pass
+
     for rank in detailall:
         detailname = rank + "-" + detailall[rank]
         rankeep = detaildir + "/" + detailname
         if fileexsit(rankeep + ".md"):
             continue
         url = "https://www.amazon.com/dp/" + detailall[rank]
+
+        # TODO
+        # 本地文件不保存
         if fileexsit(rankeep + ".html"):
             with open(rankeep + ".html", "rb") as ff:
                 detailpage = ff.read()
@@ -120,7 +124,6 @@ def unitlogic(url, mysqlconfig):
         if insertpmysql(pinfo, db, id):
             with open(rankeep + ".md", "wb") as f:
                 f.write(objectToString(pinfo).encode("utf-8"))
-
 
 # 单进程抓取
 def processlogic(processurls, mysqlconfig):
