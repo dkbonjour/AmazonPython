@@ -26,6 +26,8 @@ Develope by Python, Look at the following：
     data (Data Keep)
     log  (Log Keep)
     
+    client (Export Data)
+    
     doc (Help Doc)
 
 ## Third Party Library (to be installed)

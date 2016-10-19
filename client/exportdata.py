@@ -38,7 +38,7 @@ def getdata(url, days):
     return None
 
 
-def writefile(data,id):
+def writefile(data,id,url):
     # print(data)
     temp=[]
     temp.append(["小类排名","小类名称","大类名称","大类排名","商品标题","商品价格","商品评分","ASIN","URL","Soldby","Shipby","评论数","较早评论时间","数据获取时间"])
@@ -47,6 +47,7 @@ def writefile(data,id):
     filename=dir+"/"+id+".xlsx"
     for i in data:
         temp.append(list(i))
+    temp.append([url])
     try:
         writeexcel(filename,temp)
     except Exception as err:
@@ -60,6 +61,6 @@ if __name__ == "__main__":
         id,data=getdata(url, days)
         if data==None:
             print("找不到数据")
-        print(writefile(data,id))
+        print(writefile(data,id,url))
     except Exception as err:
         print("出错")
