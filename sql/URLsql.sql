@@ -16,3 +16,7 @@ lines terminated by '\r\n';
 SELECT id,url,name,level,page,pid,bigpid,bigpname FROM smart_base.smart_category where isvalid=1 and bigpname="Appliances";
 
 SELECT id,url,name,page,bigpname FROM smart_category where isvalid=1 and (bigpname="Appliances" or bigpname="Industrial & Scientific")
+
+
+# 重复的类目
+select count(*) from (SELECT url,`database`,count(*) as j FROM smart_category group by url) as a where j>=2

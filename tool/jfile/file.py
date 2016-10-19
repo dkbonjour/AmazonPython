@@ -49,7 +49,7 @@ def writeexcel(path, dealcontent=[]):
     formatt.set_align('vcenter')  # 设置单元格垂直对齐
     worksheet = workbook.add_worksheet()  # 创建一个工作表对象
     width = len(dealcontent[0])
-    worksheet.set_column(0, width, 38.5)  # 设定列的宽度为22像素
+    worksheet.set_column(0, width, 30)  # 设定列的宽度为22像素
     for i in range(0, len(dealcontent)):
         if i == 0:
             formatt = red
@@ -57,7 +57,7 @@ def writeexcel(path, dealcontent=[]):
             formatt = top
         for j in range(0, len(dealcontent[i])):
             if dealcontent[i][j]:
-                worksheet.write(i, j, dealcontent[i][j].replace(' ', ''), formatt)
+                worksheet.write(i, j, dealcontent[i][j], formatt)
             else:
                 worksheet.write(i, j, '', formatt)
 

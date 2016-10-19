@@ -25,7 +25,7 @@ def usaurl(config={}, category=[], limitnum=20000):
             condition = condition + 'bigpname="' + category[i] + '"'
         else:
             condition = condition + 'bigpname="' + category[i] + '" or '
-    selectsql = 'SELECT id,url,name,page,bigpname,level,`database` FROM smart_category where isvalid=1 and (' + condition + ') limit 0,' + str(
+    selectsql = 'SELECT id,url,name,page,bigpname,level,`database` FROM smart_category where isvalid=1 and (' + condition + ') group by url limit 0,' + str(
         limitnum)
     logger.warning(selectsql)
     result = mysql.ExecQuery(selectsql)
