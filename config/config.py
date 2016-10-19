@@ -27,6 +27,8 @@ def getconfig(filepath="config/config.json"):
             exit()
         else:
             CONFIG = stringToObject(content)
+            # TODO
+            # 配置检查
             CONFIGSUCCESS = True
             return CONFIG
 
@@ -47,9 +49,9 @@ def copyright(info):
 
     {info}
     '''.format_map(temp)
-    print(hehe)
+    return hehe
 
 
 if __name__ == "__main__":
     print(getconfig())
-    copyright("爬虫大霸王开始运行")
+    print(copyright("爬虫大霸王开始运行"))

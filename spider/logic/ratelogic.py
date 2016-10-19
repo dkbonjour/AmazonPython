@@ -109,8 +109,9 @@ def unitlogic(url, mysqlconfig):
             if detailpage == None:
                 continue
             else:
-                with open(rankeep + ".html", "wb") as f:
-                    f.write(detailpage)
+                if getconfig()["localkeep"]:
+                    with open(rankeep + ".html", "wb") as f:
+                        f.write(detailpage)
         pinfo = pinfoparse(detailpage.decode("utf-8", "ignore"))
         try:
             pinfo["smallrank"] = int(rank)
@@ -137,7 +138,7 @@ def processlogic(processurls, mysqlconfig):
 
 
 # 多进程抓取
-def ratelogic(category=["Appliances"], processnum=1, limitnum="20000"):
+def ratelogic(category=["Appliances"], processnum=1, limitnum=20000):
     allconfig = getconfig()
     try:
         mysqlconfig = allconfig["basedb"]
@@ -150,6 +151,9 @@ def ratelogic(category=["Appliances"], processnum=1, limitnum="20000"):
             # TODO
             # 任务不能同时进行
             time.sleep(random.randint(0,3))
+
+            ## TODO
+            ## IP需要切分
             e.submit(processlogic, tasklist[task], mysqlconfig)
 
 
@@ -157,6 +161,6 @@ if __name__ == "__main__":
     a = time.clock()
     category = ["Appliances", "Arts_ Crafts & Sewing"]
     processnum = 2
-    ratelogic(category, processnum, "6")
+    ratelogic(category, processnum, 6)
     b = time.clock()
     print('运行时间：' + timetochina(b - a))

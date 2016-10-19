@@ -15,7 +15,7 @@ tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
 
-def usaurl(config={}, category=[], limitnum="20000"):
+def usaurl(config={}, category=[], limitnum=20000):
     mysql = Mysql(config)
     # ('1-1', 'https://www.amazon.com/Best-Sellers-Appliances-Cooktops/zgbs/appliances/3741261/ref=zg_bs_nav_la_1_la/161-2441050-2846244', 'Cooktops', 2, 5, '1', '1', 'Appliances')
     condition = ""
@@ -25,7 +25,8 @@ def usaurl(config={}, category=[], limitnum="20000"):
             condition = condition + 'bigpname="' + category[i] + '"'
         else:
             condition = condition + 'bigpname="' + category[i] + '" or '
-    selectsql = 'SELECT id,url,name,page,bigpname,level,`database` FROM smart_category where isvalid=1 and (' + condition + ') limit 0,' + limitnum
+    selectsql = 'SELECT id,url,name,page,bigpname,level,`database` FROM smart_category where isvalid=1 and (' + condition + ') limit 0,' + str(
+        limitnum)
     logger.warning(selectsql)
     result = mysql.ExecQuery(selectsql)
     return result
@@ -73,7 +74,7 @@ def insertpmysql(pmap, dbname, tablename):
               "VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
               "'{shipby}',{price},{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);".format_map(pmap)
         db.ExecNonQuery(sql)
-        logger.warning("插数据库成功,数据库:" + dbname + "，表:" + pmap["tablename"])
+        logger.error("插数据库成功,数据库:" + dbname + ",表:" + pmap["tablename"] + ",Id" + pmap["id"])
         return True
     except Exception as err:
         logger.error("插数据库出错" + sql)
