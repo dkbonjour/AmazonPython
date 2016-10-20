@@ -20,7 +20,7 @@ def dealurlfile(rubbish="/161-2441050-2846244"):
     lasturls = []
 
     # 根目录
-    dir = tool.log.BASE_DIR + "/data/rateurl"
+    dir = getconfig()["datadir"] + "/data/rateurl"
 
     # URL文件夹
     level1 = dir

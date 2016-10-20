@@ -10,8 +10,8 @@
   "koip":false,
   "localkeep":false,
   "catchurl":["Appliances", "Arts_ Crafts & Sewing"],
-  "processnum":10,
-  "urlnum":20000,
+  "processnum":12,
+  "urlnum":200,
   "basedb": {
     "host": "192.168.0.152",
     "user": "bai",

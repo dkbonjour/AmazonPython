@@ -42,7 +42,7 @@ def writefile(data,id,url):
     # print(data)
     temp=[]
     temp.append(["小类排名","小类名称","大类名称","大类排名","商品标题","商品价格","商品评分","ASIN","URL","Soldby","Shipby","评论数","较早评论时间","数据获取时间"])
-    dir = getconfig()["datadir"]+"/export/"+todaystring(3)
+    dir = getconfig()["datadir"]+"/data/export/"+todaystring(3)
     createjia(dir)
     filename=dir+"/"+id+".xlsx"
     for i in data:
@@ -56,7 +56,7 @@ def writefile(data,id,url):
 
 if __name__ == "__main__":
     url = input("输入类目URL：")
-    days = "20161018"
+    days = input("请输入日期(如20161018):")
     try:
         id,data=getdata(url, days)
         if data==None:

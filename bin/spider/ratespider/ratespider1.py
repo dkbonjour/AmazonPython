@@ -31,7 +31,7 @@ if __name__ == "__main__":
     try:
         limit = getconfig()["urlnum"]
     except:
-        limit = 12
+        limit = 60
     # 开抓，ko
     ratelogic(category, processnum, limit)
 
