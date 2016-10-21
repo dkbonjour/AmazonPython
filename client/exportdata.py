@@ -32,6 +32,8 @@ def getdata(url, days):
             if result == None:
                 continue
             else:
+                if not result:
+                    continue
                 return j[0],result
         except Exception as err:
             pass

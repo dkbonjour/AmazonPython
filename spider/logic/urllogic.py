@@ -13,7 +13,7 @@ from config.config import *
 
 # 日志
 tool.log.setup_logging()
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("smart")
 
 # 文件位置
 KEEPDIR = getconfig()["datadir"] + "/data/rateurl"
@@ -231,14 +231,71 @@ def level5(catchfiles=[]):
     return "ok!!!----"
 
 
+# 6级类目
+def level6(catchfiles=[]):
+    global KEEPDIR
+    # 1-1-1-url.md 1-1-2-url.md
+    # 四级所有URL文件
+    # 并发文件，如果传入文件，那么并发
+    if not catchfiles:
+        level4file = listfiles(KEEPDIR + "/5urls", "url.md")
+    else:
+        logger.warning("并发文件")
+        level4file = catchfiles
+
+    # 五级下所有文件
+    level5file = listfiles(KEEPDIR + "/6urls", "md")
+    emptyfile = listfiles(KEEPDIR + "/6urls", "-url.mdxx")
+
+    # 遍历四级文件
+    # position为文件序列
+    for position in range(len(level4file)):        # 文件名
+        filename=level4file[position]
+        # 文件名前缀位置
+        weizhi=filename.split("-url")[0]
+
+        urls = readfile("5urls/" + filename)
+        # urlposition为链接序列
+        for urlposition in range(len(urls)):
+            # 已经抓过！1-1-1-1-url.md
+            prefix = str(urlposition + 1)
+            if weizhi + '-' + prefix + '-url.mdxx' in emptyfile  or (weizhi + '-' + prefix + '-name.md' in level5file and weizhi + '-' + prefix + '-url.md' in level5file):
+                logger.info("已存在！第" + str(position + 1) + "个四级类目:" + filename + "，第" + prefix + "个五级类目：" + urls[urlposition] + "的六级类目...")
+                continue
+            fourcontent = ratedownload(urls[urlposition])
+            if fourcontent == None:
+                continue
+            else:
+                fourcontent = fourcontent.decode('utf-8', 'ignore')
+            arr_foururl, arr_fourname = urlparse(fourcontent, level=6)
+            logger.warning("正抓取！第" + str(position + 1) + "个四级类目:" + filename + ",第" + prefix + "个五级类目：" +
+                    urls[
+                        urlposition] + "的六级类目...")
+            logger.warning("本目录还剩"+str(len(urls) - urlposition + 1) + "个五级类目,排队" + str(len(level4file) - position + 1) + "个四级类目")
+            logger.info(arr_foururl)
+            savetofile("6urls/" + weizhi + '-' + prefix + '-url.md', arr_foururl)
+            savetofile("6urls/" + weizhi + '-' + prefix + '-name.md', arr_fourname)
+    logger.warning("已经抓取了六级类目下的所有url...")
+    return "ok!!!----"
+
+
 # 多线程
 def fastlevel5(num=3):
+    createjia(KEEPDIR + "/5urls")
     files = listfiles(KEEPDIR + "/4urls", "url.md")
     urls=devidelist(files,num)
     with ThreadPoolExecutor(max_workers=num) as e:
         for i in range(num):
             e.submit(level5,urls[i])
 
+
+def fastlevel6(num=3):
+    createjia(KEEPDIR + "/6urls")
+    files = listfiles(KEEPDIR + "/5urls", "url.md")
+    urls=devidelist(files,num)
+    with ThreadPoolExecutor(max_workers=num) as e:
+        for i in range(num):
+            e.submit(level6,urls[i])
 
 
 # 单线程
@@ -250,6 +307,7 @@ def ausalogic(level="all"):
     createjia(KEEPDIR + "/3urls")
     createjia(KEEPDIR + "/4urls")
     createjia(KEEPDIR + "/5urls")
+    createjia(KEEPDIR + "/6urls")
 
     # 一级目录！
     if level == "1-2":

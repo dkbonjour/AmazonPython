@@ -121,7 +121,7 @@ def keeptomysql(filepath="config/base/URL.txt", config={}):
     for url in urls:
         sqlzone = url.split(",")
         sql = 'insert into smart_category (`id`,`url`,`name`,`level`,`pid`,`createtime`,`bigpname`,`bigpid`,`ismall`) values("{id}","{url}","{name}",{level},"{pid}",CURRENT_TIMESTAMP,"{bigpname}","{bigpid}",{ismall}) on duplicate key update updatetime = CURRENT_TIMESTAMP'
-        insertsql = sql.format(id=sqlzone[0], url=sqlzone[2], name=sqlzone[1], level=sqlzone[4], pid=sqlzone[3],
+        insertsql = sql.format(id=sqlzone[0], url=sqlzone[2].split("/ref")[0], name=sqlzone[1], level=sqlzone[4], pid=sqlzone[3],
                                bigpname=sqlzone[6], bigpid=sqlzone[5], ismall=sqlzone[7])
         try:
             mysql.ExecNonQuery(insertsql)

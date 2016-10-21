@@ -6,4 +6,4 @@
 from spider.logic.urllogic import *
 
 if __name__ == "__main__":
-    fastlevel5(num=5)
+    fastlevel6(num=5)
