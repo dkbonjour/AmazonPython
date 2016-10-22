@@ -4,33 +4,47 @@
 import redis
 import time
 
+global REDISSERVER = None
 
-# 这里用来读取ip
-def getips():
-    ip = []
-    # 读取ip
-    file = open("../ip/ip.txt")
-    ips = file.readlines()
-    # 将ip写入数组并加上时间戳
-    for item in ips:
-        # 标记时间戳
-        markedtime = int(time.time())
-        ip.append(item.strip() + "*" + str(markedtime))
-    return ip
+def initredis(redisconfig):
+    global REDISSERVER
+    REDISSERVER=redis.Redis(host=redisconfig["host"], port=redisconfig["port"], db=0)
+    return REDISSERVER
+
+
+def initippool(poolname="ippool"):
+    global REDISSERVER
+    try:
+        ip = []
+        # 读取ip
+        file = open("../ip/ip.txt")
+        ips = file.readlines()
+        # 将ip写入数组并加上时间戳
+        for item in ips:
+            # 标记时间戳
+            markedtime = int(time.time())
+            ip.append(item.strip() + "*" + str(markedtime))
+            # 在这里打开redis
+
+        if REDISSERVER==None:
+            print()
+            exit()
+
+        r = REDISSERVER
+
+        # 删除旧的列队
+        r.delete(poolname)
+
+        # 将ip添加进消息列队
+        for item in ips:
+            r.lpush(poolname, item)
+    except:
+        print("dee")
+        exit()
 
 
 # 传入带有时间戳的ip数组
-def test(ips):
-    # 在这里打开redis
-    r = redis.Redis(host='127.0.0.1', port=6379, db=0)
-
-    # 删除旧的列队
-    r.delete("mylist")
-
-    # 将ip添加进消息列队
-    for item in ips:
-        r.lpush("mylist", item)
-
+def getip(secord):
     # 逐个取出和存储
     # 因为要一直取所以用while
     while True:
@@ -72,5 +86,8 @@ def test(ips):
 
 
 if __name__ == '__main__':
-    a = test(getips())
-    print(a)
+    redisconfig={"host":"127.0.0.1","port":6379}
+    initredis(redisconfig)
+    poolname="ippool"
+    initippool(poolname)
+
