@@ -13,21 +13,32 @@
   "processnum":12,
   "urlnum":200,
   "basedb": {
-    "host": "192.168.0.152",
-    "user": "bai",
-    "pwd": "123456",
+    "host": "45.41.88.189",
+    "user": "root",
+    "pwd": "smart2016",
     "db": "smart_base"
   },
-  "ratedb1": {
-    "host": "192.168.0.152",
-    "user": "bai",
-    "pwd": "123456",
-    "db": "smart_item1"
-  },
-  "ratedb2": {
-    "host": "192.168.0.152",
-    "user": "bai",
-    "pwd": "123456",
-    "db": "smart_base"
-  }
+  "db1": {"host": "45.41.88.189", "user": "root", "pwd": "smart2016", "db": "smartdb1"},
+  "db2": {"host": "45.41.88.189", "user": "root", "pwd": "smart2016", "db": "smartdb2"},
+  "db3": {"host": "45.41.88.189", "user": "root", "pwd": "smart2016", "db": "smartdb3"},
+  "db4": {"host": "45.41.88.189", "user": "root", "pwd": "smart2016", "db": "smartdb4"},
+  "db5": {"host": "45.41.88.189", "user": "root", "pwd": "smart2016", "db": "smartdb5"},
+  "db6": {"host": "45.41.88.189", "user": "root", "pwd": "smart2016", "db": "smartdb6"},
+  "db7": {"host": "45.41.88.189", "user": "root", "pwd": "smart2016", "db": "smartdb7"},
+  "db8": {"host": "45.41.88.188", "user": "root", "pwd": "smart2016", "db": "smartdb8"},
+  "db9": {"host": "45.41.88.188", "user": "root", "pwd": "smart2016", "db": "smartdb9"},
+  "db10": {"host": "45.41.88.188", "user": "root", "pwd": "smart2016", "db": "smartdb10"},
+  "db11": {"host": "45.41.88.188", "user": "root", "pwd": "smart2016", "db": "smartdb11"},
+  "db12": {"host": "45.41.88.188", "user": "root", "pwd": "smart2016", "db": "smartdb12"},
+  "db13": {"host": "45.41.88.188", "user": "root", "pwd": "smart2016", "db": "smartdb13"},
+  "db14": {"host": "45.41.88.188", "user": "root", "pwd": "smart2016", "db": "smartdb14"},
+  "db15": {"host": "45.41.88.187", "user": "root", "pwd": "smart2016", "db": "smartdb15"},
+  "db16": {"host": "45.41.88.187", "user": "root", "pwd": "smart2016", "db": "smartdb16"},
+  "db17": {"host": "45.41.88.187", "user": "root", "pwd": "smart2016", "db": "smartdb17"},
+  "db18": {"host": "45.41.88.187", "user": "root", "pwd": "smart2016", "db": "smartdb18"},
+  "db19": {"host": "45.41.88.187", "user": "root", "pwd": "smart2016", "db": "smartdb19"},
+  "db20": {"host": "45.41.88.187", "user": "root", "pwd": "smart2016", "db": "smartdb20"},
+  "db21": {"host": "45.41.88.187", "user": "root", "pwd": "smart2016", "db": "smartdb21"},
+  "db22": {"host": "45.41.88.187", "user": "root", "pwd": "smart2016", "db": "smartdb22"},
+
 }

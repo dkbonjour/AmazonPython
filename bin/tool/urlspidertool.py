@@ -28,6 +28,7 @@ def dealurlfile(rubbish="/161-2441050-2846244"):
     level3 = dir + "/3urls"
     level4 = dir + "/4urls"
     level5 = dir + "/5urls"
+    level6 = dir + "/6urls"
 
     # 记录
     # id=filename+"-"+position name,url,parent,level
@@ -95,6 +96,19 @@ def dealurlfile(rubbish="/161-2441050-2846244"):
             continue
         for i in range(min(len(t5), len(t5name))):
             listtemp[position + "-" + str(i + 1)] = t5name[i].replace(",", "_") + "," + t5[i].replace(rubbish,"") + "," + position + ",5"
+            # lasturls.append(position + "-" + str(i + 1))
+    # 6级
+    file6 = listfiles(level6, "-url.md")
+    for urlfile in file6:
+        position = urlfile.replace("-url.md", "")
+        t6 = readfilelist(level6 + "/" + urlfile)
+        t6name = readfilelist(level6 + "/" + position + "-name.md")
+
+        # 如果为空,跳过
+        if t6 == [] or t6name == []:
+            continue
+        for i in range(min(len(t6), len(t6name))):
+            listtemp[position + "-" + str(i + 1)] = t6name[i].replace(",", "_") + "," + t6[i].replace(rubbish,"") + "," + position + ",6"
             lasturls.append(position + "-" + str(i + 1))
 
     temp = listfiles(rootdir=level1,iscur=True,prefix="-url.mdxx")

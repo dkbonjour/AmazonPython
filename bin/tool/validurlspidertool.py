@@ -2,7 +2,7 @@
 # -*-coding:utf-8-*-
 # Created by Smartdo Co.,Ltd. on 2016/10/15.
 # 功能:
-#   导入需要抓取的类目
+#   导入需要抓取的类目所在数据库！！
 #  
 import tool.log
 import logging
@@ -12,7 +12,7 @@ from config.config import *
 
 # 日志
 tool.log.setup_logging()
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("smart")
 
 
 def validurlchangemysql(config, dbname, textname):
@@ -20,6 +20,11 @@ def validurlchangemysql(config, dbname, textname):
     validurl = readfilelist(tool.log.BASE_DIR + "/config/base/" + textname)
     mysql = Mysql(config)
     for url in validurl:
+        if "https" in url:
+            pass
+        else:
+            url = url.replace("http", "https")
+
         sql = 'update smart_category set isvalid=1 ,`database`="' + dbname + '" where url like "' + url.split("/ref")[
             0] + '%" limit 1';
         try:
@@ -30,7 +35,7 @@ def validurlchangemysql(config, dbname, textname):
             logger.error(sql)
 
 
-if __name__ == "__main__":
+def AveryGood():
     allconfig = getconfig()
     try:
         textname = input("请输入URL所在的文件名（如ValidURL.txt)：")
@@ -39,3 +44,20 @@ if __name__ == "__main__":
         validurlchangemysql(config=config, dbname=dbname, textname=textname)
     except:
         raise Exception("数据库配置出错")
+
+def AGoodGood():
+    allconfig = getconfig()
+    config = allconfig["basedb"]
+    try:
+        d=listfiles(tool.log.BASE_DIR + "/config/base/",".md")
+        for i in d:
+            dbname=i.split("-")[0]
+            textname = i
+            validurlchangemysql(config=config, dbname=dbname, textname=textname)
+    except:
+        raise Exception("数据库配置出错")
+
+if __name__ == "__main__":
+    # AveryGood()
+
+    AGoodGood()
