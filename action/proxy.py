@@ -46,8 +46,9 @@ def proxy(where="local", config={}, filepath="config/base/IP.txt", failtimes=0):
         selectsql = "SELECT ip,zone,failtimes FROM smart_ip limit 1000;"
         result = mysql.ExecQuery(selectsql)
         for ip in result:
-            if ip[2] > failtimes:
-                pass
+            if getconfig()["limitip"]:
+                if ip[2] > failtimes:
+                    pass
             else:
                 ips.append(ip[0] + "-" + ip[1])
     IPPOOL = ipfilter(ips)
