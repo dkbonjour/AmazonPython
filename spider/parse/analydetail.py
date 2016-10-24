@@ -23,6 +23,12 @@ def getdp(string):
         return "NO ASIN"
 '''
 
+def saveerror(content):
+    createjia(tool.log.BASE_DIR + "/data/errordetail")
+    k = tool.log.BASE_DIR + "/data/errordetail/" + todaystring(6) + ".html"
+    with open(k, "wb") as f:
+        f.write(content.encode("utf-8"))
+    logger.error("强制标记:" + k)
 
 # 评论数 打分 评分
 # id=productDetails_detailBullets_sections1
@@ -40,6 +46,7 @@ def pinfoparse(content):
         returnlist["rank"] = getrank2reg(text)
     except Exception as err:
         logger.error(err, exc_info=1)
+        saveerror(content)
         returnlist["rank"] = -1
 
     header = soup.find("div", attrs={"id": "centerCol"})
