@@ -5,4 +5,6 @@ log/*
 data/*
 URL.txt
 ValidURL.txt
+*.out
+nohup.out
 
