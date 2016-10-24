@@ -629,3 +629,9 @@ export （导出的EXCEL文件）
 48,B01HF4AFTO,Neon Silicone bracelet Bangles Perfec...
 
 ```
+
+
+```
+git branch -r -d origin/branch-name
+git push origin :branch-name
+```
