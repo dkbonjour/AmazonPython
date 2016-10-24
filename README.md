@@ -638,3 +638,7 @@ export （导出的EXCEL文件）
 git branch -r -d origin/branch-name
 git push origin :branch-name
 ```
+
+```
+killall -9 python3
+```
