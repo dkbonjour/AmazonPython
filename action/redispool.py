@@ -68,7 +68,7 @@ def popip(secord=3, poolname="ippool"):
     if nowtime - int(splitstar[1]) >= secord:
         return ip, times
     else:
-        logger.error(ip+"redis暂停")
+        logger.error(ip+"redis暂停:"+str(secord))
         time.sleep(secord)
         return ip, times
 
