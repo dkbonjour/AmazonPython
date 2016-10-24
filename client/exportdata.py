@@ -5,7 +5,8 @@
 #  导出一个URL的某一天数据
 from config.config import *
 from tool.jmysql.mysql import *
-from tool.jfile.file import  *
+from tool.jfile.file import *
+
 
 def getdata(url, days):
     url = url.strip()
@@ -18,51 +19,54 @@ def getdata(url, days):
         if i[1] == None:
             continue
         else:
-            dbvalid.append([i[0], i[1]])
+            dbvalid.append([i[0], getconfig()["dbprefix"] + i[1]])
     for j in dbvalid:
         try:
             realconfig = getconfig()[j[1]]
             realdb = Mysql(realconfig)
             # SELECT smallrank,name,bigname,rank,title,price,score,asin,url,
             # soldby,shipby,commentnum,commenttime,createtime FROM `3-1-1-2` where id like "20161018%" order by smallrank;
-            realsql ='SELECT smallrank,name,bigname,rank,title,price,score,asin,url,' \
-                     'soldby,shipby,commentnum,commenttime,createtime FROM `{tablename}` where id like "{days}%" ' \
-                     'order by smallrank;'.format(tablename=j[0], days=days)
+            realsql = 'SELECT smallrank,name,bigname,rank,title,price,score,asin,url,' \
+                      'soldby,shipby,commentnum,commenttime,createtime FROM `{tablename}` where id like "{days}%" ' \
+                      'order by smallrank;'.format(tablename=j[0], days=days)
             result = realdb.ExecQuery(realsql)
             if result == None:
                 continue
             else:
                 if not result:
                     continue
-                return j[0],result
+                return j[0], result
         except Exception as err:
             pass
     return None
 
 
-def writefile(data,id,url):
+def writefile(data, id, url):
     # print(data)
-    temp=[]
-    temp.append(["小类排名","小类名称","大类名称","大类排名","商品标题","商品价格","商品评分","ASIN","URL","Soldby","Shipby","评论数","较早评论时间","数据获取时间"])
-    dir = getconfig()["datadir"]+"/data/export/"+todaystring(3)
+    temp = []
+    temp.append(
+            ["小类排名", "小类名称", "大类名称", "大类排名", "商品标题", "商品价格", "商品评分", "ASIN", "URL", "Soldby", "Shipby", "评论数", "较早评论时间",
+             "数据获取时间"])
+    dir = getconfig()["datadir"] + "/data/export/" + todaystring(3)
     createjia(dir)
-    filename=dir+"/"+id+".xlsx"
+    filename = dir + "/" + id + ".xlsx"
     for i in data:
         temp.append(list(i))
     temp.append([url])
     try:
-        writeexcel(filename,temp)
+        writeexcel(filename, temp)
     except Exception as err:
         return "写入Excel出错"
-    return "保存在："+filename
+    return "保存在：" + filename
+
 
 if __name__ == "__main__":
     url = input("输入类目URL：")
     days = input("请输入日期(如20161018):")
     try:
-        id,data=getdata(url, days)
-        if data==None:
+        id, data = getdata(url, days)
+        if data == None:
             print("找不到数据")
-        print(writefile(data,id,url))
+        print(writefile(data, id, url))
     except Exception as err:
         print("出错")
