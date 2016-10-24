@@ -47,7 +47,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
     # 取IP
     if redisneed:
         ip, times = popip(getconfig()["redispooltimes"], getconfig()["redispoolname"])
-        location = "redis"
+        location = "no"
     else:
         ips = proxy(where=where, config=config, failtimes=iperror)
 
@@ -69,13 +69,19 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
             location = "unkonw"
     proxies = {"http": "http://" + ip}
     try:
-        res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
+        try:
+            res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
+            # 放IP
+            if redisneed:
+                puship(ip, times, getconfig()["redispoolname"])
+        except:
+            # 放IP
+            if redisneed:
+                puship(ip, times, getconfig()["redispoolname"])
+            raise
         if redisneed:
             logger.error(url+":"+ip)
         # print(res.status_code)
-        # 放IP
-        if redisneed:
-            puship(ip, times, getconfig()["redispoolname"])
         res.raise_for_status()
         resdata = res.content
         res.close()
