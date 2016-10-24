@@ -39,7 +39,7 @@ def pinfoparse(content):
             text = soup.find("li", attrs={"id": "SalesRank"}).get_text().strip()
         returnlist["rank"] = getrank2reg(text)
     except Exception as err:
-        logger.info(err, exc_info=1)
+        logger.error(err, exc_info=1)
         returnlist["rank"] = -1
 
     header = soup.find("div", attrs={"id": "centerCol"})
@@ -50,6 +50,7 @@ def pinfoparse(content):
     if header == None:
         header = soup.find("div", attrs={"id": "center-col"})
     if header == None:
+        createjia(tool.log.BASE_DIR + "/data/errordetail/")
         k = tool.log.BASE_DIR + "/data/errordetail/" + todaystring(6) + ".html"
         with open(k, "wb") as f:
             f.write(content.encode("utf-8"))
@@ -75,7 +76,7 @@ def pinfoparse(content):
     try:
         returnlist["title"] = title.get_text().strip().replace(",", "-")
     except Exception as err:
-        logger.info(err, exc_info=1)
+        logger.error(err, exc_info=1)
         returnlist["title"] = "No title"
     # 打分
     try:
@@ -87,21 +88,21 @@ def pinfoparse(content):
             dafentemp = float(dafen.get_text().strip().replace(" out of 5 stars", ""))
             returnlist["score"] = dafentemp
         except Exception as err:
-            logger.info(err, exc_info=1)
+            logger.error(err, exc_info=1)
             returnlist["score"] = -1
     # 评论数
     try:
         # 1个人没有复数
         returnlist["commentnum"] = int(commentnum.get_text().strip().replace(" customer review", "").replace("s", ""))
     except Exception as err:
-        logger.info(err, exc_info=1)
+        logger.error(err, exc_info=1)
         returnlist["commentnum"] = -1
         commenttime = "None"
     # 价格
     try:
         returnlist["price"] = float(price.get_text().strip().replace("$", ""))
     except Exception as err:
-        logger.info(err, exc_info=1)
+        logger.error(err, exc_info=1)
         returnlist["price"] = -1
 
         # sold by who and FBA
@@ -126,7 +127,7 @@ def pinfoparse(content):
             except:
                 pass
     except Exception as err:
-        logger.info(err, exc_info=1)
+        logger.error(err, exc_info=1)
     returnlist["soldby"] = s1
     returnlist["shipby"] = s2
 
@@ -150,8 +151,8 @@ def pinfoparse(content):
                         if tempyoukonw < smallyear:
                             small = j.split("on ")[1]
                             smallyear = tempyoukonw
-                except:
-                    pass
+                except Exception as err:
+                    logger.error(err, exc_info=1)
         returnlist["commenttime"] = small.replace(",", "-")
     return returnlist
 
