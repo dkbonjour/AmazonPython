@@ -20,13 +20,14 @@ def usaurl(config={}, category=[], limitnum=20000):
     # ('1-1', 'https://www.amazon.com/Best-Sellers-Appliances-Cooktops/zgbs/appliances/3741261/ref=zg_bs_nav_la_1_la/161-2441050-2846244', 'Cooktops', 2, 5, '1', '1', 'Appliances')
     condition = ""
     length = len(category)
+    catchbywhich = "`" + getconfig()["catchbywhich"] + "`"
     for i in range(length):
         if i == length - 1:
-            condition = condition + 'bigpname="' + category[i] + '"'
+            condition = condition + catchbywhich + '="' + category[i] + '"'
         else:
-            condition = condition + 'bigpname="' + category[i] + '" or '
+            condition = condition + catchbywhich + '="' + category[i] + '" or '
     selectsql = 'SELECT id,url,name,page,bigpname,level,`database` FROM smart_category where isvalid=1 and (' + condition + ') group by url limit 0,' + str(
-        limitnum)
+            limitnum)
     logger.warning(selectsql)
     result = mysql.ExecQuery(selectsql)
     return result

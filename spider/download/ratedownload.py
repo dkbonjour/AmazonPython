@@ -13,6 +13,7 @@ from spider.parse.rateparse import *
 from bs4 import BeautifulSoup
 from config.config import *
 from tool.jfile.file import *
+from action.redispool import *
 
 # 日志
 tool.log.setup_logging()
@@ -41,37 +42,54 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
     except:
         logger.error("配置文件出错")
         exit()
-    ips = proxy(where=where, config=config, failtimes=iperror)
+    redisneed = getconfig()["redispool"]
 
-    # TODO
-    # 并行真随机数，需要！！
-    randomnum = allrandom(len(ips))
-    try:
-        if getconfig()["sleep"]:
-            tt = random.randint(1, 3)
-            time.sleep(tt)
-            logger.error("暂停:" + str(tt) + "秒:" + url)
-    except:
-        logger.error("配置文件出错")
-        exit()
-    ip = list(ips.keys())[randomnum]
-    if ip in ips.keys():
-        location = ips[ip][0]
+    # 取IP
+    if redisneed:
+        ip, times = popip(getconfig()["redispooltimes"], getconfig()["redispoolname"])
+        location = "redis"
     else:
-        location = "unkonw"
-    proxies = {"http": "http://" + ip}
-    try:
-        res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
-        # print(res.status_code)
-        res.raise_for_status()
-        resdata = res.content
-        res.close()
+        ips = proxy(where=where, config=config, failtimes=iperror)
+
+        # TODO
+        # 并行真随机数，需要！！
+        randomnum = allrandom(len(ips))
         try:
-            koip=getconfig()["koip"]
+            if getconfig()["sleep"]:
+                tt = random.randint(1, 3)
+                time.sleep(tt)
+                logger.error("暂停:" + str(tt) + "秒:" + url)
         except:
             logger.error("配置文件出错")
             exit()
-        if not robot(resdata, ip,koip):
+        ip = list(ips.keys())[randomnum]
+        if ip in ips.keys():
+            location = ips[ip][0]
+        else:
+            location = "unkonw"
+    proxies = {"http": "http://" + ip}
+    try:
+        res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
+        if redisneed:
+            logger.error(url+":"+ip)
+        # print(res.status_code)
+        # 放IP
+        if redisneed:
+            puship(ip, times, getconfig()["redispoolname"])
+        res.raise_for_status()
+        resdata = res.content
+        res.close()
+
+        # 不需要去掉IP
+        if redisneed:
+            koip = False
+        else:
+            try:
+                koip = getconfig()["koip"]
+            except:
+                logger.error("配置文件出错")
+                exit()
+        if not robot(resdata, ip, koip):
             return None
 
         logger.warning(

@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 DATA_DIR = getconfig()["datadir"]
 
+
 # 单类目抓取
 def unitlogic(url, mysqlconfig):
     global DATA_DIR
@@ -42,8 +43,8 @@ def unitlogic(url, mysqlconfig):
 
     # 2016/Appl/20160606/
     todays = todaystring(3)
-    year=todaystring(1)
-
+    year = todaystring(1)
+    db= getconfig()["dbprefix"] + db
     if not dbexist(db, id, todays):
         return
 
@@ -126,6 +127,7 @@ def unitlogic(url, mysqlconfig):
             with open(rankeep + ".md", "wb") as f:
                 f.write(objectToString(pinfo).encode("utf-8"))
 
+
 # 单进程抓取
 def processlogic(processurls, mysqlconfig):
     logger.debug(processurls)
@@ -150,7 +152,7 @@ def ratelogic(category=["Appliances"], processnum=1, limitnum=20000):
         for task in tasklist:
             # TODO
             # 任务不能同时进行
-            time.sleep(random.randint(0,3))
+            time.sleep(random.randint(0, 3))
 
             ## TODO
             ## IP需要切分

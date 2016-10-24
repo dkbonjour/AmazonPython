@@ -13,8 +13,15 @@ tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
 
-def createtable(config, tables):
-    db=Mysql(config)
+def createtable(config, database, tables):
+    db2 = Mysql2(config)
+    createdb = "CREATE DATABASE  IF NOT EXISTS `" + database + "`"
+    try:
+        db2.ExecNonQuery(createdb)
+    except Exception as err:
+        print(database + "存在")
+        pass
+    db = Mysql(config)
     for table in tables:
         sql = '''
 CREATE TABLE `{tablename}` (
@@ -35,32 +42,34 @@ CREATE TABLE `{tablename}` (
   `createtime` DATETIME NULL,
   PRIMARY KEY (`id`) )ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='类目表';
     '''.format(tablename=table)
-        print(sql)
         try:
             db.ExecNonQuery(sql)
+            print(sql)
         except Exception as err:
             print(err)
-
 
 
 def selecttable(config, dbname):
     returnlist = []
     db = Mysql(config)
     sql = 'select id from smart_category where `database` like "' + dbname + '"'
-    temp=db.ExecQuery(sql)
+    temp = db.ExecQuery(sql)
     for i in temp:
         returnlist.append(i[0])
     return returnlist
 
 
 if __name__ == "__main__":
-    db = "ratedb1"
-    allconfig = getconfig()
-    try:
-        baseconfig = allconfig["basedb"]
-        tables = selecttable(baseconfig, db)
-        print(tables)
-        dbconfig = allconfig[db]
-        createtable(dbconfig, tables)
-    except:
-        raise Exception("数据库配置出错")
+    for i in range(2,23):
+        db = str(i)
+        allconfig = getconfig()
+        try:
+            baseconfig = allconfig["basedb"]
+            tables = selecttable(baseconfig, db)
+            print(tables)
+            db = "db" + db
+            dbconfig = allconfig[db]
+            database = allconfig[db]["db"]
+            createtable(dbconfig, database, tables)
+        except:
+            raise Exception("数据库配置出错")

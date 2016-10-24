@@ -16,17 +16,14 @@ smartlogger = logging.getLogger("smart")
 # 全局变量保证读取代理IP只有一次
 IPPOOL = {}
 IPPOOLSUCCESS = False
-IPDEAD = []
-
+IPDEAD=[]
 
 # star 读取代理IP,格式为IP为键，地址为值，如104.143.159.232:808 美国加利福尼亚州洛杉矶
 # {"125.1.1.1":"美国"}
 # 代理可以选择从数据库读，但是要填数据库配置
-def proxy(where="local", config={}, filepath="config/base/IP.txt", failtimes=0):
-    filepath = tool.log.BASE_DIR + "/" + filepath
+def proxy(where="local", config={}, filepath="config/base/IP.txt", failtimes=2000):
     global IPPOOL
     global IPPOOLSUCCESS
-    global IPDEAD
     if IPPOOLSUCCESS:
         smartlogger.debug("IP已经加载过了")
         if len(IPPOOL) == 0:
@@ -35,6 +32,7 @@ def proxy(where="local", config={}, filepath="config/base/IP.txt", failtimes=0):
         return IPPOOL
     ips = []
     if where == "local":
+        filepath = tool.log.BASE_DIR + "/" + filepath
         logger.warning("加载本地代理IP文件")
         ipfile = open(filepath, 'rb')
         context = ipfile.read().decode("utf-8", "ignore")
@@ -45,8 +43,9 @@ def proxy(where="local", config={}, filepath="config/base/IP.txt", failtimes=0):
         mysql = Mysql(config)
         selectsql = "SELECT ip,zone,failtimes FROM smart_ip limit 1000;"
         result = mysql.ExecQuery(selectsql)
+        needfilter=getconfig()["limitip"]
         for ip in result:
-            if getconfig()["limitip"]:
+            if needfilter:
                 if ip[2] > failtimes:
                     pass
             else:

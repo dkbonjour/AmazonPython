@@ -7,13 +7,21 @@ import tool.log
 import logging
 from tool.jjson.basejson import *
 
-
 # 日志
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
 CONFIG = None
 CONFIGSUCCESS = False
+
+
+def changeconfig(name, value):
+    global CONFIG
+    if CONFIG == None:
+        getconfig()
+    CONFIG[name] = value
+    return value
+
 
 def getconfig(filepath="config/config.json"):
     global CONFIG
@@ -24,6 +32,7 @@ def getconfig(filepath="config/config.json"):
         content = f.read().decode("utf-8", "ignore")
         error, right = isRightJson(content, True)
         if not right:
+            logger.error("配置错误")
             exit()
         else:
             CONFIG = stringToObject(content)

@@ -3,15 +3,16 @@
   "version": "v1",
   "developer": "陶彦百，陈锦瀚",
   "time": "2016-11",
-  "datadir":"G:",
+  "datadir":"/data/db/usa",
   "limitip":false,
-  "iperror":50,
+  "iperror":20000,
   "itemnum":90,
   "sleep":false,
   "koip":false,
   "localkeep":false,
-  "catchurl":["Appliances", "Arts_ Crafts & Sewing"],
-  "processnum":12,
+  "catchurl":["1","2","3"],
+  "catchbywhich":"database",
+  "processnum":20,
   "urlnum":20000,
   "basedb": {
     "host": "45.41.88.189",
@@ -19,6 +20,11 @@
     "pwd": "smart2016",
     "db": "smart_base"
   },
+  "redispool":true,
+  "redispoolname":"ippool",
+  "redispooltimes":3,
+  "redispoolconfig":{"host":"45.41.88.189","pwd":"smart2016","port":6379},
+  "dbprefix":"db",
   "db1": {"host": "45.41.88.189", "user": "root", "pwd": "smart2016", "db": "smartdb1"},
   "db2": {"host": "45.41.88.189", "user": "root", "pwd": "smart2016", "db": "smartdb2"},
   "db3": {"host": "45.41.88.189", "user": "root", "pwd": "smart2016", "db": "smartdb3"},
@@ -40,6 +46,6 @@
   "db19": {"host": "45.41.88.187", "user": "root", "pwd": "smart2016", "db": "smartdb19"},
   "db20": {"host": "45.41.88.187", "user": "root", "pwd": "smart2016", "db": "smartdb20"},
   "db21": {"host": "45.41.88.187", "user": "root", "pwd": "smart2016", "db": "smartdb21"},
-  "db22": {"host": "45.41.88.187", "user": "root", "pwd": "smart2016", "db": "smartdb22"},
+  "db22": {"host": "45.41.88.187", "user": "root", "pwd": "smart2016", "db": "smartdb22"}
 
 }
