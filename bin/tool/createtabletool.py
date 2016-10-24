@@ -44,7 +44,7 @@ CREATE TABLE `{tablename}` (
     '''.format(tablename=table)
         try:
             db.ExecNonQuery(sql)
-            print(sql)
+            print(table)
         except Exception as err:
             print(err)
 
@@ -60,7 +60,7 @@ def selecttable(config, dbname):
 
 
 if __name__ == "__main__":
-    for i in range(2,23):
+    for i in range(22,23):
         db = str(i)
         allconfig = getconfig()
         try:
