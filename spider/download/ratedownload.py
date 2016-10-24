@@ -110,7 +110,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
                 "抓取URL错误:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
                                                                                       ua=ua,
                                                                                       times=5 - retrytime))
-        logging.error(err, exc_info=1)
+        logging.error("机器人！")
         return ratedownload(url=url, where=where, config=config, retrytime=retrytime - 1, timeout=timeout)
 
 
