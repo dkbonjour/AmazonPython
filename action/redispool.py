@@ -6,7 +6,7 @@ import time
 from config.config import *
 from action.proxy import *
 
-REDISSERVER =None
+REDISSERVER = None
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ def initippool(poolname="ippool"):
         for item in ips:
             # 标记时间戳
             markedtime = int(time.time())
-            ipstr = item.strip() + "*" + str(markedtime) + "*0"
+            ipstr = item.strip() + "*" + str(markedtime) + "*0*0"
             ip.append(ipstr)
 
         # 将ip添加进消息列队
@@ -61,38 +61,41 @@ def popip(secord=3, poolname="ippool"):
     splitstar = temppop[1].decode('utf-8', 'ignore').split("*")
     ip = splitstar[0]
     times = int(splitstar[2])
+    robottime = int(splitstar[3])
     # 得到间隔大于3秒的ip
     # 当前时间
     nowtime = int(time.time())
     # 如果时间间隔大于3就取出来使用
     if nowtime - int(splitstar[1]) >= secord:
-        return ip, times
+        return ip, times, robottime
     else:
-        logger.error(ip+"redis暂停:"+str(secord))
+        logger.error(ip + "redis暂停:" + str(secord))
         time.sleep(secord)
-        return ip, times
+        return ip, times, robottime
 
 
-def puship(ip, times, poolname="ippool"):
+def puship(ip, times, robottime, poolname="ippool"):
     global REDISSERVER
     if REDISSERVER == None:
         initredis()
     r = REDISSERVER
     nowtime = int(time.time())
     times = times + 1
-    ipstr = ip + "*" + str(nowtime) + "*" + str(times)
+    ipstr = ip + "*" + str(nowtime) + "*" + str(times) + "*" + str(robottime)
     try:
         r.lpush(poolname, ipstr)
     except Exception as err:
         logging.error(err, exc_info=1)
 
+
 if __name__ == '__main__':
-    # initredis()
+    initredis()
     poolname = "ippool"
-    # initippool(poolname)
+    initippool(poolname)
     # time.sleep(5)
     for i in range(1000):
-        ip, times = popip(3, poolname)
+        ip, times,robottime = popip(3, poolname)
         print(ip)
         print(times)
-        puship(ip,times,poolname)
+        print(robottime)
+        puship(ip, times, robottime+1,poolname)

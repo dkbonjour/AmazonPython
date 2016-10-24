@@ -9,27 +9,27 @@ from tool.jfile.file import *
 
 if __name__ == "__main__":
     print([] is None)
-    print([]==None)
+    print([] == None)
     print(not [])
-    print(False==[])
+    print(False == [])
     print(False is [])
-    print('-'*10)
+    print('-' * 10)
     print({} is None)
-    print({}==None)
+    print({} == None)
     print(not {})
-    print(False=={})
+    print(False == {})
     print(False is {})
-    print('-'*10)
+    print('-' * 10)
     print('' is None)
-    print(''==None)
+    print('' == None)
     print(not '')
-    print(False=='')
+    print(False == '')
     print(False is '')
-    print('-'*10)
+    print('-' * 10)
     print(None is None)
-    print(None==None)
+    print(None == None)
     print(not None)
-    print(False==None)
+    print(False == None)
     print(False is None)
     # try:
     #     1/0
@@ -39,3 +39,8 @@ if __name__ == "__main__":
 
     for i in listfiles("../data/rateurl/2urls", "-url.md"):
         print(i)
+    try:
+        raise Exception("机器人")
+    except Exception as e:
+        if (str(e) == "机器人"):
+            print("fff")

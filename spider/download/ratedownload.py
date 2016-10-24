@@ -46,7 +46,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
 
     # 取IP
     if redisneed:
-        ip, times = popip(getconfig()["redispooltimes"], getconfig()["redispoolname"])
+        ip, times, robottime = popip(getconfig()["redispooltimes"], getconfig()["redispoolname"])
         location = "no"
     else:
         ips = proxy(where=where, config=config, failtimes=iperror)
@@ -69,18 +69,10 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
             location = "unkonw"
     proxies = {"http": "http://" + ip}
     try:
-        try:
-            res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
-            # 放IP
-            if redisneed:
-                puship(ip, times, getconfig()["redispoolname"])
-        except:
-            # 放IP
-            if redisneed:
-                puship(ip, times, getconfig()["redispoolname"])
-            raise
+
+        res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
         if redisneed:
-            logger.error(url+":"+ip)
+            logger.error(url + ":" + ip)
         # print(res.status_code)
         res.raise_for_status()
         resdata = res.content
@@ -102,15 +94,24 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
                 "抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
                                                                                     ua=ua,
                                                                                     times=5 - retrytime))
+        # 放IP
+        if redisneed:
+            puship(ip, times, robottime, getconfig()["redispoolname"])
         return resdata
     except Exception as err:
         # IPPOOL.pop(ip)
+        # 放IP
+        if redisneed:
+            if (str(err) == "机器人"):
+                puship(ip, times, robottime + 1, getconfig()["redispoolname"])
+            else:
+                puship(ip, times, robottime, getconfig()["redispoolname"])
         logger.error("重试次数:{times}".format(times=5 - retrytime))
         logger.error(
                 "抓取URL错误:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
                                                                                       ua=ua,
                                                                                       times=5 - retrytime))
-        logging.error("机器人！")
+        logging.error(err)
         return ratedownload(url=url, where=where, config=config, retrytime=retrytime - 1, timeout=timeout)
 
 
