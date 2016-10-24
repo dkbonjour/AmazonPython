@@ -28,7 +28,7 @@ def saveerror(content):
     k = tool.log.BASE_DIR + "/data/errordetail/" + todaystring(6) + ".html"
     with open(k, "wb") as f:
         f.write(content.encode("utf-8"))
-    logger.error("强制标记:" + k)
+    logger.error("排名强制标记:" + k)
 
 # 评论数 打分 评分
 # id=productDetails_detailBullets_sections1
@@ -143,7 +143,7 @@ def pinfoparse(content):
     else:
         # revMH
         small = ""
-        timetemp = soup.find("div", attrs={"id": "revMH"})
+        timetemp = soup.find("div", attrs={"id": "revMHRL"})
         if timetemp == None:
             pass
         else:
@@ -152,13 +152,14 @@ def pinfoparse(content):
             for i in element:
                 try:
                     j = i.get_text().strip()
-                    if "on" in j:
-                        tempyoukonw = int(j.split("on ")[1].split(",")[1])
+                    if " on " in j:
+                        tempyoukonw = int(j.split(" on ")[1].strip().split(",")[1].strip())
                         # print(tempyoukonw)
                         if tempyoukonw < smallyear:
                             small = j.split("on ")[1]
                             smallyear = tempyoukonw
                 except Exception as err:
+                    print(j)
                     logger.error(err, exc_info=1)
         returnlist["commenttime"] = small.replace(",", "-")
     return returnlist

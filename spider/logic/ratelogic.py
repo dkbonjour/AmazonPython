@@ -113,7 +113,10 @@ def unitlogic(url, mysqlconfig):
                 if getconfig()["localkeep"]:
                     with open(rankeep + ".html", "wb") as f:
                         f.write(detailpage)
-        pinfo = pinfoparse(detailpage.decode("utf-8", "ignore"))
+        try:
+            pinfo = pinfoparse(detailpage.decode("utf-8", "ignore"))
+        except:
+            continue
         try:
             pinfo["smallrank"] = int(rank)
         except:
