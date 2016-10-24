@@ -44,7 +44,7 @@ CREATE TABLE `{tablename}` (
     '''.format(tablename=table)
         try:
             db.ExecNonQuery(sql)
-            print(sql)
+            print(table)
         except Exception as err:
             print(err)
 
