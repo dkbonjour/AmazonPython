@@ -640,5 +640,6 @@ git push origin :branch-name
 ```
 
 ```
+yum install nethogs -y
 killall -9 python3
 ```
