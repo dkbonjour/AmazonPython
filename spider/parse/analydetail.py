@@ -50,7 +50,7 @@ def pinfoparse(content):
     if header == None:
         header = soup.find("div", attrs={"id": "center-col"})
     if header == None:
-        createjia(tool.log.BASE_DIR + "/data/errordetail/")
+        createjia(tool.log.BASE_DIR + "/data/errordetail")
         k = tool.log.BASE_DIR + "/data/errordetail/" + todaystring(6) + ".html"
         with open(k, "wb") as f:
             f.write(content.encode("utf-8"))
