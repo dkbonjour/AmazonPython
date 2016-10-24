@@ -20,7 +20,8 @@ if __name__ == "__main__":
         # changeconfig("catchbywhich","bigpname")
         # category = getconfig()["catchurl"]
         changeconfig("catchbywhich", "database")
-        category = ["1", "2", "3", "4", "5", "6", "7"]
+        # category = ["1", "2", "3", "4", "5", "6", "7"]
+        category = ["1", "2", "3", "4"]
     except:
         category = ["Appliances", "Arts_ Crafts & Sewing"]
 
