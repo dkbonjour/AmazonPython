@@ -90,7 +90,7 @@ def unitlogic(url, mysqlconfig):
                     detailall[i] = temp17[j][1]
                     f.write((",".join(temp17[j]) + "\n").encode("utf-8"))
         except Exception as err:
-            logging.error(err, exc_info=1)
+            logger.error(err, exc_info=1)
             pass
 
     for rank in detailall:
@@ -139,7 +139,7 @@ def processlogic(processurls, mysqlconfig):
             # url: ('1-1', 'https://www.amazon.com/Best-Sellers-Appliances-Cooktops/zgbs/appliances/3741261/ref=zg_bs_nav_la_1_la/161-2441050-2846244', 'Cooktops', 2, 5, '1', '1', 'Appliances')
             unitlogic(url, mysqlconfig)
         except Exception as err:
-            logging.error(err, exc_info=1)
+            logger.error(err, exc_info=1)
 
 
 # 多进程抓取

@@ -42,7 +42,7 @@ def initippool(poolname="ippool"):
             r.lpush(poolname, item)
         logger.error("redis ip池好了")
     except Exception as err:
-        logging.error(err, exc_info=1)
+        logger.error(err, exc_info=1)
         exit()
 
 
@@ -56,7 +56,8 @@ def popip(secord=3, poolname="ippool"):
     try:
         temppop = r.brpop(poolname, timeout=0)
     except Exception as err:
-        logging.error(err, exc_info=1)
+        logger.error("redis没数据，阻塞失败")
+        logger.error(err, exc_info=1)
     # print(temppop)
     splitstar = temppop[1].decode('utf-8', 'ignore').split("*")
     ip = splitstar[0]
@@ -66,7 +67,7 @@ def popip(secord=3, poolname="ippool"):
     # 当前时间
     nowtime = int(time.time())
     # 如果时间间隔大于3就取出来使用
-    if nowtime - int(splitstar[1]) >= secord:
+    if nowtime - int(splitstar[1]) > secord:
         return ip, times, robottime
     else:
         logger.error(ip + "redis暂停:" + str(secord))
@@ -85,7 +86,21 @@ def puship(ip, times, robottime, poolname="ippool"):
     try:
         r.lpush(poolname, ipstr)
     except Exception as err:
-        logging.error(err, exc_info=1)
+        logger.error(err, exc_info=1)
+
+
+def pushipfuck(ip, times, robottime, poolname="ippoolfuck"):
+    global REDISSERVER
+    if REDISSERVER == None:
+        initredis()
+    r = REDISSERVER
+    nowtime = int(time.time())
+    times = times + 1
+    ipstr = ip + "*" + str(nowtime) + "*" + str(times) + "*" + str(robottime)
+    try:
+        r.lpush(poolname, ipstr)
+    except Exception as err:
+        logger.error(err, exc_info=1)
 
 
 if __name__ == '__main__':
@@ -94,8 +109,8 @@ if __name__ == '__main__':
     initippool(poolname)
     # time.sleep(5)
     for i in range(1000):
-        ip, times,robottime = popip(3, poolname)
+        ip, times, robottime = popip(3, poolname)
         print(ip)
         print(times)
         print(robottime)
-        puship(ip, times, robottime+1,poolname)
+        puship(ip, times, robottime + 1, poolname)

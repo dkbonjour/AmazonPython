@@ -72,7 +72,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
 
         res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
         if redisneed:
-            logger.error(url + ":" + ip)
+            logger.error(url + ":" + ip+"-"+str(times)+"-err:"+str(robottime))
         # print(res.status_code)
         res.raise_for_status()
         resdata = res.content
@@ -103,15 +103,15 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         # 放IP
         if redisneed:
             if (str(err) == "机器人"):
-                puship(ip, times, robottime + 1, getconfig()["redispoolname"])
+                pushipfuck(ip, times, robottime + 1, getconfig()["redispoolname"])
             else:
                 puship(ip, times, robottime, getconfig()["redispoolname"])
+        logger.error(err)
         logger.error("重试次数:{times}".format(times=5 - retrytime))
         logger.error(
                 "抓取URL错误:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
                                                                                       ua=ua,
                                                                                       times=5 - retrytime))
-        logging.error(err)
         return ratedownload(url=url, where=where, config=config, retrytime=retrytime - 1, timeout=timeout)
 
 

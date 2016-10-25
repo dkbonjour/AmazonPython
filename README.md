@@ -356,7 +356,7 @@ if __name__ == "__main__":
             ausalogic("1-2")
             isdead = True
         except Exception as err:
-            logging.error(err, exc_info=1)
+            logger.error(err, exc_info=1)
     b = time.clock()
     logger.error('运行时间：' + timetochina(b - a))
 ```
@@ -372,7 +372,7 @@ if __name__ == "__main__":
             ausalogic("3-4")
             # isdead = True
         except Exception as err:
-            logging.error(err, exc_info=1)
+            logger.error(err, exc_info=1)
             pass
         time.sleep(3600)
         logger.error("一分钟后又跑一次")
@@ -634,11 +634,16 @@ export （导出的EXCEL文件）
 ```
 
 
+# Qestion
+
+
+协同作战
 ```
 git branch -r -d origin/branch-name
 git push origin :branch-name
 ```
 
+命令等
 ```
 yum install nethogs -y
 killall -9 python3

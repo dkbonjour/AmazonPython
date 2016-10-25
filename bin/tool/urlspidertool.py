@@ -116,7 +116,7 @@ def dealurlfile(rubbish="/161-2441050-2846244"):
         lasturls.append(i.replace("-url.mdxx",""))
 
     logger.warning("可用类目记录数：" + str(len(listtemp)))
-    logging.warning("最小类目数" + str(len(lasturls)))
+    logger.warning("最小类目数" + str(len(lasturls)))
 
     with open(tool.log.BASE_DIR + "/config/base/URL.txt", "wt") as hunterhug:
         for i in sorted(listtemp.keys()):
@@ -141,7 +141,7 @@ def keeptomysql(filepath="config/base/URL.txt", config={}):
             mysql.ExecNonQuery(insertsql)
             logger.warning("执行sql语句成功:" + insertsql)
         except Exception as err:
-            logging.error(err, exc_info=1)
+            logger.error(err, exc_info=1)
             logger.error(insertsql)
 
 
