@@ -39,6 +39,7 @@ pip3 install bs4
 pip3 install redis
 yum install libxslt-devel
 pip3 install lxml
+pip3 install -U selenium
 ```
 
 ## Setting Environment Variables
@@ -647,4 +648,15 @@ git push origin :branch-name
 ```
 yum install nethogs -y
 killall -9 python3
+```
+
+浏览器
+```
+https://selenium-python.readthedocs.io/
+https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
+```
+
+VPN
+```
+http://www.wanghailin.cn/centos-7-vpn/
 ```

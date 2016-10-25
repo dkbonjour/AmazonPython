@@ -8,3 +8,4 @@ ValidURL.txt
 *.out
 nohup.out
 config.json
+*river.log
