@@ -103,7 +103,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         # 放IP
         if redisneed:
             if (str(err) == "机器人"):
-                pushipfuck(ip, times, robottime + 1, getconfig()["redispoolname"])
+                pushipfuck(ip, times, robottime + 1, getconfig()["redispoolfuckname"])
             else:
                 puship(ip, times, robottime, getconfig()["redispoolname"])
         logger.error(err)
