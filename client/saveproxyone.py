@@ -79,10 +79,13 @@ def getFirefox(url, ip,total=1):
 if __name__ == '__main__':
     url = "https://www.amazon.com"
     while True:
-        ip = input("输入需解救的IP：（如146.148.149.206:808）")
-        # ip=""
-        # # ip="111.13.65.244:80"
-        browers, data = getFirefox(url=url,ip=ip)
-        print("解救了"+ip+",暂停5秒后浏览器关闭")
-        time.sleep(5)
-        browers.close()
+        try:
+            ip = input("输入需解救的IP：（如146.148.149.206:808）")
+            # ip=""
+            # # ip="111.13.65.244:80"
+            browers, data = getFirefox(url=url,ip=ip)
+            print("解救了"+ip+",暂停5秒后浏览器关闭")
+            time.sleep(5)
+            browers.close()
+        except Exception as e:
+            print(e)

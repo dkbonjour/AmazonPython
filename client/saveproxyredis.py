@@ -58,11 +58,14 @@ def getFirefox(url, ip,total=1):
 if __name__ == '__main__':
     url = "https://www.amazon.com"
     while True:
-        ip,times,robbottime=popip(0,getconfig()["redispoolfuckname"])
-        # ip=""
-        # # ip="111.13.65.244:80"
-        browers, data = getFirefox(url=url,ip=ip)
-        print("解救了"+ip+",暂停5秒后浏览器关闭")
-        time.sleep(5)
-        browers.close()
-        puship(ip,times,0,getconfig()["redispoolname"])
+        try:
+            ip,times,robbottime=popip(0,getconfig()["redispoolfuckname"])
+            # ip=""
+            # # ip="111.13.65.244:80"
+            browers, data = getFirefox(url=url,ip=ip)
+            print("解救了"+ip+",暂停5秒后浏览器关闭")
+            time.sleep(5)
+            browers.close()
+            puship(ip,times,0,getconfig()["redispoolname"])
+        except Exception as e:
+            print(e)
