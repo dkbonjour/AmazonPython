@@ -8,7 +8,7 @@
   "iperror":20000,
   "itemnum":90,
   "sleep":false,
-  "koip":false,
+  "koip":true,
   "localkeep":false,
   "catchurl":["1","2","3"],
   "catchbywhich":"database",
