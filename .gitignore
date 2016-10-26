@@ -9,3 +9,5 @@ ValidURL.txt
 nohup.out
 *river.log
 geckodriver.log
+v2/cookie/*.txt
+v2/file/*.html
