@@ -10,15 +10,17 @@ from tool.jhttp.spider import *
 import requests
 from base64 import b64encode
 from action.redispool import *
+from lxml import etree
 
-def getFirefox(url, ip,total=1):
+
+def getFirefox(url, ip, total=1):
     data = ""
     proxy = {
-    "host": ip.split(":")[0],
-    "port": ip.split(":")[1],
-    "user": "smart",
-    "pass": "smart2016"
-}
+        "host": ip.split(":")[0],
+        "port": ip.split(":")[1],
+        "user": "smart",
+        "pass": "smart2016"
+    }
     profile = webdriver.FirefoxProfile()
     # add new header
     profile.add_extension("../modify_headers-0.7.1.1-fx.xpi")
@@ -46,7 +48,7 @@ def getFirefox(url, ip,total=1):
     try:
         if total == 1:
             data = browser.page_source
-        elif total==0:
+        elif total == 0:
             data = browser.find_element_by_xpath("html").text
         else:
             pass
@@ -55,17 +57,56 @@ def getFirefox(url, ip,total=1):
     return browser, data
 
 
+def testposta(url1, ip="146.148.240.241:808"):
+    try:
+
+        header = {
+            'User-Agent': "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0",
+            'Referer': 'https://www.amazon.com/',
+            'Host': 'www.amazon.com'
+        }
+
+        proxies = {"http": "http://smart:smart2016@" + ip}
+        r = requests.get(url1, headers=header, proxies=proxies, timeout=60)
+        r.raise_for_status()
+        robot(r.content.decode("utf-8", "ignore"))
+
+    except Exception as e:
+        print(e)
+        print("error:" + ip)
+        raise
+
+
+def robot(content):
+    # xpath解析需要的东西
+    contents = etree.HTML(content)
+    # <title dir="ltr">Robot Check</title>
+    try:
+        robot = contents.xpath('//title/text()')
+    except:
+        print("页数不足，机器人检测失败")
+    if "Robot Check" in robot:
+        raise Exception("机器人")
+
+
 if __name__ == '__main__':
     url = "https://www.amazon.com"
+    print("准备解救IP们！！！时刻准备好人工打码")
     while True:
         try:
-            ip,times,robbottime=popip(0,getconfig()["redispoolfuckname"])
+            ip, times, robbottime = popip(0, getconfig()["redispoolfuckname"])
+            print(ip + "准备好了！！！")
             # ip=""
             # # ip="111.13.65.244:80"
-            browers, data = getFirefox(url=url,ip=ip)
-            print("解救了"+ip+",暂停5秒后浏览器关闭")
+            browers, data = getFirefox(url=url, ip=ip)
+            try:
+                testposta("https://www.amazon.com", ip)
+            except:
+                puship(ip, times, robbottime, getconfig()["redispoolfuckname"])
+                continue
+            print("解救了" + ip + ",暂停5秒后浏览器关闭")
             time.sleep(5)
             browers.close()
-            puship(ip,times,0,getconfig()["redispoolname"])
+            puship(ip, times, 0, getconfig()["redispoolname"])
         except Exception as e:
             print(e)
