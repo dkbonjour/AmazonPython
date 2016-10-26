@@ -26,7 +26,7 @@ def testposta(url1, ip="146.148.240.241:808"):
 
         proxies = {"http": "http://smart:smart2016@" + ip}
         # proxies = {"http": "socks5://smart:smart2016@146.148.157.225:1080"}
-        r = requests.get(url1, headers=header, proxies=proxies)
+        r = requests.get(url1, headers=header, proxies=proxies,timeout=60)
         # print("right")
         # print(r.content)
     except Exception as e:
