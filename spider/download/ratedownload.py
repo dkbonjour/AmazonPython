@@ -25,6 +25,12 @@ logger = logging.getLogger(__name__)
 # 翻页+?pg=2
 
 def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
+    try:
+        koip = getconfig()["koip"]
+    except:
+        logger.error("配置文件出错")
+        exit()
+
     if where != "local" and not config:
         config = getconfig()["basedb"]
     if retrytime < 0:
@@ -81,12 +87,6 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         resdata = res.content
         res.close()
 
-        try:
-            koip = getconfig()["koip"]
-        except:
-            logger.error("配置文件出错")
-            exit()
-
         # 不需要去掉IP
         if redisneed:
             koipv1 = False
@@ -107,8 +107,11 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         # IPPOOL.pop(ip)
         # 放IP
         if redisneed:
-            if (str(err) == "机器人") and koip and robottime + 1 > getconfig()["rediserrmaxtimes"]:
-                pushipfuck(ip, times, robottime + 1, getconfig()["redispoolfuckname"])
+            if (str(err) == "机器人"):
+                if koip and robottime + 1 > getconfig()["rediserrmaxtimes"]:
+                    pushipfuck(ip, times, robottime + 1, getconfig()["redispoolfuckname"])
+                else:
+                    puship(ip, times, robottime + 1, getconfig()["redispoolname"])
             else:
                 puship(ip, times, robottime, getconfig()["redispoolname"])
         logger.error(err)
