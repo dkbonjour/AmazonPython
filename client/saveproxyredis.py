@@ -67,7 +67,7 @@ def testposta(url1, ip="146.148.240.241:808"):
         }
 
         proxies = {"http": "http://smart:smart2016@" + ip}
-        r = requests.get(url1, headers=header, proxies=proxies, timeout=60)
+        r = requests.get(url1, headers=header, proxies=proxies, timeout=100)
         r.raise_for_status()
         robot(r.content.decode("utf-8", "ignore"))
 
@@ -99,14 +99,22 @@ if __name__ == '__main__':
             # ip=""
             # # ip="111.13.65.244:80"
             browers, data = getFirefox(url=url, ip=ip)
+            time.sleep(20)
             try:
                 testposta("https://www.amazon.com", ip)
             except:
+                print("没能解救" + ip)
                 puship(ip, times, robbottime, getconfig()["redispoolfuckname"])
+                browers.close()
                 continue
-            print("解救了" + ip + ",暂停5秒后浏览器关闭")
-            time.sleep(5)
             browers.close()
+            print("解救了" + ip)
             puship(ip, times, 0, getconfig()["redispoolname"])
         except Exception as e:
             print(e)
+            if "Failed to decode" in str(e):
+                print("解救了" + ip)
+                puship(ip, times, 0, getconfig()["redispoolname"])
+            else:
+                print("没能解救" + ip)
+                puship(ip, times, robbottime, getconfig()["redispoolfuckname"])

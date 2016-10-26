@@ -37,7 +37,10 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         return None
     # 制作头部
     uas = useragent()
-    ua = uas[random.randint(0, len(uas) - 1)]
+    if getconfig()["manyua"]:
+        ua = uas[random.randint(0, len(uas) - 1)]
+    else:
+        ua = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0"
     header = {
         'User-Agent': ua,
         'Referer': 'https://www.amazon.com/',
