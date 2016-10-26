@@ -8,11 +8,13 @@ import logging
 import time
 import requests
 from action.proxy import *
+
 # 日志
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
-def testposta(url1,ip="146.148.240.241:808"):
+
+def testposta(url1, ip="146.148.240.241:808"):
     try:
         nowtime = time.strftime('%Y%m%d%H%M%S', time.localtime())
 
@@ -22,28 +24,34 @@ def testposta(url1,ip="146.148.240.241:808"):
             'Host': 'www.amazon.com'
         }
 
-        proxies = {"http": "http://smart:smart2016@"+ip}
+        proxies = {"http": "http://smart:smart2016@" + ip}
         # proxies = {"http": "socks5://smart:smart2016@146.148.157.225:1080"}
-        r = requests.get(url1,headers=header,proxies=proxies)
+        r = requests.get(url1, headers=header, proxies=proxies)
         # print("right")
         # print(r.content)
     except Exception as e:
         print(e)
-        print("error"+ip)
+        print("error" + ip)
         raise
+
 
 if __name__ == "__main__":
     config = {"host": "192.168.0.152", "user": "bai", "pwd": "123456", "db": "smart_base"}
-    ips = proxy(where="local", config=config)
+    ips = proxy(where="mysql", config=config)
     # for ii in ips:
     #     print(ii+"-"+ips[ii][0])
     ipss = []
+    iperr = []
     for i in ips:
         try:
-            testposta("https://www.amazon.com",i)
+            testposta("https://www.amazon.com", i)
             ipss.append(i)
             print(i)
         except:
+            iperr.append(i)
             pass
     for ii in ipss:
-        print(ii+"-"+ips[ii][0])
+        print(ii + "-" + ips[ii][0])
+    print("*"*10)
+    for jj in iperr:
+        print(jj + "-" + ips[jj][0])

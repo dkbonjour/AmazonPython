@@ -19,7 +19,7 @@ def initredis():
     return REDISSERVER
 
 
-def initippool(poolname="ippool"):
+def initippool(poolname="ippool",poolfuckname="ippoolfuck"):
     global REDISSERVER
     if REDISSERVER == None:
         initredis()
@@ -27,6 +27,7 @@ def initippool(poolname="ippool"):
     ip = []
     # 删除旧的列队
     r.delete(poolname)
+    r.delete(poolfuckname)
     try:
         config = getconfig()["basedb"]
         if getconfig()["ipinmysql"]:

@@ -2,7 +2,7 @@
 # -*-coding:utf-8-*-
 # Created by Smartdo Co.,Ltd. on 2016/10/25.
 # 功能:
-#   人工打码
+#   人工打码,一个
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
@@ -44,7 +44,7 @@ def getFirefox(url, ip,total=1):
 }
     profile = webdriver.FirefoxProfile()
     # add new header
-    profile.add_extension("modify_headers-0.7.1.1-fx.xpi")
+    profile.add_extension("../modify_headers-0.7.1.1-fx.xpi")
     profile.set_preference("extensions.modify_headers.currentVersion", "0.7.1.1-fx")
     profile.set_preference("modifyheaders.config.active", True)
     profile.set_preference("modifyheaders.headers.count", 1)
@@ -60,7 +60,7 @@ def getFirefox(url, ip,total=1):
     profile.set_preference('network.proxy.no_proxies_on', 'localhost, 127.0.0.1')
 
     # Proxy auto login
-    profile.add_extension('close_proxy_authentication-1.1-sm+tb+fx.xpi')
+    profile.add_extension('../close_proxy_authentication-1.1-sm+tb+fx.xpi')
     credentials = '{user}:{pass}'.format(**proxy)
     credentials = b64encode(credentials.encode('ascii')).decode('utf-8')
     profile.set_preference('extensions.closeproxyauth.authtoken', credentials)
@@ -74,10 +74,15 @@ def getFirefox(url, ip,total=1):
     except NoSuchElementException:
         print("神马都没有")
     return browser, data
+
+
 if __name__ == '__main__':
     url = "https://www.amazon.com"
-    ip = "146.148.240.241:808"
-    # ip=""
-    # # ip="111.13.65.244:80"
-    browers, data = getFirefox(url=url,ip=ip, total=0)
-    print(data)
+    while True:
+        ip = input("输入需解救的IP：（如146.148.149.206:808）")
+        # ip=""
+        # # ip="111.13.65.244:80"
+        browers, data = getFirefox(url=url,ip=ip)
+        print("解救了"+ip+",暂停5秒后浏览器关闭")
+        time.sleep(5)
+        browers.close()
