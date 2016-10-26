@@ -46,7 +46,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
 
     # 取IP
     if redisneed:
-        ip, times, robottime = popip(getconfig()["redispooltimes"], getconfig()["redispoolname"])
+        ip, times, robottime = popip(getconfig()["redispoolsleeptimes"], getconfig()["redispoolname"])
         location = "no"
     else:
         ips = proxy(where=where, config=config, failtimes=iperror)
@@ -67,27 +67,32 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
             location = ips[ip][0]
         else:
             location = "unkonw"
-    proxies = {"http": "http://" + ip}
+    proxies = {"http": "http://smart:smart2016@" + ip}
+    # proxies = {
+    #     'http': 'socks5://user:pass@host:port',
+    #     'https': 'socks5://user:pass@host:port'
+    # }
     try:
-
         res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
         if redisneed:
-            logger.error(url + ":" + ip+"-"+str(times)+"-err:"+str(robottime))
+            logger.error(url + ":" + ip + "-" + str(times) + "-err:" + str(robottime))
         # print(res.status_code)
         res.raise_for_status()
         resdata = res.content
         res.close()
 
+        try:
+            koip = getconfig()["koip"]
+        except:
+            logger.error("配置文件出错")
+            exit()
+
         # 不需要去掉IP
         if redisneed:
-            koip = False
+            koipv1 = False
         else:
-            try:
-                koip = getconfig()["koip"]
-            except:
-                logger.error("配置文件出错")
-                exit()
-        if not robot(resdata, ip, koip):
+            koipv1 = koip
+        if not robot(resdata, ip, koipv1):
             return None
 
         logger.warning(
@@ -102,7 +107,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         # IPPOOL.pop(ip)
         # 放IP
         if redisneed:
-            if (str(err) == "机器人"):
+            if (str(err) == "机器人") and koip and robottime + 1 > getconfig()["rediserrmaxtimes"]:
                 pushipfuck(ip, times, robottime + 1, getconfig()["redispoolfuckname"])
             else:
                 puship(ip, times, robottime, getconfig()["redispoolname"])

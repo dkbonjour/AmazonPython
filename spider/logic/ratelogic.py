@@ -44,9 +44,14 @@ def unitlogic(url, mysqlconfig):
     # 2016/Appl/20160606/
     todays = todaystring(3)
     year = todaystring(1)
-    db= getconfig()["dbprefix"] + db
+    db = getconfig()["dbprefix"] + db
     if not dbexist(db, id, todays):
         return
+
+    if getconfig()["ipinmysql"]:
+        where = "mysql"
+    else:
+        where = "local"
 
     keepdir = createjia(DATA_DIR + "/data/items/" + year + "/" + bigpname + "/" + todays + "/" + id)
 
@@ -72,8 +77,8 @@ def unitlogic(url, mysqlconfig):
         # ?_encoding=UTF8&pg=1&ajax=1&isAboveTheFold=0 17个商品
         items3 = "?_encoding=UTF8&ajax=1&pg=" + str(i + 1)
         items17 = "?_encoding=UTF8&&isAboveTheFold=0&ajax=1&pg=" + str(i + 1)
-        content3 = ratedownload(url=catchurl + items3, where="mysql", config=mysqlconfig)
-        content17 = ratedownload(url=catchurl + items17, where="mysql", config=mysqlconfig)
+        content3 = ratedownload(url=catchurl + items3, where=where, config=mysqlconfig)
+        content17 = ratedownload(url=catchurl + items17, where=where, config=mysqlconfig)
         if content3 == None:
             continue
         if content17 == None:
@@ -106,7 +111,7 @@ def unitlogic(url, mysqlconfig):
             with open(rankeep + ".html", "rb") as ff:
                 detailpage = ff.read()
         else:
-            detailpage = ratedownload(url=url, where="mysql", config=mysqlconfig)
+            detailpage = ratedownload(url=url, where=where, config=mysqlconfig)
             if detailpage == None:
                 continue
             else:

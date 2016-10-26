@@ -7,5 +7,5 @@ URL.txt
 ValidURL.txt
 *.out
 nohup.out
-config.json
 *river.log
+geckodriver.log

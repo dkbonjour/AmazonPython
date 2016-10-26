@@ -29,7 +29,11 @@ def initippool(poolname="ippool"):
     r.delete(poolname)
     try:
         config = getconfig()["basedb"]
-        ips = proxy(where="mysql", config=config)
+        if getconfig()["ipinmysql"]:
+            where="mysql"
+        else:
+            where="local"
+        ips = proxy(where=where, config=config)
         # 将ip写入数组并加上时间戳
         for item in ips:
             # 标记时间戳
