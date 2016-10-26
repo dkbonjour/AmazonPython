@@ -42,8 +42,13 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
     else:
         ua = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0"
     header = {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         'User-Agent': ua,
-        'Referer': 'https://www.amazon.com/',
+        "Accept-Encoding": "gzip, deflate, br",
+        "Connection": "keep-alive",
+        "Accept-Language": "en-US;q=0.8,en;q=0.5",
+        "Upgrade-Insecure-Requests": "1",
+        # 'Referer': 'https://www.amazon.com/',
         'Host': 'www.amazon.com'
     }
     try:
