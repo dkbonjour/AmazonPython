@@ -36,7 +36,11 @@ def testposta(url1, ip="146.148.240.241:808"):
 
 
 if __name__ == "__main__":
-    config = {"host": "192.168.0.152", "user": "bai", "pwd": "123456", "db": "smart_base"}
+    local = input("本地还是远程(本地1，远程2):")
+    if local == "1":
+        config = {"host": "192.168.0.152", "user": "bai", "pwd": "123456", "db": "smart_base"}
+    else:
+        config = getconfig()["basedb"]
     ips = proxy(where="mysql", config=config)
     # for ii in ips:
     #     print(ii+"-"+ips[ii][0])
@@ -50,8 +54,14 @@ if __name__ == "__main__":
         except:
             iperr.append(i)
             pass
+    fe=open("iperror.md","wt")
+    f=open("ipright.md","wt")
     for ii in ipss:
         print(ii + "-" + ips[ii][0])
-    print("*"*10)
+        fe.write(ii + "-" + ips[ii][0]+"\n")
+    fe.close()
+    print("*" * 10)
     for jj in iperr:
         print(jj + "-" + ips[jj][0])
+        f.write(jj + "-" + ips[jj][0]+"\n")
+    f.close()
