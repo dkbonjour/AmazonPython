@@ -31,8 +31,8 @@ def validurlchangemysql(config, dbname, textname):
             mysql.ExecNonQuery(sql)
             logger.warning("执行sql语句成功:" + sql)
         except Exception as err:
+            logger.error("错误:"+sql)
             logger.error(err, exc_info=1)
-            logger.error(sql)
 
 
 def AveryGood():

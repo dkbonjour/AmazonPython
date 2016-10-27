@@ -53,7 +53,7 @@ def level1():
         # 一级目录下的网址
         firsturl = "https://www.amazon.com/Best-Sellers/zgbs"
         onecontent = ratedownload(firsturl)
-        if onecontent == None:
+        if onecontent == None or onecontent == 0:
             raise
         else:
             onecontent = onecontent.decode('utf-8', 'ignore')
@@ -77,7 +77,7 @@ def level2(arr_oneurl, arr_onename):
             logger.info("已存在！第" + prefix + "个一级类目:" + arr_oneurl[two] + "的二级类目...")
             continue
         twocontent = ratedownload(arr_oneurl[two])
-        if twocontent == None:
+        if twocontent == None or twocontent==0:
             continue
         else:
             twocontent = twocontent.decode('utf-8', 'ignore')
@@ -123,7 +123,7 @@ def level3(catchfiles=[]):
                 logger.info("已存在！第" + weizhi + "个一级类目:" + filename + ",第" + prefix + "个二级类目：" + urls[urlposition] + "的三级类目...")
                 continue
             threecontent = ratedownload(urls[urlposition])
-            if threecontent == None:
+            if threecontent == None or threecontent == 0:
                 continue
             else:
                 threecontent = threecontent.decode('utf-8', 'ignore')
@@ -170,7 +170,7 @@ def level4(catchfiles=[]):
                 logger.info("已存在！第" + str(position + 1) + "个二级类目:" + filename + ",第" + prefix + "个三级类目：" + urls[urlposition] + "的四级类目...")
                 continue
             fourcontent = ratedownload(urls[urlposition])
-            if fourcontent == None:
+            if fourcontent == None or fourcontent == 0:
                 continue
             else:
                 fourcontent = fourcontent.decode('utf-8', 'ignore')
@@ -215,7 +215,7 @@ def level5(catchfiles=[]):
                 logger.info("已存在！第" + str(position + 1) + "个三级类目:" + filename + "，第" + prefix + "个四级类目：" + urls[urlposition] + "的五级类目...")
                 continue
             fourcontent = ratedownload(urls[urlposition])
-            if fourcontent == None:
+            if fourcontent == None or fourcontent == 0:
                 continue
             else:
                 fourcontent = fourcontent.decode('utf-8', 'ignore')
@@ -263,7 +263,7 @@ def level6(catchfiles=[]):
                 logger.info("已存在！第" + str(position + 1) + "个四级类目:" + filename + "，第" + prefix + "个五级类目：" + urls[urlposition] + "的六级类目...")
                 continue
             fourcontent = ratedownload(urls[urlposition])
-            if fourcontent == None:
+            if fourcontent == None or fourcontent == 0:
                 continue
             else:
                 fourcontent = fourcontent.decode('utf-8', 'ignore')

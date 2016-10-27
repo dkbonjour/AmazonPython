@@ -41,16 +41,19 @@ def urlparse(content, level=1):
     return returnurl, returnname
 
 
-def robot(content, ip, koip=True):
+def robot(content, ip, koip=False, url=""):
     # xpath解析需要的东西
     contents = etree.HTML(content)
     # <title dir="ltr">Robot Check</title>
     try:
-        robot = contents.xpath('//title/text()')
+        robots = contents.xpath('//title/text()')
     except:
-        logger.error("页数不足，机器人检测失败")
+        logger.error("页数不足，机器人检测失败:" + url)
         return False
-    if "Robot Check" in robot:
+    if "Page Not Found" in robots:
+        logger.error("找不到頁面:" + url)
+        return False
+    if "Robot Check" in robots:
         if koip:
             try:
                 action.proxy.IPPOOL.pop(ip)

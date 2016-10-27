@@ -33,7 +33,7 @@ def iplocation(ip):
         temp = str(location[1]).split("：")
         location = temp[len(temp) - 1]
     except Exception as e:
-        logger.error("爬虫查找IP所在地址异常：" + ip + e)
+        logger.error("爬虫查找IP所在地址异常：" + ip + str(e))
         location = ""
     return location
 

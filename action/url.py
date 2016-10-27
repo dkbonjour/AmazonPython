@@ -28,7 +28,7 @@ def usaurl(config={}, category=[], limitnum=20000):
             condition = condition + catchbywhich + '="' + category[i] + '" or '
     selectsql = 'SELECT id,url,name,page,bigpname,level,`database` FROM smart_category where isvalid=1 and (' + condition + ') group by url limit 0,' + str(
             limitnum)
-    logger.warning(selectsql)
+    logger.warning("查詢："+selectsql)
     result = mysql.ExecQuery(selectsql)
     return result
 
@@ -75,11 +75,10 @@ def insertpmysql(pmap, dbname, tablename):
               "VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
               "'{shipby}',{price},{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);".format_map(pmap)
         db.ExecNonQuery(sql)
-        logger.error("插数据库成功,数据库:" + dbname + ",表:" + pmap["tablename"] + ",Id" + pmap["id"])
+        logger.warning("插数据库成功,数据库:" + dbname + ",表:" + pmap["tablename"] + ",Id" + pmap["id"])
         return True
     except Exception as err:
-        logger.error("插数据库出错" + sql)
-        logger.error(err)
+        logger.error("插数据库出错:" + sql)
     return False
 
 

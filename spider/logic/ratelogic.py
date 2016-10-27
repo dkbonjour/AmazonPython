@@ -59,6 +59,14 @@ def unitlogic(url, mysqlconfig):
 
     detailall = {}
 
+    # 列表頁抓完？
+    finish = listfiles(keepdir, ".jinhan")
+    pagefinish = False
+    if len(finish) >= 1:
+        pagefinish = True
+
+    # 重試多次仍然抓不到頁面？
+    retryhappen = False
     for i in range(min(page, 5)):
         itempath = keepdir + "/" + str(i + 1) + ".md"
         if fileexsit(itempath):
@@ -70,38 +78,51 @@ def unitlogic(url, mysqlconfig):
                 detailall[temptemp[0]] = temptemp[1]
             continue
         else:
+            # 如果不存在文件且已經完成，證明頁數不足
+            if pagefinish:
+                break
             logger.warning("抓取:" + id + "(" + str(i + 1) + ")-" + bigpname + ":" + catchname + "(" + str(
                     level) + ") --" + catchurl)
-        # 构造页数
-        # ?_encoding=UTF8&pg=1&ajax=1   3个商品
-        # ?_encoding=UTF8&pg=1&ajax=1&isAboveTheFold=0 17个商品
-        items3 = "?_encoding=UTF8&ajax=1&pg=" + str(i + 1)
-        items17 = "?_encoding=UTF8&&isAboveTheFold=0&ajax=1&pg=" + str(i + 1)
-        content3 = ratedownload(url=catchurl + items3, where=where, config=mysqlconfig)
-        content17 = ratedownload(url=catchurl + items17, where=where, config=mysqlconfig)
-        if content3 == None:
-            continue
-        if content17 == None:
-            continue
-        try:
-            # {'91':['91', 'https://www.amazon.com/dp/B003Z968T0', 'WhisperKOOL® Platinum Split System 80...']}
-            temp3 = rateparse(content3)
-            temp17 = rateparse(content17)
-            with open(itempath, "wb") as f:
-                for i in sorted(temp3.keys()):
-                    detailall[i] = temp3[i][1]
-                    f.write((",".join(temp3[i]) + "\n").encode("utf-8"))
-                for j in sorted(temp17.keys()):
-                    detailall[i] = temp17[j][1]
-                    f.write((",".join(temp17[j]) + "\n").encode("utf-8"))
-        except Exception as err:
-            logger.error(err, exc_info=1)
-            pass
+            # 构造页数
+            # ?_encoding=UTF8&pg=1&ajax=1   3个商品
+            # ?_encoding=UTF8&pg=1&ajax=1&isAboveTheFold=0 17个商品
+            items3 = "?_encoding=UTF8&ajax=1&pg=" + str(i + 1)
+            items17 = "?_encoding=UTF8&&isAboveTheFold=0&ajax=1&pg=" + str(i + 1)
+            content3 = ratedownload(url=catchurl + items3, where=where, config=mysqlconfig)
+            content17 = ratedownload(url=catchurl + items17, where=where, config=mysqlconfig)
+            if content3 == 0 or content17 == 0:
+                break
+            if content3 == None:
+                retryhappen = True
+                continue
+            if content17 == None:
+                retryhappen = True
+                continue
+            try:
+                # {'91':['91', 'https://www.amazon.com/dp/B003Z968T0', 'WhisperKOOL® Platinum Split System 80...']}
+                temp3 = rateparse(content3)
+                temp17 = rateparse(content17)
+                with open(itempath, "wb") as f:
+                    for i in sorted(temp3.keys()):
+                        detailall[i] = temp3[i][1]
+                        f.write((",".join(temp3[i]) + "\n").encode("utf-8"))
+                    for j in sorted(temp17.keys()):
+                        detailall[i] = temp17[j][1]
+                        f.write((",".join(temp17[j]) + "\n").encode("utf-8"))
+            except Exception as err:
+                logger.error("解析列表頁錯誤：" + catchurl + ":" + str(i + 1))
+                logger.error(err, exc_info=1)
+                pass
+    if retryhappen == False and pagefinish == False:
+        with open(keepdir + "/ko.jinhan", "wt") as f:
+            f.write("1")
 
     for rank in detailall:
         detailname = rank + "-" + detailall[rank]
         rankeep = detaildir + "/" + detailname
         if fileexsit(rankeep + ".md"):
+            continue
+        if fileexsit(rankeep + ".emd"):
             continue
         url = "https://www.amazon.com/dp/" + detailall[rank]
 
@@ -114,6 +135,10 @@ def unitlogic(url, mysqlconfig):
             detailpage = ratedownload(url=url, where=where, config=mysqlconfig)
             if detailpage == None:
                 continue
+            if detailpage == 0:
+                with open(rankeep + ".emd", "wt") as f:
+                    f.write("1")
+                continue
             else:
                 if getconfig()["localkeep"]:
                     with open(rankeep + ".html", "wb") as f:
@@ -121,6 +146,7 @@ def unitlogic(url, mysqlconfig):
         try:
             pinfo = pinfoparse(detailpage.decode("utf-8", "ignore"))
         except:
+            logger.error("解析詳情頁出錯:" + url)
             continue
         try:
             pinfo["smallrank"] = int(rank)
@@ -135,6 +161,8 @@ def unitlogic(url, mysqlconfig):
             with open(rankeep + ".md", "wb") as f:
                 f.write(objectToString(pinfo).encode("utf-8"))
 
+    # 成功
+    logger.error(todays + "|" + db + ":" + id + " completed")
 
 # 单进程抓取
 def processlogic(processurls, mysqlconfig):
@@ -144,6 +172,8 @@ def processlogic(processurls, mysqlconfig):
             # url: ('1-1', 'https://www.amazon.com/Best-Sellers-Appliances-Cooktops/zgbs/appliances/3741261/ref=zg_bs_nav_la_1_la/161-2441050-2846244', 'Cooktops', 2, 5, '1', '1', 'Appliances')
             unitlogic(url, mysqlconfig)
         except Exception as err:
+            logger.error("單進程抓錯異常：")
+            logger.error(url)
             logger.error(err, exc_info=1)
 
 

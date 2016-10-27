@@ -5,6 +5,7 @@ import redis
 import time
 from config.config import *
 from action.proxy import *
+import random
 
 REDISSERVER = None
 tool.log.setup_logging()
@@ -51,7 +52,7 @@ def initippool(poolname="ippool",poolfuckname="ippoolfuck"):
         exit()
 
 
-def popip(secord=3, poolname="ippool"):
+def popip(secord=5, poolname="ippool"):
     global REDISSERVER
     if REDISSERVER == None:
         initredis()
@@ -75,7 +76,8 @@ def popip(secord=3, poolname="ippool"):
     if nowtime - int(splitstar[1]) > secord:
         return ip, times, robottime
     else:
-        logger.error(ip + "redis暂停:" + str(secord))
+        secord = random.randint(secord-1,secord+3)
+        logger.warning(ip + "redis暂停:" + str(secord))
         time.sleep(secord)
         return ip, times, robottime
 
@@ -91,6 +93,7 @@ def puship(ip, times, robottime, poolname="ippool"):
     try:
         r.lpush(poolname, ipstr)
     except Exception as err:
+        logger.error("放IP失败")
         logger.error(err, exc_info=1)
 
 
@@ -105,6 +108,7 @@ def pushipfuck(ip, times, robottime, poolname="ippoolfuck"):
     try:
         r.lpush(poolname, ipstr)
     except Exception as err:
+        logger.error("放IP失败")
         logger.error(err, exc_info=1)
 
 

@@ -11,3 +11,4 @@ nohup.out
 geckodriver.log
 v2/cookie/*.txt
 v2/file/*.html
+v2/*.txt

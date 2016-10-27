@@ -14,6 +14,7 @@ from bs4 import BeautifulSoup
 from config.config import *
 from tool.jfile.file import *
 from action.redispool import *
+from tool.jhttp.spider import *
 
 # 日志
 tool.log.setup_logging()
@@ -36,9 +37,12 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
     if retrytime < 0:
         return None
     # 制作头部
-    uas = useragent()
+    # UA编号
+    uano = 0
     if getconfig()["manyua"]:
+        uas = useragent()
         ua = uas[random.randint(0, len(uas) - 1)]
+        uano = ua.split(",")[0]
     else:
         ua = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0"
     header = {
@@ -72,7 +76,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
             if getconfig()["sleep"]:
                 tt = random.randint(1, 3)
                 time.sleep(tt)
-                logger.error("暂停:" + str(tt) + "秒:" + url)
+                logger.debug("暂停:" + str(tt) + "秒:" + url)
         except:
             logger.error("配置文件出错")
             exit()
@@ -87,33 +91,46 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
     #     'https': 'socks5://user:pass@host:port'
     # }
     try:
-        res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
+        # manycookie
+        if getconfig()["manycookie"]:
+            resdata = spider(url=url, proxies=proxies, headers=header, ua=uano, path=getconfig()["datadir"] + "/cookie",timeout=timeout)
+        else:
+            res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
+            # print(res.status_code)
+            res.raise_for_status()
+            resdata = res.content
+            res.close()
         if redisneed:
-            logger.error(url + ":" + ip + "-" + str(times) + "-err:" + str(robottime))
-        # print(res.status_code)
-        res.raise_for_status()
-        resdata = res.content
-        res.close()
+            logger.warning(
+                    "抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip + "-" + str(
+                            times) + "-err:" + str(robottime), location=location, ua=ua, times=5 - retrytime))
+
+        else:
+            logger.warning(
+                    "抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip,
+                                                                                        location=location,
+                                                                                        ua=ua,
+                                                                                        times=5 - retrytime))
 
         # 不需要去掉IP
         if redisneed:
             koipv1 = False
         else:
             koipv1 = koip
-        if not robot(resdata, ip, koipv1):
-            return None
+        if not robot(resdata, ip, koipv1, url):
+            # 放IP
+            if redisneed:
+                puship(ip, times, robottime, getconfig()["redispoolname"])
 
-        logger.warning(
-                "抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
-                                                                                    ua=ua,
-                                                                                    times=5 - retrytime))
+            # 頁數不足
+            # 或者找不到頁面
+            return 0
+
         # 放IP
         if redisneed:
             puship(ip, times, robottime, getconfig()["redispoolname"])
         return resdata
     except Exception as err:
-        # IPPOOL.pop(ip)
-        # 放IP
         if redisneed:
             if (str(err) == "机器人"):
                 if koip and robottime + 1 > getconfig()["rediserrmaxtimes"]:
@@ -122,12 +139,18 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
                     puship(ip, times, robottime + 1, getconfig()["redispoolname"])
             else:
                 puship(ip, times, robottime, getconfig()["redispoolname"])
-        logger.error(err)
-        logger.error("重试次数:{times}".format(times=5 - retrytime))
-        logger.error(
-                "抓取URL错误:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip, location=location,
-                                                                                      ua=ua,
-                                                                                      times=5 - retrytime))
+        if redisneed:
+            logger.error(
+                    "失敗抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip + "-" + str(
+                            times) + "-err:" + str(robottime), location=location, ua=ua, times=5 - retrytime))
+
+        else:
+            logger.error(
+                    "失敗抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip,
+                                                                                          location=location,
+                                                                                          ua=ua,
+                                                                                          times=5 - retrytime))
+        logger.error(err, exc_info=1)
         return ratedownload(url=url, where=where, config=config, retrytime=retrytime - 1, timeout=timeout)
 
 

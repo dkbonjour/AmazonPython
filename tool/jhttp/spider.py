@@ -5,10 +5,12 @@
 import urllib.request, urllib.parse, http.cookiejar
 import os, time, re
 import http.cookies
+import socket
 
 
 # star 自己封装的抓取函数,单机应用
-def spider(url, daili='', postdata={}, headers={}):
+def spider(url, proxies={}, postdata={}, headers={}, ua="ua", path=".", timeout=60):
+    socket.setdefaulttimeout(timeout)
     """
     抓取网页：支持cookie
     第一个参数为网址，第二个为POST的数据
@@ -21,7 +23,24 @@ def spider(url, daili='', postdata={}, headers={}):
     # print(header)
 
     # COOKIE文件保存路径
-    filename = 'cookie.txt'
+    filename = path + "/" + ua + '-cookie.txt'
+    try:
+        # proxies = {
+        #     'http': 'socks5://user:pass@host:port',
+        #     'https': 'socks5://user:pass@host:port'
+        # 'https': 'socks5://host:port'
+        # }
+        try:
+            temp = proxies["http"]
+        except:
+            temp = proxies["https"]
+        if "@" in temp:
+            ip = temp.split("@")[1].split(":")[0]
+        else:
+            ip = temp.split("//")[1].split(":")[0]
+        filename = path + "/" + ip + "-" + ua + '.txt'
+    except:
+        pass
 
     # 声明一个MozillaCookieJar对象实例保存在文件中
     cj = http.cookiejar.MozillaCookieJar(filename)
@@ -39,10 +58,10 @@ def spider(url, daili='', postdata={}, headers={}):
     else:
         cookie = ''
     # 建造带有COOKIE处理器的打开专家
-    proxy_support = urllib.request.ProxyHandler({'http': 'http://' + daili})
+    proxy_support = urllib.request.ProxyHandler(proxies)
     # 开启代理支持
-    if daili:
-        print('代理:' + daili + '启动')
+    if proxies:
+        print(proxies)
         opener = urllib.request.build_opener(proxy_support, urllib.request.HTTPCookieProcessor(cj),
                                              urllib.request.HTTPHandler)
     else:
@@ -80,8 +99,3 @@ def urlencode(postdata={}):
     return urllib.parse.urlencode(postdata)
 
 
-if __name__ == "__main__":
-    # print(getHtml("http://www.baidu.com").decode("utf-8", "ignore"))
-
-    url = "http://dd.com?" + urlencode({"dd": "Ddd", "你好": 3})
-    print(url)

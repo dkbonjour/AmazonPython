@@ -141,8 +141,8 @@ def keeptomysql(filepath="config/base/URL.txt", config={}):
             mysql.ExecNonQuery(insertsql)
             logger.warning("执行sql语句成功:" + insertsql)
         except Exception as err:
+            logger.error("错误："+insertsql)
             logger.error(err, exc_info=1)
-            logger.error(insertsql)
 
 
 if __name__ == "__main__":

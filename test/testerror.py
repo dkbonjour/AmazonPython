@@ -6,8 +6,11 @@
 import sys
 import traceback
 from tool.jfile.file import *
+import random
 
 if __name__ == "__main__":
+    for i in range(88):
+        print(random.randint(5-1,5+2))
     print([] is None)
     print([] == None)
     print(not [])
@@ -37,6 +40,8 @@ if __name__ == "__main__":
     #     exc_type, exc_value, exc_tb = sys.exc_info()
     #     traceback.print_exception(exc_type, exc_value, exc_tb)
 
+    if "dd".encode("utf-8")==0 or 0==None:
+        print("*"*10)
     for i in listfiles("../data/rateurl/2urls", "-url.md"):
         print(i)
     try:

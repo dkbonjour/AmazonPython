@@ -5,6 +5,7 @@
   "time": "2016-11",
   "datadir":"/data/db/usa",
   "manyua":true,
+  "manycookie":true,
   "limitip":false,
   "iperror":20000,
   "itemnum":90,
@@ -21,7 +22,7 @@
     "pwd": "smart2016",
     "db": "smart_base"
   },
-  "ipinmysql":false,
+  "ipinmysql":true,
   "redispool":true,
   "redispoolname":"ippool",
   "redispoolfuckname":"ippoolfuck",
