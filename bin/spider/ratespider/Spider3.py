@@ -20,6 +20,8 @@ if __name__ == "__main__":
         # changeconfig("catchbywhich","bigpname")
         # category = getconfig()["catchurl"]
         changeconfig("catchbywhich", "database")
+        changeconfig("redispoolname","ippool3")
+        changeconfig("redispoolfuckname","ippoolfuck3")
         # category = ["1", "2", "3", "4", "5", "6", "7"]
         category = ["1", "2", "3", "4"]
     except:

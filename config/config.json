@@ -14,7 +14,7 @@
   "localkeep":false,
   "catchurl":["1","2","3"],
   "catchbywhich":"database",
-  "processnum":20,
+  "processnum":50,
   "urlnum":20000,
   "basedb": {
     "host": "45.41.88.189",
@@ -26,7 +26,8 @@
   "redispool":true,
   "redispoolname":"ippool",
   "redispoolfuckname":"ippoolfuck",
-  "redispoolsleeptimes":60,
+  "redispoolnumber":3,
+  "redispoolsleeptimes":5,
   "rediserrmaxtimes":3,
   "redispoolconfig":{"host":"45.41.88.189","pwd":"smart2016","port":6379},
   "dbprefix":"db",

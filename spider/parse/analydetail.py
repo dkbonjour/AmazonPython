@@ -11,17 +11,6 @@ import tool.log
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
-'''
-# 抓取dp的正则表达式
-def getdp(string):
-    reg = r'(http.+?/dp/)(.+?)(/ref)'
-    all = re.compile(reg)
-    alllist = re.findall(all, string)
-    try:
-        return alllist[0][1]
-    except:
-        return "NO ASIN"
-'''
 
 def saveerror(content):
     createjia(tool.log.BASE_DIR + "/data/errordetail")
@@ -30,34 +19,42 @@ def saveerror(content):
         f.write(content.encode("utf-8"))
     logger.error("排名强制标记:" + k)
 
+
+# 正则大类排名
+def getrank2reg(string):
+    # 这里正则只是选取1-5个字段，然后就匹配 in 。  (#######I live in)
+    # 防止抓取到其他的东西，一定要用{1,5}
+    reg = r'#(.{1,8}) in '
+    all = re.compile(reg)
+    alllist = re.findall(all, string)
+    rank = int(alllist[0].replace(",", ""))
+    return rank
+
+
 # 评论数 打分 评分
 # id=productDetails_detailBullets_sections1
 def pinfoparse(content):
+    # 返回的结果
     returnlist = {}
     soup = BeautifulSoup(content, 'html.parser')  # 开始解析
-
     temp = soup.find('table', attrs={"id": "productDetails_detailBullets_sections1"})
-    # SalesRank
+    if temp == None:
+        temp = soup.find("li", attrs={"id": "SalesRank"})
+    if temp == None:
+        temp = soup.find("tr", attrs={"id": "SalesRank"})
+    # 排名
     if temp:
         try:
-            try:
-                text = temp.get_text().strip()
-            except:
-                text = soup.find("li", attrs={"id": "SalesRank"}).get_text().strip()
-
+            text = temp.get_text().strip()
             returnlist["rank"] = getrank2reg(text)
         except Exception as err:
-
-            print(err)
+            logger.error(err, exc_info=1)
             returnlist["rank"] = -1
     else:
-        try:
-            text = soup.find("tr", attrs={"id": "SalesRank"}).get_text().strip()
-            returnlist["rank"] = getrank2reg(text)
-        except Exception as err:
-            print(err)
-            returnlist["rank"] = -1
+        saveerror(content)
+        returnlist["rank"] = -1
 
+    # 缩小范围
     header = soup.find("div", attrs={"id": "centerCol"})
     if header == None:
         header = soup.find("div", attrs={"id": "leftCol"})
@@ -66,90 +63,150 @@ def pinfoparse(content):
     if header == None:
         header = soup.find("div", attrs={"id": "center-col"})
     if header == None:
-        createjia(tool.log.BASE_DIR + "/data/errordetail")
-        k = tool.log.BASE_DIR + "/data/errordetail/" + todaystring(6) + ".html"
-        with open(k, "wb") as f:
-            f.write(content.encode("utf-8"))
-        logger.error("强制标记:" + k)
-
-    title = header.find("span", attrs={"id": "productTitle"})
-    if title==None:
-        title = header.find("span", attrs={"id": "btAsinTitle"})
-
-    dafen = header.find("span", attrs={"id": "acrPopover"})
-    if dafen==None:
-        dafen = header.find("i", attrs={"class": "a-icon-star"})
-    commentnum = header.find("span", attrs={"class": "a-size-small"})
-    if commentnum==None:
-        commentnum = header.find("span", attrs={"id": "acrCustomerReviewText"})
-    price = header.find("span", attrs={"id": "priceblock_ourprice"})
-    if price==None:
-        price=header.find("strong",attrs={"class":"priceLarge"})
-    soldby = header.find("div", attrs={"id": "merchant-info"})
-    commenttime = ""
+        header = soup
+        # return
 
     # 标题
+    title = header.find("span", attrs={"id": "productTitle"})
+    if title == None:
+        title = header.find("span", attrs={"id": "btAsinTitle"})
+    if title == None:
+        title = soup.find("span", attrs={"id": "fineArtTitle"})
+    if title == None:
+        title = soup.find("span", attrs={"id": "productTitle"})
     try:
         returnlist["title"] = title.get_text().strip().replace(",", "-")
     except Exception as err:
         logger.error(err, exc_info=1)
         returnlist["title"] = "No title"
-    # 打分
-    if dafen:
-        try:
-            dafentemp = float(dafen["title"].replace(" out of 5 stars", ""))
-            returnlist["score"] = dafentemp
 
-        except Exception as err:
+    # 评论数
+    hascomment = soup.find("span", attrs={"id": "dp-no-customer-review-yet"})
+    if hascomment == None:
+        hascomment = soup.find("span", attrs={"id": "noReviewYetText"})
+    if hascomment != None:
+        returnlist["commentnum"] = 0
+        returnlist["commenttime"] = ""
+    else:
+        commentnum = header.find("span", attrs={"class": "a-size-small"})
+        commenttime = ""
+        if commentnum == None:
+            commentnum = header.find("span", attrs={"id": "acrCustomerReviewText"})
+        if commentnum == None:
             try:
-                dafentemp = float(dafen.get_text().strip().replace(" out of 5 stars", ""))
-                returnlist["score"] = dafentemp
+                returnlist["commentnum"] = int(soup.find("div", attrs={"id": "summaryStars"}).get_text().split("stars")[1].replace('"',"").strip().replace(",", ""))
             except Exception as err:
                 logger.error(err, exc_info=1)
-                returnlist["score"] = -1
+                returnlist["commentnum"] = -1
+        else:
+            if commentnum:
+                try:
+                    # 1个人没有复数
+                    returnlist["commentnum"] = int(commentnum.get_text().strip().replace(" customer review", "").replace("s", "").replace(",", ""))
+                except Exception as err:
+                    try:
+                        returnlist["commentnum"]=int(soup.find("span",attrs={"data-hook":"total-review-count"}).get_text().strip().replace(",", ""))
+                    except Exception as err:
+                        try:
+                            returnlist["commentnum"] = int(soup.find("div", attrs={"id": "summaryStars"}).get_text().split("stars")[1].replace('"',"").replace(",", ""))
+                        except Exception as err:
+                            logger.error(err, exc_info=1)
+                            returnlist["commentnum"] = -1
+                            commenttime = "None"
 
+            else:
+                try:
+                    commentnum = soup.find("span", attrs={"id": "acrCustomerReviewText"})
+                    returnlist["commentnum"] = int(commentnum.get_text().strip().replace(" customer review", "").replace("s", "").replace(",",""))
+                except Exception as err:
+                    logger.error(err, exc_info=1)
+                    returnlist["commentnum"] = -1
+                    commenttime = "None"
+
+        # 评论时间
+        if commenttime == "None":
+            returnlist["commenttime"] = commenttime
+        else:
+            # revMH
+            small = ""
+            timetemp = soup.find("div", attrs={"id": "revMHRL"})
+            if timetemp == None:
+                pass
+            else:
+                element = timetemp.findAll("span", attrs={"class", "a-color-secondary"})
+                smallyear = 3000
+                for i in element:
+                    try:
+                        j = i.get_text().strip()
+                        if " on " in j:
+                            tempyoukonw = int(j.split(" on ")[1].strip().split(",")[1].strip())
+                            # print(tempyoukonw)
+                            if tempyoukonw < smallyear:
+                                small = j.split("on ")[1]
+                                smallyear = tempyoukonw
+                    except Exception as err:
+                        logger.error(err, exc_info=1)
+            returnlist["commenttime"] = small.replace(",", "-").strip()
+            if len(returnlist["commenttime"]) > 30:
+                returnlist["commenttime"] = ""
+
+    # 打分
+    if hascomment != None:
+        returnlist["score"] = -1
     else:
-        try:
-            dafentemp = float(dafen["title"].replace(" out of 5 stars", ""))
-            returnlist["score"] = dafentemp
-        except:
+        dafen = header.find("span", attrs={"id": "acrPopover"})
+        if dafen == None:
+            dafen = header.find("i", attrs={"class": "a-icon-star"})
+
+        if dafen:
+            try:
+                dafentemp = float(dafen["title"].replace(" out of 5 stars", ""))
+                returnlist["score"] = dafentemp
+            except Exception as err:
+                try:
+                    dafentemp = float(dafen.get_text().strip().replace(" out of 5 stars", ""))
+                    returnlist["score"] = dafentemp
+                except Exception as err:
+                    logger.error(err, exc_info=1)
+                    returnlist["score"] = -1
+        else:
             try:
                 # <div id="averageCustomerReviewRating" class="txtnormal clearboth">4.0 out of 5 stars</div>
                 dafen = soup.find("div", attrs={"id": "averageCustomerReviewRating"})
                 dafentemp = float(dafen.get_text().strip().replace(" out of 5 stars", ""))
                 returnlist["score"] = dafentemp
-            except Exception as err:
-                logger.error(err, exc_info=1)
-                returnlist["score"] = -1
-
-
-    # 评论数
-    if commentnum:
-        try:
-            # 1个人没有复数
-            returnlist["commentnum"] = commentnum.get_text().strip().replace(" customer review", "").replace("s", "")
-        except Exception as err:
-            logger.error(err, exc_info=1)
-            returnlist["commentnum"] = -1
-            commenttime = "None"
-
-    else:
-        try:
-            commentnum = soup.find("span", attrs={"id": "acrCustomerReviewText"})
-            returnlist["commentnum"] = commentnum.get_text().strip().replace(" customer review", "").replace("s", "")
-        except Exception as err:
-            logger.error(err, exc_info=1)
-            returnlist["commentnum"] = -1
-            commenttime = "None"
+            except:
+                try:
+                    dafentemp = float(
+                            soup.find("div", attrs={"id": "summaryStars"}).find("i").get_text().strip().replace(" out of 5 stars", ""))
+                    returnlist["score"] = dafentemp
+                except Exception as err:
+                    logger.error(err, exc_info=1)
+                    returnlist["score"] = -1
 
     # 价格
+    price = header.find("span", attrs={"id": "priceblock_ourprice"})
+    if price == None:
+        price = header.find("strong", attrs={"class": "priceLarge"})
+
     if price:
         try:
             returnlist["price"] = float(price.get_text().strip().replace("$", ""))
-        except Exception as err:
+        except:
+            try:
+                returnlist["price"] = float(price.get_text().split("-")[1].strip().replace("$", ""))
+            except Exception as err:
+                try:
+                    try:
+                        e1=soup.find("span",attrs={"id":"priceblock_usedprice"}).find("span",attrs={"class","buyingPrice"}).get_text().strip()
+                        returnlist["price"]=float(e1)
+                    except Exception as err:
+                        e1=soup.find("span",attrs={"id":"priceblock_ourprice"}).find("span",attrs={"class","buyingPrice"}).get_text().strip()
+                        returnlist["price"]=float(e1)
+                except Exception as err:
+                    logger.error(err, exc_info=1)
+                    returnlist["price"] = -1
 
-            print(err)
-            returnlist["price"] = -1
     else:
         try:
             price = soup.find("span", attrs={"id": "priceblock_saleprice"})
@@ -159,16 +216,18 @@ def pinfoparse(content):
                 price = soup.find("span", attrs={"id": "priceblock_ourprice"})
                 returnlist["price"] = float(price.get_text().strip().replace("$", ""))
             except Exception as err:
-
-                print(err)
+                pass
+                # logger.error(err, exc_info=1)
                 returnlist["price"] = -1
 
-        # sold by who and FBA
-        # Sold by Beadnova and Fulfilled by Amazon
-        # Ships from and sold by CleverDelights
-        # Ships from and sold by Amazon.com.
-    s1 = ""
-    s2 = ""
+    # Sold by # 全局
+    # print(header)
+    # exit()
+    soldby = soup.find("div", attrs={"id": "merchant-info"})
+    if soldby == None:
+        soldby = soup.find("span", attrs={"id": "merchant-info"})
+    s1 = "No sold"
+    s2 = "No ship"
     try:
         soldtemp = soldby.get_text().strip()
 
@@ -180,63 +239,19 @@ def pinfoparse(content):
         else:
             # https://www.amazon.com/sp?seller=A1RDLBSMJ0S327
             # /gp/help/seller/at-a-glance.html/ref=dp_merchant_link?ie=UTF8&seller=AJ11J3FSAZ6XV&isAmazonFulfilled=1
-            try:
-                s1 = geturlattr(soldby.find("a")["href"])["seller"]
-            except:
-                pass
+            s1 = geturlattr(soldby.find("a")["href"])["seller"]
     except Exception as err:
-        #########################################注意
-        print("Nothing")
-        #logger.error(err, exc_info=1)
+        pass
+        # logger.error(err, exc_info=1)
     returnlist["soldby"] = s1
     returnlist["shipby"] = s2
 
-    if commenttime == "None":
-        returnlist["commenttime"] = commenttime
-    else:
-        # revMH
-        small = ""
-        timetemp = soup.find("div", attrs={"id": "revMHRL"})
-        if timetemp == None:
-            pass
-        else:
-            element = timetemp.findAll("span", attrs={"class", "a-color-secondary"})
-            smallyear = 3000
-            for i in element:
-                try:
-                    j = i.get_text().strip()
-                    if " on " in j:
-                        tempyoukonw = int(j.split(" on ")[1].strip().split(",")[1].strip())
-                        # print(tempyoukonw)
-                        if tempyoukonw < smallyear:
-                            small = j.split("on ")[1]
-                            smallyear = tempyoukonw
-                except Exception as err:
-                    print(j)
-                    logger.error(err, exc_info=1)
-        returnlist["commenttime"] = small.replace(",", "-").strip()
     return returnlist
-
-
-# 正则大类排名
-def getrank2reg(string):
-    # 这里正则只是选取1-5个字段，然后就匹配 in 。  (#######I live in)
-    # 防止抓取到其他的东西，一定要用{1,5}
-    reg = r'#(.{1,8}) in '
-    all = re.compile(reg)
-    alllist = re.findall(all, string)
-    try:
-        # 加强版
-        rank = int(alllist[0].replace(",", ""))
-        return rank
-    except:
-        pass
-    return -1
 
 
 if __name__ == '__main__':
     a = time.clock()
-    filepath = tool.log.BASE_DIR + "/data/"
+    filepath = tool.log.BASE_DIR + "/data/errordetail1/"
 
     # G:\smartdo\data\errordetail\20161018-135309.html
     files = listfiles(filepath, ".html")

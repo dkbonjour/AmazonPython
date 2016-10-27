@@ -6,6 +6,7 @@ import time
 from config.config import *
 from action.proxy import *
 import random
+from tool.jfile.file import *
 
 REDISSERVER = None
 tool.log.setup_logging()
@@ -20,33 +21,38 @@ def initredis():
     return REDISSERVER
 
 
-def initippool(poolname="ippool",poolfuckname="ippoolfuck"):
+def initippool(poolname="ippool", poolfuckname="ippoolfuck"):
+    poolnum = getconfig()["redispoolnumber"]
+    logger.error("IP切成：" + str(poolnum) + "份")
     global REDISSERVER
     if REDISSERVER == None:
         initredis()
     r = REDISSERVER
-    ip = []
-    # 删除旧的列队
-    r.delete(poolname)
-    r.delete(poolfuckname)
     try:
         config = getconfig()["basedb"]
         if getconfig()["ipinmysql"]:
-            where="mysql"
+            where = "mysql"
         else:
-            where="local"
+            where = "local"
         ips = proxy(where=where, config=config)
-        # 将ip写入数组并加上时间戳
-        for item in ips:
-            # 标记时间戳
-            markedtime = int(time.time())
-            ipstr = item.strip() + "*" + str(markedtime) + "*0*0"
-            ip.append(ipstr)
+        ipss = ips.keys()
+        # 切割IP
+        ipss = devidelist(ipss, poolnum)
+        for item in ipss:
+            ip = []
+            # 删除旧的列队
+            r.delete(poolname + str(item + 1))
+            r.delete(poolfuckname + str(item + 1))
+            for i in ipss[item]:
+                # 标记时间戳
+                markedtime = int(time.time())
+                ipstr = i.strip() + "*" + str(markedtime) + "*0*0"
+                ip.append(ipstr)
 
-        # 将ip添加进消息列队
-        for item in ip:
-            r.lpush(poolname, item)
-        logger.error("redis ip池好了")
+            # 将ip添加进消息列队
+            for j in ip:
+                r.lpush(poolname + str(item + 1), j)
+            logger.error("redis ip池好了:" + poolname + str(item + 1))
     except Exception as err:
         logger.error(err, exc_info=1)
         exit()
@@ -76,7 +82,7 @@ def popip(secord=5, poolname="ippool"):
     if nowtime - int(splitstar[1]) > secord:
         return ip, times, robottime
     else:
-        secord = random.randint(secord-1,secord+3)
+        secord = random.randint(secord - 1, secord + 3)
         logger.warning(ip + "redis暂停:" + str(secord))
         time.sleep(secord)
         return ip, times, robottime
