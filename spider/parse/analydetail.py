@@ -38,16 +38,25 @@ def pinfoparse(content):
 
     temp = soup.find('table', attrs={"id": "productDetails_detailBullets_sections1"})
     # SalesRank
-    try:
+    if temp:
         try:
-            text = temp.get_text().strip()
-        except:
-            text = soup.find("li", attrs={"id": "SalesRank"}).get_text().strip()
-        returnlist["rank"] = getrank2reg(text)
-    except Exception as err:
-        logger.error(err, exc_info=1)
-        saveerror(content)
-        returnlist["rank"] = -1
+            try:
+                text = temp.get_text().strip()
+            except:
+                text = soup.find("li", attrs={"id": "SalesRank"}).get_text().strip()
+
+            returnlist["rank"] = getrank2reg(text)
+        except Exception as err:
+
+            print(err)
+            returnlist["rank"] = -1
+    else:
+        try:
+            text = soup.find("tr", attrs={"id": "SalesRank"}).get_text().strip()
+            returnlist["rank"] = getrank2reg(text)
+        except Exception as err:
+            print(err)
+            returnlist["rank"] = -1
 
     header = soup.find("div", attrs={"id": "centerCol"})
     if header == None:
@@ -86,31 +95,73 @@ def pinfoparse(content):
         logger.error(err, exc_info=1)
         returnlist["title"] = "No title"
     # 打分
-    try:
-        dafentemp = float(dafen["title"].replace(" out of 5 stars", ""))
-        returnlist["score"] = dafentemp
-
-    except Exception as err:
+    if dafen:
         try:
-            dafentemp = float(dafen.get_text().strip().replace(" out of 5 stars", ""))
+            dafentemp = float(dafen["title"].replace(" out of 5 stars", ""))
             returnlist["score"] = dafentemp
+
+        except Exception as err:
+            try:
+                dafentemp = float(dafen.get_text().strip().replace(" out of 5 stars", ""))
+                returnlist["score"] = dafentemp
+            except Exception as err:
+                logger.error(err, exc_info=1)
+                returnlist["score"] = -1
+
+    else:
+        try:
+            dafentemp = float(dafen["title"].replace(" out of 5 stars", ""))
+            returnlist["score"] = dafentemp
+        except:
+            try:
+                # <div id="averageCustomerReviewRating" class="txtnormal clearboth">4.0 out of 5 stars</div>
+                dafen = soup.find("div", attrs={"id": "averageCustomerReviewRating"})
+                dafentemp = float(dafen.get_text().strip().replace(" out of 5 stars", ""))
+                returnlist["score"] = dafentemp
+            except Exception as err:
+                logger.error(err, exc_info=1)
+                returnlist["score"] = -1
+
+
+    # 评论数
+    if commentnum:
+        try:
+            # 1个人没有复数
+            returnlist["commentnum"] = commentnum.get_text().strip().replace(" customer review", "").replace("s", "")
         except Exception as err:
             logger.error(err, exc_info=1)
-            returnlist["score"] = -1
-    # 评论数
-    try:
-        # 1个人没有复数
-        returnlist["commentnum"] = int(commentnum.get_text().strip().replace(" customer review", "").replace("s", ""))
-    except Exception as err:
-        logger.error(err, exc_info=1)
-        returnlist["commentnum"] = -1
-        commenttime = "None"
+            returnlist["commentnum"] = -1
+            commenttime = "None"
+
+    else:
+        try:
+            commentnum = soup.find("span", attrs={"id": "acrCustomerReviewText"})
+            returnlist["commentnum"] = commentnum.get_text().strip().replace(" customer review", "").replace("s", "")
+        except Exception as err:
+            logger.error(err, exc_info=1)
+            returnlist["commentnum"] = -1
+            commenttime = "None"
+
     # 价格
-    try:
-        returnlist["price"] = float(price.get_text().strip().replace("$", ""))
-    except Exception as err:
-        logger.error(err, exc_info=1)
-        returnlist["price"] = -1
+    if price:
+        try:
+            returnlist["price"] = float(price.get_text().strip().replace("$", ""))
+        except Exception as err:
+
+            print(err)
+            returnlist["price"] = -1
+    else:
+        try:
+            price = soup.find("span", attrs={"id": "priceblock_saleprice"})
+            returnlist["price"] = price.get_text().strip().replace("$", "")
+        except:
+            try:
+                price = soup.find("span", attrs={"id": "priceblock_ourprice"})
+                returnlist["price"] = float(price.get_text().strip().replace("$", ""))
+            except Exception as err:
+
+                print(err)
+                returnlist["price"] = -1
 
         # sold by who and FBA
         # Sold by Beadnova and Fulfilled by Amazon
@@ -134,7 +185,9 @@ def pinfoparse(content):
             except:
                 pass
     except Exception as err:
-        logger.error(err, exc_info=1)
+        #########################################注意
+        print("Nothing")
+        #logger.error(err, exc_info=1)
     returnlist["soldby"] = s1
     returnlist["shipby"] = s2
 
@@ -161,7 +214,7 @@ def pinfoparse(content):
                 except Exception as err:
                     print(j)
                     logger.error(err, exc_info=1)
-        returnlist["commenttime"] = small.replace(",", "-")
+        returnlist["commenttime"] = small.replace(",", "-").strip()
     return returnlist
 
 
@@ -183,7 +236,7 @@ def getrank2reg(string):
 
 if __name__ == '__main__':
     a = time.clock()
-    filepath = tool.log.BASE_DIR + "/data/errordetail/"
+    filepath = tool.log.BASE_DIR + "/data/"
 
     # G:\smartdo\data\errordetail\20161018-135309.html
     files = listfiles(filepath, ".html")
