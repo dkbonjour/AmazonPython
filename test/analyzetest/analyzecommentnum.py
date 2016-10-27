@@ -42,48 +42,46 @@ def getcommentnum(name):
     # html保存的位置
     htmlpath = "H:/smartdo/data/"
 
-    if "detail" in name:
+    # 建立一个临时数组储存
+    tempcomment = []
 
-        # 建立一个临时数组储存
-        tempcomment = []
+    # 读取html文件的内容
+    filecontents = open(htmlpath + name, "rb")
+    html = filecontents.read().decode('UTF-8', 'ignore').replace("\r", "")
 
-        # 读取html文件的内容
-        filecontents = open(htmlpath + name, "rb")
-        html = filecontents.read().decode('UTF-8', 'ignore').replace("\r", "")
+    #print(name)
 
-        #print(name)
+    # 判断是否有评分
+    # 没有评分就没有评论
+    if "There are no customer reviews yet" in html:
+        tempcomment.append("There are no customer reviews yet")
+    elif 'id="acrCustomerReviewText"' in html:
+        # xpath解析需要的东西
+        content = etree.HTML(html)
 
-        # 判断是否有评分
-        # 没有评分就没有评论
-        if "There are no customer reviews yet" in html:
-            tempcomment.append("There are no customer reviews yet")
-        elif 'id="acrCustomerReviewText"' in html:
-            # xpath解析需要的东西
-            content = etree.HTML(html)
+        # xpath解析得到当页商品评论
+        commentnums = content.xpath('//span[@id="acrCustomerReviewText"]/text()')
+        # print(comments)
 
-            # xpath解析得到当页商品评论
-            commentnums = content.xpath('//span[@id="acrCustomerReviewText"]/text()')
-            # print(comments)
+        # 原文117 customer reviews
+        # 剔除 customer reviews
+        temp = commentnums[0]
+        tempcomment.append(temp.replace(" customer reviews", ""))
+    elif 'class="a-size-small"' in html:
+        # xpath解析需要的东西
+        content = etree.HTML(html)
 
-            # 原文117 customer reviews
-            # 剔除 customer reviews
-            temp = commentnums[0]
-            tempcomment.append(temp.replace(" customer reviews", ""))
-        elif 'class="a-size-small"' in html:
-            # xpath解析需要的东西
-            content = etree.HTML(html)
+        # xpath解析得到当页商品评论数量
+        commentnums = content.xpath(
+                '//span[@class="dpProductDetailB00WPRE0HA"]/span[@class="a-size-small"]/a[@class="a-link-normal"]/text()')
+        print(commentnums)
 
-            # xpath解析得到当页商品评论数量
-            commentnums = content.xpath(
-                    '//span[@class="dpProductDetailB00WPRE0HA"]/span[@class="a-size-small"]/a[@class="a-link-normal"]/text()')
-            print(commentnums)
+        # 原文117 customer reviews
+        # 剔除 customer reviews
+        temp = commentnums[0]
+        tempcomment.append(temp.replace(" customer reviews", "").strip())
 
-            # 原文117 customer reviews
-            # 剔除 customer reviews
-            temp = commentnums[0]
-            tempcomment.append(temp.replace(" customer reviews", "").strip())
-
-        commentnum.append(tempcomment)
+    commentnum.append(tempcomment)
     #print(commentnum)
     # 这里返回的是commentnum
     # 返回的顺序
