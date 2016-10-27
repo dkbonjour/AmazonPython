@@ -6,7 +6,7 @@
 import urllib.request, urllib.parse, http.cookiejar
 import os, time, re
 import http.cookies
-import socket
+import requests
 
 
 # star 自己封装的抓取函数,单机应用
@@ -60,7 +60,6 @@ def spider(url, proxies={}, postdata={}, headers={}, ua="ua", path=".", timeout=
             cookie = ''
         # 开启代理支持
         if proxies:
-            print(proxies)
             # 建造带有COOKIE处理器的打开专家
             opener = urllib.request.build_opener(urllib.request.ProxyHandler(proxies),
                                                  urllib.request.HTTPCookieProcessor(cj),
@@ -120,8 +119,13 @@ if __name__ == "__main__":
         # 'Referer': 'https://www.amazon.com/',
         'Host': 'www.amazon.com'
     }
-    ip="http://smart:smart2016@146.148.149.141:808"
+    # ip="http://smart:smart2016@146.148.149.209:808"
+    ip="http://36.42.32.32:8080"
     proxies = {"http": ip}
-    url = "http://ip.42.pl/"
+    url = "http://www.lenggirl.com"
+    # data=requests.get(url=url, headers=header, proxies=proxies, timeout=60)
+    # print(data.text)
     resdata = spider(url=url, proxies=proxies, headers=header, ua="1", timeout=60)
     print(resdata.decode("utf-8", "ignore"))
+
+
