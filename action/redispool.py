@@ -36,7 +36,11 @@ def initippool(poolname="ippool", poolfuckname="ippoolfuck"):
             where = "local"
         ips = proxy(where=where, config=config)
         ipss = ips.keys()
+        temp=[]
+        for i in ipss:
+            temp.append(i)
         # 切割IP
+        ipss=temp
         ipss = devidelist(ipss, poolnum)
         for item in ipss:
             ip = []
