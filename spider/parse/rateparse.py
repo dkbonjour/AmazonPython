@@ -51,7 +51,10 @@ def robot(content, ip, koip=False, url=""):
         logger.error("页数不足，机器人检测失败:" + url)
         return False
     if robots == []:
-        raise Exception("没有标题，代理IP失效")
+        if "Auth Result:" in content:
+            raise Exception("没有标题，代理IP失效")
+        logger.error("列表页无数据")
+        return False
     if "Page Not Found" in robots:
         logger.error("找不到頁面:" + url)
         return False

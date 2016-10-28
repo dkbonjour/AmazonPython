@@ -53,9 +53,9 @@ def unitlogic(url, mysqlconfig):
     else:
         where = "local"
 
-    keepdir = createjia(DATA_DIR + "/data/items/" + year + "/" + bigpname.replace(" ","") + "/" + todays + "/" + id)
+    keepdir = createjia(DATA_DIR + "/data/items/" + year + "/" + bigpname.replace(" ", "") + "/" + todays + "/" + id)
 
-    detaildir = createjia(DATA_DIR + "/data/detail/" + year + "/" + bigpname.replace(" ","") + "/" + todays + "/" + id)
+    detaildir = createjia(DATA_DIR + "/data/detail/" + year + "/" + bigpname.replace(" ", "") + "/" + todays + "/" + id)
 
     detailall = {}
 
@@ -102,13 +102,16 @@ def unitlogic(url, mysqlconfig):
                 # {'91':['91', 'https://www.amazon.com/dp/B003Z968T0', 'WhisperKOOL® Platinum Split System 80...']}
                 temp3 = rateparse(content3)
                 temp17 = rateparse(content17)
-                with open(itempath, "wb") as f:
-                    for i in sorted(temp3.keys()):
-                        detailall[i] = temp3[i][1]
-                        f.write((",".join(temp3[i]) + "\n").encode("utf-8"))
-                    for j in sorted(temp17.keys()):
-                        detailall[i] = temp17[j][1]
-                        f.write((",".join(temp17[j]) + "\n").encode("utf-8"))
+                if temp3 == {} and temp17 == {}:
+                    continue
+                else:
+                    with open(itempath, "wb") as f:
+                        for i in sorted(temp3.keys()):
+                            detailall[i] = temp3[i][1]
+                            f.write((",".join(temp3[i]) + "\n").encode("utf-8"))
+                        for j in sorted(temp17.keys()):
+                            detailall[i] = temp17[j][1]
+                            f.write((",".join(temp17[j]) + "\n").encode("utf-8"))
             except Exception as err:
                 logger.error("解析列表頁錯誤：" + catchurl + ":" + str(i + 1))
                 logger.error(err, exc_info=1)
@@ -164,6 +167,7 @@ def unitlogic(url, mysqlconfig):
     # 成功
     logger.error(todays + "|" + db + ":" + id + " completed")
 
+
 # 单进程抓取
 def processlogic(processurls, mysqlconfig):
     logger.debug(processurls)
@@ -199,7 +203,7 @@ def ratelogic(category=["Appliances"], processnum=1, limitnum=20000):
 
 if __name__ == "__main__":
     a = time.clock()
-    changeconfig("catchbywhich","bigpname")
+    changeconfig("catchbywhich", "bigpname")
     category = ["Appliances", "Arts_ Crafts & Sewing"]
     processnum = 2
     ratelogic(category, processnum, 6)
