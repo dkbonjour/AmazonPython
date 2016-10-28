@@ -28,7 +28,7 @@
   "redispoolname":"ippool",
   "redispoolfuckname":"ippoolfuck",
   "redispoolnumber":3,
-  "redispoolsleeptimes":20,
+  "redispoolsleeptimes":30,
   "rediserrmaxtimes":2,
   "redispoolconfig":{"host":"45.41.88.189","pwd":"smart2016","port":6379},
   "dbprefix":"db",
