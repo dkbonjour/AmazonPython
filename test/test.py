@@ -4,6 +4,7 @@
 import re
 from bs4 import BeautifulSoup
 import os
+import shutil
 
 def listfiles(rootdir, prefix='.xml', iscur=False):
     file = []
@@ -97,4 +98,5 @@ if __name__ == '__main__':
         with open(temp, "rb") as f:
             content = f.read().decode("utf-8", "ignore")
             print(pinfoparse(content))
-    os.remove("./sh.sh")
+    # os.remove("./sh.sh")
+    shutil.rmtree("./dd")

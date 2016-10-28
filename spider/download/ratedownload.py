@@ -141,7 +141,10 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
     except Exception as err:
         if getconfig()["manycookie"]:
             if (str(err) == "机器人"):
-                os.remove(cookiefile)
+                try:
+                    os.remove(cookiefile)
+                except:
+                    pass
         if redisneed:
             if (str(err) == "机器人"):
                 if koip and robottime + 1 > getconfig()["rediserrmaxtimes"]:
