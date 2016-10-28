@@ -251,7 +251,7 @@ def pinfoparse(content):
 
 if __name__ == '__main__':
     a = time.clock()
-    filepath = tool.log.BASE_DIR + "/data/errordetail1/"
+    filepath = tool.log.BASE_DIR + "/data/errortest/"
 
     # G:\smartdo\data\errordetail\20161018-135309.html
     files = listfiles(filepath, ".html")
