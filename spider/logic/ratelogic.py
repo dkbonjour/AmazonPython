@@ -165,7 +165,7 @@ def unitlogic(url, mysqlconfig):
                 f.write(objectToString(pinfo).encode("utf-8"))
 
     # 成功
-    logger.error(todays + "|" + db + ":" + id + " completed")
+    logger.error(todays + "|" + bigpname + "|" + db + ":" + id + " completed")
 
 
 # 单进程抓取

@@ -25,6 +25,7 @@ loggers = logging.getLogger("smart")
 # https://www.amazon.com/Best-Sellers-Home-Kitchen-Slumber-Bags/zgbs/home-garden/166452011/ref=zg_bs_nav_hg_3_1063268/159-5712866-5514666 类目页
 # 翻页+?pg=2
 
+
 def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
     try:
         koip = getconfig()["koip"]
@@ -129,7 +130,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         # 放IP
         if redisneed:
             puship(ip, times, robottime, getconfig()["redispoolname"])
-        loggers.error(url)
+        loggers.error(ip+"   |"+url)
         return resdata
     except Exception as err:
         if redisneed:
@@ -140,7 +141,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
                     puship(ip, times, robottime + 1, getconfig()["redispoolname"])
             else:
                 puship(ip, times, robottime, getconfig()["redispoolname"])
-        logger.error(str(err))
+        logger.error(err, exc_info=1)
         if redisneed:
             logger.error(
                     "失敗抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip + "-" + str(
