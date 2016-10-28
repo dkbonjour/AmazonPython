@@ -90,7 +90,7 @@ def robot(content):
 
 
 if __name__ == '__main__':
-    url = "https://www.amazon.com"
+    url = "https://www.amazon.com/dp/B0058STDKC"
     print("准备解救IP们！！！时刻准备好人工打码")
     while True:
         num = input("解救哪一个队列（1，2，3):")
@@ -104,6 +104,12 @@ if __name__ == '__main__':
             print(ip + "准备好了！！！")
             # ip=""
             # # ip="111.13.65.244:80"
+            try:
+                b,data1=getFirefox(url="http://ip.42.pl/short",ip=ip)
+                time.sleep(5)
+            except:
+                pass
+            b.close()
             browers, data = getFirefox(url=url, ip=ip)
             time.sleep(50)
             # try:

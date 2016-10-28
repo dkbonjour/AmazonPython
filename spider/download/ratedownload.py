@@ -21,12 +21,14 @@ tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 loggers = logging.getLogger("smart")
 
+
 # 用来解析网页的函数
 # https://www.amazon.com/Best-Sellers-Home-Kitchen-Slumber-Bags/zgbs/home-garden/166452011/ref=zg_bs_nav_hg_3_1063268/159-5712866-5514666 类目页
 # 翻页+?pg=2
 
 
 def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
+    cookiefile=""
     try:
         koip = getconfig()["koip"]
     except:
@@ -43,7 +45,9 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
     if getconfig()["manyua"]:
         uas = useragent()
         ua = uas[random.randint(0, len(uas) - 1)]
-        uano = ua.split(",")[0]
+        temp = ua.split(",")
+        uano = temp[0]
+        ua = temp[1]
     else:
         ua = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0"
     header = {
@@ -74,7 +78,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         # 并行真随机数，需要！！
         randomnum = allrandom(len(ips))
         try:
-            secord=getconfig()["sleeptimes"]
+            secord = getconfig()["sleeptimes"]
             secord = random.randint(secord, secord + 3)
             time.sleep(secord)
             logger.debug("暂停:" + str(secord) + "秒:" + url)
@@ -94,7 +98,9 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
     try:
         # manycookie
         if getconfig()["manycookie"]:
-            resdata = spider(url=url, proxies=proxies, headers=header, ua=uano, path=getconfig()["datadir"] + "/cookie",timeout=timeout)
+            cookiefile = getconfig()["datadir"] + "/cookie" + "/" + ip + "-" + uano + '.txt'
+            resdata = spider(url=url, proxies=proxies, headers=header, ua=uano, path=getconfig()["datadir"] + "/cookie",
+                             timeout=timeout)
         else:
             res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
             # print(res.status_code)
@@ -130,9 +136,12 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         # 放IP
         if redisneed:
             puship(ip, times, robottime, getconfig()["redispoolname"])
-        loggers.error(ip+"   |"+url)
+        loggers.error(ip + "   |" + url)
         return resdata
     except Exception as err:
+        if getconfig()["manycookie"]:
+            if (str(err) == "机器人"):
+                os.remove(cookiefile)
         if redisneed:
             if (str(err) == "机器人"):
                 if koip and robottime + 1 > getconfig()["rediserrmaxtimes"]:
