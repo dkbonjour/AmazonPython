@@ -41,7 +41,7 @@ def proxy(where="local", config={}, filepath="config/base/IP.txt", failtimes=200
     else:
         logger.warning("加载数据库代理IP文件")
         mysql = Mysql(config)
-        selectsql = "SELECT ip,zone,failtimes FROM smart_ip limit 1000;"
+        selectsql = "SELECT ip,zone,failtimes FROM smart_ip limit "+str(getconfig()["mysqlipnum"])+";"
         result = mysql.ExecQuery(selectsql)
         needfilter=getconfig()["limitip"]
         for ip in result:

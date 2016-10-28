@@ -53,9 +53,9 @@ def unitlogic(url, mysqlconfig):
     else:
         where = "local"
 
-    keepdir = createjia(DATA_DIR + "/data/items/" + year + "/" + bigpname + "/" + todays + "/" + id)
+    keepdir = createjia(DATA_DIR + "/data/items/" + year + "/" + bigpname.replace(" ","") + "/" + todays + "/" + id)
 
-    detaildir = createjia(DATA_DIR + "/data/detail/" + year + "/" + bigpname + "/" + todays + "/" + id)
+    detaildir = createjia(DATA_DIR + "/data/detail/" + year + "/" + bigpname.replace(" ","") + "/" + todays + "/" + id)
 
     detailall = {}
 
@@ -199,6 +199,7 @@ def ratelogic(category=["Appliances"], processnum=1, limitnum=20000):
 
 if __name__ == "__main__":
     a = time.clock()
+    changeconfig("catchbywhich","bigpname")
     category = ["Appliances", "Arts_ Crafts & Sewing"]
     processnum = 2
     ratelogic(category, processnum, 6)
