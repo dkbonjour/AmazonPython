@@ -74,9 +74,13 @@ def unitlogic(url, mysqlconfig):
             logger.warning("已存在:" + id + "(" + str(i + 1) + ")-" + bigpname + ":" + catchname + "(" + str(
                     level) + ") --" + catchurl)
             temp = readfilelist(itempath)
+
             for i in temp:
-                temptemp = i.split(",")
-                detailall[temptemp[0]] = temptemp[1]
+                try:
+                    temptemp = i.split(",")
+                    detailall[temptemp[0]] = temptemp[1]
+                except:
+                    logger.error("列表页读取失败：内容行|"+i)
             continue
         else:
             # 如果不存在文件且已經完成，證明頁數不足
