@@ -23,7 +23,7 @@
     "pwd": "smart2016",
     "db": "smart_base"
   },
-  "ipinmysql":true,
+  "ipinmysql":false,
   "redispool":true,
   "redispoolname":"ippool",
   "redispoolfuckname":"ippoolfuck",

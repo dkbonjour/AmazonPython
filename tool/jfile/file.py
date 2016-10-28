@@ -183,14 +183,15 @@ def filejoin(file=[]):
 def readfilelist(filepath):
     returnlist = []
     try:
-        with open(filepath, "rt") as filename:
+        with open(filepath, "rb") as filename:
             namelines = filename.readlines()
             for line in namelines:
-                content = line.replace("\n", "")
+                content = line.decode("utf-8","ignore").replace("\n", "")
                 if not content:
                     continue
                 returnlist.append(content)
-    except:
+    except Exception as err:
+        print(err)
         pass
     return returnlist
 

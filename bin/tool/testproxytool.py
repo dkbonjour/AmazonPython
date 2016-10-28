@@ -48,39 +48,47 @@ def testposta(url1, ip="146.148.240.241:808", which="2"):
 
 
 if __name__ == "__main__":
-    local = input("IP在本地还是远程(本地1，远程2):")
+    local = input("IP在本地还是远程(本地数据库1，远程数据库2，本地文件3):")
     which = input("request请按1，否则2：")
+    ipfile = tool.log.BASE_DIR + "/config/ip"
+    createjia(ipfile)
     if local == "1":
         config = {"host": "192.168.0.152", "user": "bai", "pwd": "123456", "db": "smart_base"}
-    else:
+        ips = proxy(where="mysql", config=config)
+    elif local == "2":
         config = getconfig()["basedb"]
-    ips = proxy(where="mysql", config=config)
-    # for ii in ips:
-    #     print(ii+"-"+ips[ii][0])
+        ips = proxy(where="mysql", config=config)
+    else:
+        temp = {}
+        print(ipfile + "/iptest.md")
+        ips = readfilelist(ipfile + "/iptest.md")
+        for i in ips:
+            i = i.split("-")[0]
+            temp[i] = ["美国加利福尼亚州洛杉矶"]
+        ips = temp
     ipss = []
     iperr = []
     for i in ips:
         try:
             data = testposta("http://ip.42.pl/short", i, which)
-            j=data.decode("utf-8", "ignore")
-            print(j)
+            j = data.decode("utf-8", "ignore")
+            print("网站内容：" + j)
             if "无效用户" in j:
-                raise Exception("无效用户")
+                print("无效用户: " + i)
+                continue
             ipss.append(i)
-            print(i)
         except:
             iperr.append(i)
             pass
-    ipfile = tool.log.BASE_DIR + "/config/ip"
-    createjia(ipfile)
-    fe = open(ipfile + "/iperror.md", "wt")
-    f = open(ipfile + "/ipright.md", "wt")
-    for ii in iperr:
-        print(ii + "-" + ips[ii][0])
-        fe.write(ii + "-" + ips[ii][0] + "\n")
-    fe.close()
-    print("*" * 10)
+    todays = todaystring(6)
+    fe = open(ipfile + "/" + todays + "iperror.md", "wb")
+    f = open(ipfile + "/" + todays + "ipright.md", "wb")
     for jj in ipss:
         print(jj + "-" + ips[jj][0])
-        f.write(jj + "-" + ips[jj][0] + "\n")
+        f.write((jj + "-" + ips[jj][0] + "\n").encode("utf-8"))
     f.close()
+    print("err" + "*" * 10)
+    for ii in iperr:
+        print(ii + "-" + ips[ii][0])
+        fe.write((ii + "-" + ips[ii][0] + "\n").encode("utf-8"))
+    fe.close()
