@@ -105,11 +105,11 @@ if __name__ == '__main__':
             # ip=""
             # # ip="111.13.65.244:80"
             try:
-                b,data1=getFirefox(url="http://ip.42.pl/short",ip=ip)
+                b, data1 = getFirefox(url="http://ip.42.pl/short", ip=ip)
                 time.sleep(5)
+                b.close()
             except:
                 pass
-            b.close()
             browers, data = getFirefox(url=url, ip=ip)
             time.sleep(50)
             # try:
@@ -121,12 +121,12 @@ if __name__ == '__main__':
             #     continue
             browers.close()
             print("解救了" + ip)
-            puship(ip, times, 0, getconfig()["redispoolname"])
+            puship(ip, times, 0, getconfig()["redispoolname"] + num)
         except Exception as e:
             print(e)
             if "Failed to decode" in str(e):
                 print("解救了" + ip)
-                puship(ip, times, 0, getconfig()["redispoolname"])
+                puship(ip, times, 0, getconfig()["redispoolname"] + num)
             else:
                 print("没能解救" + ip)
                 puship(ip, times, robbottime, getconfig()["redispoolfuckname"])
