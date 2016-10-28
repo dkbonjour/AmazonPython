@@ -6,12 +6,11 @@
 import tool.log
 from action.redispool import *
 from tool.jfile.file import *
-import shutil
+
 # 日志
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
-    shutil.rmtree(getconfig()["datadir"] + "/cookie")
     createjia(getconfig()["datadir"] + "/cookie")
     initippool(getconfig()["redispoolname"],getconfig()["redispoolfuckname"])

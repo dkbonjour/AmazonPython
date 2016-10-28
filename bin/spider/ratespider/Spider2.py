@@ -4,9 +4,8 @@
 # 功能: 机器二
 #  
 import tool.log
-import logging
-import time
 from spider.logic.ratelogic import *
+import shutil
 
 # 日志
 tool.log.setup_logging()
@@ -14,6 +13,8 @@ logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     print(copyright("亚马逊大霸王2开爬"))
+    shutil.rmtree(getconfig()["datadir"] + "/cookie")
+    createjia(getconfig()["datadir"] + "/cookie")
     a = time.clock()
     # 大类名
     try:
