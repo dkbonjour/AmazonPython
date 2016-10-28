@@ -96,6 +96,7 @@ if __name__ == '__main__':
         num = input("解救哪一个队列（1，2，3):")
         try:
             try:
+                print("正在等待IP...")
                 ip, times, robbottime = popip(0, getconfig()["redispoolfuckname"] + num)
             except Exception as e:
                 print(e)

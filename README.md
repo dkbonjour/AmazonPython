@@ -136,6 +136,9 @@ def geturlattr(url)
 
 拼接参数join
 def joinany(things, sep=",")
+
+文件批量改名
+def renamedir(path, oprefix="md", nprefix="txt")
 ```
 
 4.jmysql (Database Package)

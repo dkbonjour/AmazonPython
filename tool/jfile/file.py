@@ -9,6 +9,7 @@ import xlsxwriter as wx
 import random
 from concurrent.futures import ProcessPoolExecutor
 
+
 # star 找出文件夹下所有xml后缀的文件，可选择递归，选择全路径
 def listfiles(rootdir, prefix='.xml', isall=False, iscur=False):
     file = []
@@ -273,20 +274,22 @@ def joinany(things, sep=","):
 # 随机数，足够复杂
 def allrandom(num):
     try:
-        temp=str(os.urandom(num))+str(os.getpid())+str(random.randint(0,num-1))
+        temp = str(os.urandom(num)) + str(os.getpid()) + str(random.randint(0, num - 1))
         random.seed(temp)
-        returnd = random.randint(0,num-1)
+        returnd = random.randint(0, num - 1)
     except:
         random.seed()
-        returnd = random.randint(0,num-1)
+        returnd = random.randint(0, num - 1)
     # print(returnd)
     return returnd
 
-def test():
-    j= 50
-    with ProcessPoolExecutor(max_workers=j) as e:
-        for i in range(j):
-            e.submit(allrandom,600)
+
+# 文件批量改名
+def renamedir(path, oprefix="md", nprefix="txt"):
+    files = listfiles(rootdir=path, prefix=oprefix, isall=True)
+    for i in files:
+        os.rename(i, i.replace("md", nprefix))
+
 
 if __name__ == "__main__":
     # today = time.strftime('%Y%m%d', time.localtime())
@@ -306,4 +309,4 @@ if __name__ == "__main__":
     #
     # print(joinany(files))
 
-    test()
+    renamedir("../../config/url", "md", "jinhan")

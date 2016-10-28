@@ -191,18 +191,18 @@ def pinfoparse(content):
 
     if price:
         try:
-            returnlist["price"] = float(price.get_text().strip().replace("$", ""))
+            returnlist["price"] = float(price.get_text().strip().replace("$", "").replace(",",""))
         except:
             try:
-                returnlist["price"] = float(price.get_text().split("-")[1].strip().replace("$", ""))
+                returnlist["price"] = float(price.get_text().split("-")[1].strip().replace("$", "").replace(",",""))
             except Exception as err:
                 try:
                     try:
                         e1=soup.find("span",attrs={"id":"priceblock_usedprice"}).find("span",attrs={"class","buyingPrice"}).get_text().strip()
-                        returnlist["price"]=float(e1)
+                        returnlist["price"]=float(e1.replace("$", "").replace(",",""))
                     except Exception as err:
                         e1=soup.find("span",attrs={"id":"priceblock_ourprice"}).find("span",attrs={"class","buyingPrice"}).get_text().strip()
-                        returnlist["price"]=float(e1)
+                        returnlist["price"]=float(e1.replace("$", "").replace(",",""))
                 except Exception as err:
                     logger.error(err, exc_info=1)
                     returnlist["price"] = -1
@@ -210,11 +210,11 @@ def pinfoparse(content):
     else:
         try:
             price = soup.find("span", attrs={"id": "priceblock_saleprice"})
-            returnlist["price"] = price.get_text().strip().replace("$", "")
+            returnlist["price"] = price.get_text().strip().replace("$", "").replace(",","")
         except:
             try:
                 price = soup.find("span", attrs={"id": "priceblock_ourprice"})
-                returnlist["price"] = float(price.get_text().strip().replace("$", ""))
+                returnlist["price"] = float(price.get_text().strip().replace("$", "").replace(",",""))
             except Exception as err:
                 pass
                 # logger.error(err, exc_info=1)

@@ -6,8 +6,8 @@
 from  tool.jfile.file import *
 
 if __name__ == "__main__":
-    filename = input("你想切割config/base文件夹中哪个文件：")
-    with open("../../config/base/" + filename, "rt") as f:
+    filename = input("你想切割config/url文件夹中哪个文件：")
+    with open("../../config/url/" + filename, "rt") as f:
         j = f.readlines()
         shu = len(j)
         print("数量:" + str(shu))
@@ -16,7 +16,7 @@ if __name__ == "__main__":
         dd = int(shu / num)
         print(dd)
         for i in range(1, num + 1):
-            with open("../../config/base/" + str(i) + "-" + filename, "wt") as ff:
+            with open("../../config/url/" + str(i) + "-" + filename, "wt") as ff:
                 if i == num + 1:
                     ff.writelines(j[(i - 1) * dd:])
                 else:

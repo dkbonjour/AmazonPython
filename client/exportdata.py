@@ -9,7 +9,7 @@ from tool.jfile.file import *
 
 
 def getdata(url, days):
-    url = url.strip()
+    url = url.strip().split("/ref")[0]
     config = getconfig()["basedb"]
     db = Mysql(config)
     sql = 'select id,`database`,url from smart_category where url like"' + url + '%"'
@@ -30,6 +30,7 @@ def getdata(url, days):
                       'soldby,shipby,commentnum,commenttime,createtime FROM `{tablename}` where id like "{days}%" ' \
                       'order by smallrank;'.format(tablename=j[0], days=days)
             result = realdb.ExecQuery(realsql)
+            # print(realsql)
             if result == None:
                 continue
             else:
@@ -37,8 +38,8 @@ def getdata(url, days):
                     continue
                 return j[0], result
         except Exception as err:
-            pass
-    return None
+            print(err)
+    return 0, None
 
 
 def writefile(data, id, url):
@@ -47,26 +48,35 @@ def writefile(data, id, url):
     temp.append(
             ["小类排名", "小类名称", "大类名称", "大类排名", "商品标题", "商品价格", "商品评分", "ASIN", "URL", "Soldby", "Shipby", "评论数", "较早评论时间",
              "数据获取时间"])
-    dir = getconfig()["datadir"] + "/data/export/" + todaystring(3)
+    dir = getconfig()["datadir"] + "/export/" + todaystring(3)
     createjia(dir)
     filename = dir + "/" + id + ".xlsx"
     for i in data:
-        temp.append(list(i))
+        dataone = list(i)
+        soldby = dataone[9]
+        if "No sold" in soldby:
+            pass
+        else:
+            dataone[9] = "https://www.amazon.com/sp?seller=" + soldby
+        temp.append(dataone)
     temp.append([url])
     try:
         writeexcel(filename, temp)
     except Exception as err:
-        return "写入Excel出错"
-    return "保存在：" + filename
+        return "写入Excel出错，请关闭该Excel文件后重试"
+    return "数据保存在：" + filename
 
 
 if __name__ == "__main__":
-    url = input("输入类目URL：")
-    days = input("请输入日期(如20161018):")
-    try:
-        id, data = getdata(url, days)
-        if data == None:
-            print("找不到数据")
-        print(writefile(data, id, url))
-    except Exception as err:
-        print("出错")
+    while True:
+        url = input("输入类目URL：")
+        todays = todaystring(3)
+        days = input("请输入日期(如" + todays + "):")
+
+        try:
+            id, data = getdata(url, days)
+            if data == None:
+                raise Exception("找不到数据")
+            print(writefile(data, id, url))
+        except Exception as err:
+            print(err)
