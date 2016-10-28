@@ -68,6 +68,8 @@ def unitlogic(url, mysqlconfig):
 
     # 重試多次仍然抓不到頁面？
     retryhappen = False
+    if getconfig()["force"]:
+        page = getconfig()["forcenum"]
     for i in range(min(page, 5)):
         itempath = keepdir + "/" + str(i + 1) + ".md"
         if fileexsit(itempath):
@@ -80,7 +82,7 @@ def unitlogic(url, mysqlconfig):
                     temptemp = i.split(",")
                     detailall[temptemp[0]] = temptemp[1]
                 except:
-                    logger.error("列表页读取失败：内容行|"+i)
+                    logger.error("列表页读取失败：内容行|" + i)
             continue
         else:
             # 如果不存在文件且已經完成，證明頁數不足
@@ -95,8 +97,9 @@ def unitlogic(url, mysqlconfig):
             # Referer:https://www.amazon.com/gp/bestsellers/apparel/ref=pd_zg_hrsr_a_1_1
             # Referer:https://www.amazon.com/gp/bestsellers/apparel/ref=pd_zg_hrsr_a_1_1
             # X-Requested-With:XMLHttpRequest
-            items3 = "/ref=zg_bs_apparel_pg_"+str(i + 1)+"?_encoding=UTF8&ajax=1&pg=" + str(i + 1)
-            items17 = "/ref=zg_bs_apparel_pg_"+str(i + 1)+"?_encoding=UTF8&&isAboveTheFold=0&ajax=1&pg=" + str(i + 1)
+            items3 = "/ref=zg_bs_apparel_pg_" + str(i + 1) + "?_encoding=UTF8&ajax=1&pg=" + str(i + 1)
+            items17 = "/ref=zg_bs_apparel_pg_" + str(i + 1) + "?_encoding=UTF8&&isAboveTheFold=0&ajax=1&pg=" + str(
+                i + 1)
             listheader = {
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
                 # "Accept-Encoding": "gzip, deflate, br",
@@ -106,8 +109,8 @@ def unitlogic(url, mysqlconfig):
                 # 'Referer': 'https://www.amazon.com/',
                 'Host': 'www.amazon.com'
             }
-            content3 = ratedownload(url=catchurl + items3, where=where, config=mysqlconfig,header=listheader)
-            content17 = ratedownload(url=catchurl + items17, where=where, config=mysqlconfig,header=listheader)
+            content3 = ratedownload(url=catchurl + items3, where=where, config=mysqlconfig, header=listheader)
+            content17 = ratedownload(url=catchurl + items17, where=where, config=mysqlconfig, header=listheader)
             if content3 == 0 or content17 == 0:
                 break
             if content3 == None:
@@ -165,7 +168,7 @@ def unitlogic(url, mysqlconfig):
                 # 'Referer': 'https://www.amazon.com/',
                 'Host': 'www.amazon.com'
             }
-            detailpage = ratedownload(url=url, where=where, config=mysqlconfig,header=detailheader)
+            detailpage = ratedownload(url=url, where=where, config=mysqlconfig, header=detailheader)
             if detailpage == None:
                 continue
             if detailpage == 0:

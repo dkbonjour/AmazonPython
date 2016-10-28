@@ -7,7 +7,7 @@ import tool.log
 import logging
 from tool.jjson.basejson import *
 from tool.jfile.file import *
-
+import sys
 
 # 日志
 tool.log.setup_logging()
@@ -30,7 +30,13 @@ def getconfig():
     global CONFIGSUCCESS
     if CONFIGSUCCESS:
         return CONFIG
-    local = input("远程配置选1,否则本地")
+
+    # print('参数个数为:', len(sys.argv), '个参数。')
+    # print('参数列表:', str(sys.argv))
+    if len(sys.argv) == 2:
+        local = sys.argv[1]
+    else:
+        local = input("远程配置选1,否则本地:")
     filepath = "config/localconfig.json"
     if local == "1":
         filepath = "config/config.json"

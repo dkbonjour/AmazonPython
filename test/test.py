@@ -88,8 +88,9 @@ def pinfoparse(content):
                 returnlist["score"] = -1
     return returnlist
 
+from config.config import *
 if __name__ == '__main__':
-
+    getconfig()
     filepath = "../data/"
     files = listfiles(filepath, ".html")
     for i in files:

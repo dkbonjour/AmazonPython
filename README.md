@@ -40,7 +40,7 @@ pip3 install redis
 yum install libxslt-devel
 pip3 install lxml
 pip3 install -U selenium
-pip install requests[socks]
+pip3 install requests[socks]
 ```
 
 ## Setting Environment Variables
