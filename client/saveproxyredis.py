@@ -129,4 +129,4 @@ if __name__ == '__main__':
                 puship(ip, times, 0, getconfig()["redispoolname"] + num)
             else:
                 print("没能解救" + ip)
-                puship(ip, times, robbottime, getconfig()["redispoolfuckname"])
+                puship(ip, times, robbottime, getconfig()["redispoolfuckname"] + num)

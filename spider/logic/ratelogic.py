@@ -16,6 +16,7 @@ from spider.parse.analydetail import *
 # 日志
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
+loggers = logging.getLogger("smart")
 
 DATA_DIR = getconfig()["datadir"]
 
@@ -124,8 +125,10 @@ def unitlogic(url, mysqlconfig):
         detailname = rank + "-" + detailall[rank]
         rankeep = detaildir + "/" + detailname
         if fileexsit(rankeep + ".md"):
+            loggers.error("存在!"+rankeep)
             continue
         if fileexsit(rankeep + ".emd"):
+            loggers.error("存在(页面找不到）)!"+rankeep)
             continue
         url = "https://www.amazon.com/dp/" + detailall[rank]
 
