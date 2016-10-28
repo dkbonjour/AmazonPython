@@ -27,7 +27,7 @@ loggers = logging.getLogger("smart")
 ROBBOTTIME = 0
 
 
-def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
+def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header={}):
     cookiefile = ""
     try:
         koip = getconfig()["koip"]
@@ -50,16 +50,19 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         ua = temp[1]
     else:
         ua = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0"
-    header = {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        'User-Agent': ua,
-        # "Accept-Encoding": "gzip, deflate, br",
-        "Connection": "keep-alive",
-        "Accept-Language": "en-US;q=0.8,en;q=0.5",
-        "Upgrade-Insecure-Requests": "1",
-        # 'Referer': 'https://www.amazon.com/',
-        'Host': 'www.amazon.com'
-    }
+    if header == {}:
+        header = {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            'User-Agent': ua,
+            # "Accept-Encoding": "gzip, deflate, br",
+            "Connection": "keep-alive",
+            "Accept-Language": "en-US;q=0.8,en;q=0.5",
+            "Upgrade-Insecure-Requests": "1",
+            # 'Referer': 'https://www.amazon.com/',
+            'Host': 'www.amazon.com'
+        }
+    else:
+        header['User-Agent'] = ua
     try:
         iperror = getconfig()["iperror"]
     except:
@@ -153,9 +156,10 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
                     pushipfuck(ip, times, robottime + 1, getconfig()["redispoolfuckname"])
                 else:
                     puship(ip, times, robottime + 1, getconfig()["redispoolname"])
-                if ROBBOTTIME > getconfig()["processnum"]:
-                    logger.error("超大睡眠！严重被防爬虫" + str(getconfig()["urlstoptime"] * 5) + "秒")
-                    time.sleep(getconfig()["urlstoptime"] * 5)
+                if getconfig()["urlrobotstop"]:
+                    if ROBBOTTIME > getconfig()["processnum"]:
+                        logger.error("超大睡眠！严重被防爬虫" + str(getconfig()["urlstoptime"] * 5) + "秒")
+                        time.sleep(getconfig()["urlstoptime"] * 5)
             else:
                 puship(ip, times, robottime, getconfig()["redispoolname"])
         logger.error(err, exc_info=1)
@@ -170,7 +174,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
                                                                                           location=location,
                                                                                           ua=ua,
                                                                                           times=5 - retrytime))
-        return ratedownload(url=url, where=where, config=config, retrytime=retrytime - 1, timeout=timeout)
+        return ratedownload(url=url, where=where, config=config, retrytime=retrytime - 1, timeout=timeout,header=header)
 
 
 if __name__ == "__main__":

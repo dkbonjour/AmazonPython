@@ -6,6 +6,8 @@
 import tool.log
 import logging
 from tool.jjson.basejson import *
+from tool.jfile.file import *
+
 
 # 日志
 tool.log.setup_logging()
@@ -23,12 +25,17 @@ def changeconfig(name, value):
     return value
 
 
-def getconfig(filepath="config/config.json"):
+def getconfig():
     global CONFIG
     global CONFIGSUCCESS
     if CONFIGSUCCESS:
         return CONFIG
-    with open(tool.log.BASE_DIR + "/" + filepath, "rb") as f:
+    local = input("远程配置选1,否则本地")
+    filepath = "config/localconfig.json"
+    if local == "1":
+        filepath = "config/config.json"
+    configpath = tool.log.BASE_DIR + "/" + filepath
+    with open(configpath, "rb") as f:
         content = f.read().decode("utf-8", "ignore")
         error, right = isRightJson(content, True)
         if not right:
@@ -36,6 +43,7 @@ def getconfig(filepath="config/config.json"):
             exit()
         else:
             CONFIG = stringToObject(content)
+            createjia(CONFIG["datadir"])
             # TODO
             # 配置检查
             CONFIGSUCCESS = True

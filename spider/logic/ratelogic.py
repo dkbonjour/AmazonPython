@@ -87,10 +87,23 @@ def unitlogic(url, mysqlconfig):
             # 构造页数
             # ?_encoding=UTF8&pg=1&ajax=1   3个商品
             # ?_encoding=UTF8&pg=1&ajax=1&isAboveTheFold=0 17个商品
-            items3 = "?_encoding=UTF8&ajax=1&pg=" + str(i + 1)
-            items17 = "?_encoding=UTF8&&isAboveTheFold=0&ajax=1&pg=" + str(i + 1)
-            content3 = ratedownload(url=catchurl + items3, where=where, config=mysqlconfig)
-            content17 = ratedownload(url=catchurl + items17, where=where, config=mysqlconfig)
+            # https://www.amazon.com/Best-Sellers-Clothing/zgbs/apparel/ref=zg_bs_apparel_pg_5?_encoding=UTF8&pg=5&ajax=1
+            # Referer:https://www.amazon.com/gp/bestsellers/apparel/ref=pd_zg_hrsr_a_1_1
+            # Referer:https://www.amazon.com/gp/bestsellers/apparel/ref=pd_zg_hrsr_a_1_1
+            # X-Requested-With:XMLHttpRequest
+            items3 = "/ref=zg_bs_apparel_pg_"+str(i + 1)+"?_encoding=UTF8&ajax=1&pg=" + str(i + 1)
+            items17 = "/ref=zg_bs_apparel_pg_"+str(i + 1)+"?_encoding=UTF8&&isAboveTheFold=0&ajax=1&pg=" + str(i + 1)
+            listheader = {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                # "Accept-Encoding": "gzip, deflate, br",
+                "Connection": "keep-alive",
+                "Accept-Language": "en-US;q=0.8,en;q=0.5",
+                "Upgrade-Insecure-Requests": "1",
+                # 'Referer': 'https://www.amazon.com/',
+                'Host': 'www.amazon.com'
+            }
+            content3 = ratedownload(url=catchurl + items3, where=where, config=mysqlconfig,header=listheader)
+            content17 = ratedownload(url=catchurl + items17, where=where, config=mysqlconfig,header=listheader)
             if content3 == 0 or content17 == 0:
                 break
             if content3 == None:
@@ -138,7 +151,17 @@ def unitlogic(url, mysqlconfig):
             with open(rankeep + ".html", "rb") as ff:
                 detailpage = ff.read()
         else:
-            detailpage = ratedownload(url=url, where=where, config=mysqlconfig)
+            detailheader = {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                # "Accept-Encoding": "gzip, deflate, br",
+                "Connection": "keep-alive",
+                "Accept-Language": "en-US;q=0.8,en;q=0.5",
+                "Upgrade-Insecure-Requests": "1",
+                # "Cache-Control":"max-age=0",
+                # 'Referer': 'https://www.amazon.com/',
+                'Host': 'www.amazon.com'
+            }
+            detailpage = ratedownload(url=url, where=where, config=mysqlconfig,header=detailheader)
             if detailpage == None:
                 continue
             if detailpage == 0:
@@ -178,8 +201,9 @@ def processlogic(processurls, mysqlconfig):
         try:
             # url: ('1-1', 'https://www.amazon.com/Best-Sellers-Appliances-Cooktops/zgbs/appliances/3741261/ref=zg_bs_nav_la_1_la/161-2441050-2846244', 'Cooktops', 2, 5, '1', '1', 'Appliances')
             unitlogic(url, mysqlconfig)
-            logger.error("大睡眠！" + str(getconfig()["urlstoptime"]) + "秒")
-            time.sleep(getconfig()["urlstoptime"])
+            if getconfig("urlstop"):
+                logger.error("大睡眠！" + str(getconfig()["urlstoptime"]) + "秒")
+                time.sleep(getconfig()["urlstoptime"])
         except Exception as err:
             logger.error("單進程抓錯異常：")
             logger.error(url)
