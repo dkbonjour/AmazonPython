@@ -125,10 +125,10 @@ def unitlogic(url, mysqlconfig):
         detailname = rank + "-" + detailall[rank]
         rankeep = detaildir + "/" + detailname
         if fileexsit(rankeep + ".md"):
-            loggers.error("存在!"+rankeep)
+            loggers.error("存在!" + rankeep)
             continue
         if fileexsit(rankeep + ".emd"):
-            loggers.error("存在(页面找不到）)!"+rankeep)
+            loggers.error("存在(页面找不到）)!" + rankeep)
             continue
         url = "https://www.amazon.com/dp/" + detailall[rank]
 
@@ -178,6 +178,8 @@ def processlogic(processurls, mysqlconfig):
         try:
             # url: ('1-1', 'https://www.amazon.com/Best-Sellers-Appliances-Cooktops/zgbs/appliances/3741261/ref=zg_bs_nav_la_1_la/161-2441050-2846244', 'Cooktops', 2, 5, '1', '1', 'Appliances')
             unitlogic(url, mysqlconfig)
+            logger.error("大睡眠！" + str(getconfig()["urlstoptime"]) + "秒")
+            time.sleep(getconfig()["urlstoptime"])
         except Exception as err:
             logger.error("單進程抓錯異常：")
             logger.error(url)

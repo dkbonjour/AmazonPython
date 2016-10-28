@@ -21,14 +21,14 @@ tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 loggers = logging.getLogger("smart")
 
-
 # 用来解析网页的函数
 # https://www.amazon.com/Best-Sellers-Home-Kitchen-Slumber-Bags/zgbs/home-garden/166452011/ref=zg_bs_nav_hg_3_1063268/159-5712866-5514666 类目页
 # 翻页+?pg=2
+ROBBOTTIME = 0
 
 
 def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
-    cookiefile=""
+    cookiefile = ""
     try:
         koip = getconfig()["koip"]
     except:
@@ -147,10 +147,15 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
                     pass
         if redisneed:
             if (str(err) == "机器人"):
+                global ROBBOTTIME
+                ROBBOTTIME = ROBBOTTIME + 1
                 if koip and robottime + 1 > getconfig()["rediserrmaxtimes"]:
                     pushipfuck(ip, times, robottime + 1, getconfig()["redispoolfuckname"])
                 else:
                     puship(ip, times, robottime + 1, getconfig()["redispoolname"])
+                if ROBBOTTIME > getconfig()["processnum"]:
+                    logger.error("超大睡眠！严重被防爬虫" + str(getconfig()["urlstoptime"] * 5) + "秒")
+                    time.sleep(getconfig()["urlstoptime"] * 5)
             else:
                 puship(ip, times, robottime, getconfig()["redispoolname"])
         logger.error(err, exc_info=1)
