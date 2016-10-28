@@ -19,7 +19,7 @@ from tool.jhttp.spider import *
 # 日志
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
-
+loggers = logging.getLogger("smart")
 
 # 用来解析网页的函数
 # https://www.amazon.com/Best-Sellers-Home-Kitchen-Slumber-Bags/zgbs/home-garden/166452011/ref=zg_bs_nav_hg_3_1063268/159-5712866-5514666 类目页
@@ -73,10 +73,10 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         # 并行真随机数，需要！！
         randomnum = allrandom(len(ips))
         try:
-            if getconfig()["sleep"]:
-                tt = random.randint(1, 3)
-                time.sleep(tt)
-                logger.debug("暂停:" + str(tt) + "秒:" + url)
+            secord=getconfig()["sleeptimes"]
+            secord = random.randint(secord, secord + 3)
+            time.sleep(secord)
+            logger.debug("暂停:" + str(secord) + "秒:" + url)
         except:
             logger.error("配置文件出错")
             exit()
@@ -129,6 +129,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
         # 放IP
         if redisneed:
             puship(ip, times, robottime, getconfig()["redispoolname"])
+        loggers.error(url)
         return resdata
     except Exception as err:
         if redisneed:
@@ -139,6 +140,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
                     puship(ip, times, robottime + 1, getconfig()["redispoolname"])
             else:
                 puship(ip, times, robottime, getconfig()["redispoolname"])
+        logger.error(err)
         if redisneed:
             logger.error(
                     "失敗抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip + "-" + str(
@@ -150,7 +152,6 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60):
                                                                                           location=location,
                                                                                           ua=ua,
                                                                                           times=5 - retrytime))
-        logger.error(err, exc_info=1)
         return ratedownload(url=url, where=where, config=config, retrytime=retrytime - 1, timeout=timeout)
 
 

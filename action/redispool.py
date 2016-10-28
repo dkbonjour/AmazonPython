@@ -86,8 +86,8 @@ def popip(secord=5, poolname="ippool"):
     if nowtime - int(splitstar[1]) > secord:
         return ip, times, robottime
     else:
-        secord = random.randint(secord - 1, secord + 3)
-        logger.warning(ip + "redis暂停:" + str(secord))
+        secord = random.randint(secord, secord + 3)
+        logger.error(ip + ":"+str(times)+"-"+str(robottime)+":redis暂停:" + str(secord))
         time.sleep(secord)
         return ip, times, robottime
 

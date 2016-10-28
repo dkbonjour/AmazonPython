@@ -93,20 +93,25 @@ if __name__ == '__main__':
     url = "https://www.amazon.com"
     print("准备解救IP们！！！时刻准备好人工打码")
     while True:
+        num = input("解救哪一个队列（1，2，3):")
         try:
-            ip, times, robbottime = popip(0, getconfig()["redispoolfuckname"])
+            try:
+                ip, times, robbottime = popip(0, getconfig()["redispoolfuckname"] + num)
+            except Exception as e:
+                print(e)
+                continue
             print(ip + "准备好了！！！")
             # ip=""
             # # ip="111.13.65.244:80"
             browers, data = getFirefox(url=url, ip=ip)
-            time.sleep(20)
-            try:
-                testposta("https://www.amazon.com", ip)
-            except:
-                print("没能解救" + ip)
-                puship(ip, times, robbottime, getconfig()["redispoolfuckname"])
-                browers.close()
-                continue
+            time.sleep(50)
+            # try:
+            #     testposta("https://www.amazon.com", ip)
+            # except:
+            #     print("没能解救" + ip)
+            #     puship(ip, times, robbottime, getconfig()["redispoolfuckname"])
+            #     browers.close()
+            #     continue
             browers.close()
             print("解救了" + ip)
             puship(ip, times, 0, getconfig()["redispoolname"])

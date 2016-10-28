@@ -7,7 +7,7 @@ import urllib.request, urllib.parse, http.cookiejar
 import os, time, re
 import http.cookies
 import requests
-
+from tool.jfile.file import *
 
 # star 自己封装的抓取函数,单机应用
 def spider(url, proxies={}, postdata={}, headers={}, ua="ua", path=".", timeout=60):
@@ -16,7 +16,7 @@ def spider(url, proxies={}, postdata={}, headers={}, ua="ua", path=".", timeout=
         抓取网页：支持cookie
         第一个参数为网址，第二个为POST的数据
         """
-
+        createjia(path)
         # 头部重包
         header = []
         for i in headers:
