@@ -18,7 +18,7 @@ def createtable(config, database, tables):
     createdb = "CREATE DATABASE  IF NOT EXISTS `" + database + "`"
     try:
         db2.ExecNonQuery(createdb)
-    except Exception as err:
+    except:
         print(database + "存在")
         pass
     db = Mysql(config)
@@ -26,6 +26,10 @@ def createtable(config, database, tables):
         sql = '''
 CREATE TABLE `{tablename}` (
   `id` VARCHAR(255),
+  `purl` varchar(255) DEFAULT NULL COMMENT '父类类目链接',
+  `col1` varchar(255) DEFAULT NULL COMMENT '预留字段',
+  `col2` varchar(255) DEFAULT NULL,
+  `col3` varchar(255) DEFAULT NULL,
   `smallrank` INT NULL COMMENT '小类排名',
   `name` VARCHAR(255) NULL COMMENT '小类名',
   `bigname` VARCHAR(255) NULL COMMENT '大类名',
@@ -44,8 +48,9 @@ CREATE TABLE `{tablename}` (
     '''.format(tablename=table)
         try:
             db.ExecNonQuery(sql)
-            print(table)
+            print(database + ":" + table + "创建成功")
         except Exception as err:
+            print(database + ":" + table + "创建失败")
             print(err)
 
 
@@ -60,13 +65,20 @@ def selecttable(config, dbname):
 
 
 if __name__ == "__main__":
-    for i in range(1,23):
+    try:
+        begin = int(input("从哪里开始："))
+        end = int(input("从哪里结束："))
+        end = end + 1
+    except:
+        print("错误，默认1-22")
+        begin = 1
+        end = 23
+    for i in range(begin, end):
         db = str(i)
         allconfig = getconfig()
         try:
             baseconfig = allconfig["basedb"]
             tables = selecttable(baseconfig, db)
-            print(tables)
             db = "db" + db
             dbconfig = allconfig[db]
             database = allconfig[db]["db"]

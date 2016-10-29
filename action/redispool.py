@@ -23,7 +23,7 @@ def initredis():
 
 def initippool(poolname="ippool", poolfuckname="ippoolfuck"):
     poolnum = getconfig()["redispoolnumber"]
-    logger.error("IP切成：" + str(poolnum) + "份")
+    logger.warning("IP切成：" + str(poolnum) + "份")
     global REDISSERVER
     if REDISSERVER == None:
         initredis()
@@ -56,7 +56,7 @@ def initippool(poolname="ippool", poolfuckname="ippoolfuck"):
             # 将ip添加进消息列队
             for j in ip:
                 r.lpush(poolname + str(item + 1), j)
-            logger.error("redis ip池好了:" + poolname + str(item + 1))
+            logger.warning("redis ip池好了:" + poolname + str(item + 1))
     except Exception as err:
         logger.error(err, exc_info=1)
         exit()
@@ -87,7 +87,7 @@ def popip(secord=5, poolname="ippool"):
         return ip, times, robottime
     else:
         secord = random.randint(secord, secord + 3)
-        logger.error(ip + ":"+str(times)+"-"+str(robottime)+":redis暂停:" + str(secord))
+        logger.warning(ip + ":"+str(times)+"-"+str(robottime)+":redis暂停:" + str(secord))
         time.sleep(secord)
         return ip, times, robottime
 

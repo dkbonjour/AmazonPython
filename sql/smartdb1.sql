@@ -1,7 +1,11 @@
-CREATE SCHEMA `smart_item1` ;
+CREATE SCHEMA `smartdb1` ;
 
-CREATE TABLE `smart_item1`.`1-1-1` (
+CREATE TABLE `smartdb1`.`1-1-1` (
   `id` VARCHAR(255),
+  `purl` varchar(255) DEFAULT NULL COMMENT '父类类目链接',
+  `col1` varchar(255) DEFAULT NULL COMMENT '预留字段',
+  `col2` varchar(255) DEFAULT NULL,
+  `col3` varchar(255) DEFAULT NULL,
   `smallrank` INT NULL COMMENT '小类排名',
   `name` VARCHAR(255) NULL COMMENT '小类名',
   `bigname` VARCHAR(255) NULL COMMENT '大类名',

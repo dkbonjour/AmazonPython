@@ -70,9 +70,15 @@ def testselect():
     print(mysql1.ExecQuery('SELECT bookname,bookkind,bookno FROM booktag limit 0,5;'))
     print('-' * 50)
     print(mysql1.ExecQuery('SELECT bookname,bookkind,bookno FROM booktag limit 0,10;'))
+    j = mysql1.ExecQuery('SELECT bookname,bookkind,bookno FROM booktag where bookname="" limit 0,5;')
+    for i in j:
+        print(i)
+        print("*"*10)
+    if j:
+        print("dd")
 
 
 if __name__ == '__main__':
     # initdoubanbook()
-    testinsert()
+    # testinsert()
     testselect()

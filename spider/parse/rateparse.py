@@ -79,7 +79,7 @@ def rateparse(content):
         try:
             temp = BeautifulSoup(str(item), 'html.parser')
             rank = temp.find('span', attrs={"class": "zg_rankNumber"}).string
-            rank = rank.replace(".", "")
+            rank = rank.replace(".", "").replace(",","")
             link = temp.find('div', attrs={"class": "zg_title"}).a["href"]
             asin = link.strip().split("/dp/")[1].split("/")[0]
             title = temp.find('div', attrs={"class": "zg_title"}).a.string

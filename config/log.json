@@ -72,7 +72,7 @@
     }
   },
   "root": {
-    "level": "ERROR",
+    "level": "WARNING",
     "handlers": [
       "console",
       "error_file_handler"

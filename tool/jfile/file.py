@@ -304,7 +304,7 @@ if __name__ == "__main__":
     #
     files = [1, 11, 111, 2, 22, 222, 3, 33, 333, 4, 44, 444, 5, 55, 555]
     # print(files)
-    print(devidelist(files, 9))
+    print(devidelist(files, 1))
     #
     # print(geturlattr("p/seller/at-a-glance.html/ref=dp_merchant_link?ie=UTF8&seller=AJ11J3FSAZ6XV&isAmazonFulfilled="))
     #

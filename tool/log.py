@@ -12,7 +12,7 @@ from tool.jfile.file import *
 
 # 全局变量，是否已经加载配置文件
 LOGSUCCESS = False
-
+TODAYTIME = todaystring(3)
 # 根目录
 BASE_DIR = ""
 

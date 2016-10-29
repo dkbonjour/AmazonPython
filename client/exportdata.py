@@ -53,11 +53,6 @@ def writefile(data, id, url):
     filename = dir + "/" + id + ".xlsx"
     for i in data:
         dataone = list(i)
-        soldby = dataone[9]
-        if "No sold" in soldby:
-            pass
-        else:
-            dataone[9] = "https://www.amazon.com/sp?seller=" + soldby
         temp.append(dataone)
     temp.append([url])
     try:
