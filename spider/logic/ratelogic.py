@@ -214,7 +214,7 @@ def processlogic(processurls, mysqlconfig):
         try:
             # url: ('1-1', 'https://www.amazon.com/Best-Sellers-Appliances-Cooktops/zgbs/appliances/3741261/ref=zg_bs_nav_la_1_la/161-2441050-2846244', 'Cooktops', 2, 5, '1', '1', 'Appliances')
             unitlogic(url, mysqlconfig)
-            if getconfig("urlstop"):
+            if getconfig()["urlstop"]:
                 logger.warning("大睡眠！" + str(getconfig()["urlstoptime"]) + "秒")
                 time.sleep(getconfig()["urlstoptime"])
         except Exception as err:
@@ -278,9 +278,9 @@ CREATE TABLE `{tablename}` (
     '''.format(tablename=tool.log.TODAYTIME)
     try:
         db.ExecNonQuery(sql)
-        print(sql + "创建成功")
+        logger.info(tool.log.TODAYTIME + "创建成功")
     except Exception as err:
-        print(sql + "创建失败")
+        logger.info(tool.log.TODAYTIME + "创建失败")
 
 
 if __name__ == "__main__":

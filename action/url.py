@@ -152,7 +152,7 @@ def insertexsitlist(pmap, basedata):
             pmap["title"] = pmap["title"][0:220]
         pmap["title"] = pymysql.escape_string(pmap["title"])
         pmap["tablename"] = tool.log.TODAYTIME
-        pmap["id"] = id = id + "&" + str(pmap["rank"]) + "-" + pmap["asin"]
+        pmap["id"] = id = id + "&" + str(pmap["smallrank"]) + "-" + pmap["asin"]
         if "No sold" in pmap["soldby"]:
             pass
         else:
@@ -163,10 +163,10 @@ def insertexsitlist(pmap, basedata):
         sql = "INSERT INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`," \
               "`shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`,`iscatch`)" \
               "VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
-              "'{shipby}',{price},{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP) " \
+              "'{shipby}',{price},{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP,{iscatch}) " \
               "on duplicate key update `createtime` = CURRENT_TIMESTAMP,`title`='{title}',`rank`={rank}," \
               "`soldby`='{soldby}',`shipby`='{shipby}',`price`={price},`score`={score}," \
-              "`commentnum`={commentnum},`commenttime`='{commenttime}';".format_map(pmap)
+              "`commentnum`={commentnum},`commenttime`='{commenttime}',`iscatch`={iscatch};".format_map(pmap)
         db.ExecNonQuery(sql)
         logger.warning("插日期数据库成功" + sql)
     except Exception as e:

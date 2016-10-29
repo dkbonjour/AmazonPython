@@ -71,28 +71,32 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
     redisneed = getconfig()["redispool"]
 
     # 取IP
-    if redisneed:
-        ip, times, robottime = popip(getconfig()["redispoolsleeptimes"], getconfig()["redispoolname"])
-        location = "no"
-    else:
-        ips = proxy(where=where, config=config, failtimes=iperror)
-
-        # TODO
-        # 并行真随机数，需要！！
-        randomnum = allrandom(len(ips))
-        try:
-            secord = getconfig()["sleeptimes"]
-            secord = random.randint(secord, secord + 3)
-            time.sleep(secord)
-            logger.debug("暂停:" + str(secord) + "秒:" + url)
-        except:
-            logger.error("配置文件出错")
-            exit()
-        ip = list(ips.keys())[randomnum]
-        if ip in ips.keys():
-            location = ips[ip][0]
+    ip = "127.0.0.1"
+    location = "no"
+    times = 0
+    robottime = 0
+    if getconfig()["proxy"]:
+        if redisneed:
+            ip, times, robottime = popip(getconfig()["redispoolsleeptimes"], getconfig()["redispoolname"])
         else:
-            location = "unkonw"
+            ips = proxy(where=where, config=config, failtimes=iperror)
+
+            # TODO
+            # 并行真随机数，需要！！
+            randomnum = allrandom(len(ips))
+            try:
+                secord = getconfig()["sleeptimes"]
+                secord = random.randint(secord, secord + 3)
+                time.sleep(secord)
+                logger.warning("暂停:" + str(secord) + "秒:" + url)
+            except:
+                logger.error("配置文件出错")
+                exit()
+            ip = list(ips.keys())[randomnum]
+            if ip in ips.keys():
+                location = ips[ip][0]
+            else:
+                location = "unkonw"
     proxies = {"http": "http://smart:smart2016@" + ip}
     # proxies = {
     #     'http': 'socks5://user:pass@host:port',
@@ -102,15 +106,23 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
         # manycookie
         if getconfig()["manycookie"]:
             cookiefile = getconfig()["datadir"] + "/cookie" + "/" + ip + "-" + uano + '.txt'
-            resdata = spider(url=url, proxies=proxies, headers=header, ua=uano, path=getconfig()["datadir"] + "/cookie",
-                             timeout=timeout)
+            if getconfig()["proxy"]:
+                resdata = spider(url=url, proxies=proxies, headers=header, ua=uano,
+                                 path=getconfig()["datadir"] + "/cookie",
+                                 timeout=timeout)
+            else:
+                resdata = spider(url=url, headers=header, ua=uano, path=getconfig()["datadir"] + "/cookie",
+                                 timeout=timeout)
         else:
-            res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
+            if getconfig()["proxy"]:
+                res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
+            else:
+                res = requests.get(url=url, headers=header, timeout=timeout)
             # print(res.status_code)
             res.raise_for_status()
             resdata = res.content
             res.close()
-        if redisneed:
+        if redisneed and getconfig()["proxy"]:
             logger.warning(
                     "抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip + "-" + str(
                             times) + "-err:" + str(robottime), location=location, ua=ua, times=5 - retrytime))
@@ -127,7 +139,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
             koipv1 = False
         else:
             koipv1 = koip
-        if not robot(resdata, ip, koipv1, url):
+        if getconfig()["proxy"] and not robot(resdata, ip, koipv1, url):
             # 放IP
             if redisneed:
                 puship(ip, times, robottime, getconfig()["redispoolname"])
@@ -137,7 +149,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
             return 0
 
         # 放IP
-        if redisneed:
+        if redisneed and getconfig()["proxy"]:
             puship(ip, times, robottime, getconfig()["redispoolname"])
         loggers.error(ip + "   |" + url)
         return resdata
@@ -148,7 +160,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                     os.remove(cookiefile)
                 except:
                     pass
-        if redisneed:
+        if redisneed and getconfig()["proxy"]:
             if (str(err) == "机器人"):
                 global ROBBOTTIME
                 ROBBOTTIME = ROBBOTTIME + 1
@@ -163,7 +175,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
             else:
                 puship(ip, times, robottime, getconfig()["redispoolname"])
         logger.error(err)
-        if redisneed:
+        if redisneed and getconfig()["proxy"]:
             logger.error(
                     "失敗抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip + "-" + str(
                             times) + "-err:" + str(robottime), location=location, ua=ua, times=5 - retrytime))
@@ -174,7 +186,8 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                                                                                           location=location,
                                                                                           ua=ua,
                                                                                           times=5 - retrytime))
-        return ratedownload(url=url, where=where, config=config, retrytime=retrytime - 1, timeout=timeout,header=header)
+        return ratedownload(url=url, where=where, config=config, retrytime=retrytime - 1, timeout=timeout,
+                            header=header)
 
 
 if __name__ == "__main__":
