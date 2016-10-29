@@ -23,30 +23,44 @@ def initredis():
 
 def initippool(poolname="ippool", poolfuckname="ippoolfuck"):
     poolnum = getconfig()["redispoolnumber"]
-    logger.warning("IP切成：" + str(poolnum) + "份")
     global REDISSERVER
     if REDISSERVER == None:
         initredis()
     r = REDISSERVER
     try:
         config = getconfig()["basedb"]
-        if getconfig()["ipinmysql"]:
-            where = "mysql"
+        renxin = input("根据原始配置来初始化，是选择1，否选择2：")
+        if renxin == "1":
+            if getconfig()["ipinmysql"]:
+                where = "mysql"
+            else:
+                where = "local"
         else:
-            where = "local"
-        ips = proxy(where=where, config=config)
+            renxin1 = input("从数据库加载选择1，从本地选择2：")
+            if renxin1 == "1":
+                where = "mysql"
+            else:
+                input("请往config/base/IP.txt按行放IP，准备好请按任意键：")
+                where = "local"
+        ips = proxyss(where=where, config=config)
+        print(ips)
         ipss = ips.keys()
-        temp=[]
+        temp = []
         for i in ipss:
             temp.append(i)
         # 切割IP
-        ipss=temp
+        ipss = temp
         ipss = devidelist(ipss, poolnum)
+        logger.warning("IP切成：" + str(poolnum) + "份")
         for item in ipss:
             ip = []
+            du = r.llen(poolname + str(item + 1))
+            print(str(item + 1) + "还有IP：" + str(du))
             # 删除旧的列队
-            r.delete(poolname + str(item + 1))
-            r.delete(poolfuckname + str(item + 1))
+            ii = input("删除已经存在的" + str(item + 1) + "队列,是选择1:")
+            if ii == "1":
+                r.delete(poolname + str(item + 1))
+            # r.delete(poolfuckname + str(item + 1))
             for i in ipss[item]:
                 # 标记时间戳
                 markedtime = int(time.time())
@@ -59,7 +73,7 @@ def initippool(poolname="ippool", poolfuckname="ippoolfuck"):
             logger.warning("redis ip池好了:" + poolname + str(item + 1))
     except Exception as err:
         logger.error(err, exc_info=1)
-        exit()
+        # exit()
 
 
 def popip(secord=5, poolname="ippool"):
@@ -87,7 +101,7 @@ def popip(secord=5, poolname="ippool"):
         return ip, times, robottime
     else:
         secord = random.randint(secord, secord + 3)
-        logger.warning(ip + ":"+str(times)+"-"+str(robottime)+":redis暂停:" + str(secord))
+        logger.warning(ip + ":" + str(times) + "-" + str(robottime) + ":redis暂停:" + str(secord))
         time.sleep(secord)
         return ip, times, robottime
 

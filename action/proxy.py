@@ -103,6 +103,31 @@ def koipmysql(ip):
         logger.error("删除数据库IP" + ip + "失败！！")
 
 
+
+def proxyss(where="local", config={}, filepath="config/base/IP.txt", failtimes=2000):
+    ips = []
+    if where == "local":
+        filepath = tool.log.BASE_DIR + "/" + filepath
+        logger.warning("加载本地代理IP文件")
+        ipfile = open(filepath, 'rb')
+        context = ipfile.read().decode("utf-8", "ignore")
+        ipfile.close()
+        ips = context.splitlines()
+    else:
+        logger.warning("加载数据库代理IP文件")
+        mysql = Mysql(config)
+        selectsql = "SELECT ip,zone,failtimes FROM smart_ip limit "+str(getconfig()["mysqlipnum"])+";"
+        result = mysql.ExecQuery(selectsql)
+        needfilter=getconfig()["limitip"]
+        for ip in result:
+            if needfilter:
+                if ip[2] > failtimes:
+                    pass
+            else:
+                ips.append(ip[0] + "-" + ip[1])
+    return ipfilter(ips)
+
+
 # 只做测试！！！
 if __name__ == "__main__":
     # 获取代理IP池

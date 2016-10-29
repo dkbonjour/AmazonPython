@@ -13,4 +13,9 @@ logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     createjia(getconfig()["datadir"] + "/cookie")
-    initippool(getconfig()["redispoolname"],getconfig()["redispoolfuckname"])
+    while True:
+        try:
+            initippool(getconfig()["redispoolname"],getconfig()["redispoolfuckname"])
+        except Exception as e:
+            print(e)
+            pass

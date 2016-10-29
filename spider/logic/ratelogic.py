@@ -214,9 +214,6 @@ def processlogic(processurls, mysqlconfig):
         try:
             # url: ('1-1', 'https://www.amazon.com/Best-Sellers-Appliances-Cooktops/zgbs/appliances/3741261/ref=zg_bs_nav_la_1_la/161-2441050-2846244', 'Cooktops', 2, 5, '1', '1', 'Appliances')
             unitlogic(url, mysqlconfig)
-            if getconfig()["urlstop"]:
-                logger.warning("大睡眠！" + str(getconfig()["urlstoptime"]) + "秒")
-                time.sleep(getconfig()["urlstoptime"])
         except Exception as err:
             logger.error("單進程抓錯異常：")
             logger.error(url)

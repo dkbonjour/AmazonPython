@@ -2,17 +2,11 @@
 # -*-coding:utf-8-*-
 # Created by Smartdo Co.,Ltd. on 2016/10/26.
 # 功能: 测试代理有效
-#  
-import tool.log
-import logging
+#
 import time
 import requests
 from action.proxy import *
 from tool.jhttp.spider import *
-
-# 日志
-tool.log.setup_logging()
-logger = logging.getLogger(__name__)
 
 
 def testposta(url1, ip="146.148.240.241:808", which="2"):
@@ -31,10 +25,10 @@ def testposta(url1, ip="146.148.240.241:808", which="2"):
             # 'Host': 'www.amazon.com'
         }
 
-        proxies = {"http": "http://smart:smart2016@" + ip}
+        proxies = {"http": "http://"+ getconfig()["proxypwd"] + ip}
         # proxies = {"http": "socks5://smart:smart2016@146.148.157.225:1080"}
         if which == "1":
-            t = requests.get(url1, headers=header, proxies=proxies, timeout=60)
+            t = requests.get(url1, headers=header, proxies=proxies, timeout=10)
             return t.content
         else:
             return spider(url=url1, proxies=proxies, path=tool.log.BASE_DIR + "/data/cookie", headers=header, ua="1",
@@ -53,7 +47,7 @@ if __name__ == "__main__":
     ipfile = tool.log.BASE_DIR + "/config/ip"
     createjia(ipfile)
     if local == "1":
-        config = {"host": "192.168.0.152", "user": "bai", "pwd": "123456", "db": "smart_base"}
+        config = {"host": "127.0.0.1", "user": "root", "pwd": "6833066", "db": "smart_base"}
         ips = proxy(where="mysql", config=config)
     elif local == "2":
         config = getconfig()["basedb"]
@@ -62,6 +56,7 @@ if __name__ == "__main__":
         temp = {}
         print(ipfile + "/iptest.md")
         ips = readfilelist(ipfile + "/iptest.md")
+        print(ips)
         for i in ips:
             i = i.split("-")[0]
             temp[i] = ["美国加利福尼亚州洛杉矶"]

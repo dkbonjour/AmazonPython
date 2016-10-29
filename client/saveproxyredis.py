@@ -66,7 +66,7 @@ def testposta(url1, ip="146.148.240.241:808"):
             'Host': 'www.amazon.com'
         }
 
-        proxies = {"http": "http://smart:smart2016@" + ip}
+        proxies = {"http": "http://" + getconfig()["proxypwd"] + ip}
         r = requests.get(url1, headers=header, proxies=proxies, timeout=100)
         r.raise_for_status()
         robot(r.content.decode("utf-8", "ignore"))

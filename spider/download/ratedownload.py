@@ -97,7 +97,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                 location = ips[ip][0]
             else:
                 location = "unkonw"
-    proxies = {"http": "http://smart:smart2016@" + ip}
+    proxies = {"http": "http://" + getconfig()["proxypwd"] + ip}
     # proxies = {
     #     'http': 'socks5://user:pass@host:port',
     #     'https': 'socks5://user:pass@host:port'
@@ -171,9 +171,13 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                 if getconfig()["urlrobotstop"]:
                     if ROBBOTTIME > getconfig()["processnum"]:
                         logger.error("超大睡眠！严重被防爬虫" + str(getconfig()["urlstoptime"] * 5) + "秒")
-                        time.sleep(getconfig()["urlstoptime"] * 5)
+                        time.sleep(getconfig()["urlstoptime"] * 60)
             else:
-                puship(ip, times, robottime, getconfig()["redispoolname"])
+                if getconfig()["notrobbotkoip"]:
+                    pass
+                else:
+                    logger.error("其他问题：干掉" + ip)
+                    puship(ip, times, robottime, getconfig()["redispoolname"])
         logger.error(err)
         if redisneed and getconfig()["proxy"]:
             logger.error(
