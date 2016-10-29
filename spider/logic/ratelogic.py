@@ -99,8 +99,7 @@ def unitlogic(url, mysqlconfig):
             # Referer:https://www.amazon.com/gp/bestsellers/apparel/ref=pd_zg_hrsr_a_1_1
             # X-Requested-With:XMLHttpRequest
             items3 = "/ref=zg_bs_apparel_pg_" + str(i + 1) + "?_encoding=UTF8&ajax=1&pg=" + str(i + 1)
-            items17 = "/ref=zg_bs_apparel_pg_" + str(i + 1) + "?_encoding=UTF8&&isAboveTheFold=0&ajax=1&pg=" + str(
-                    i + 1)
+            items17 = "/ref=zg_bs_apparel_pg_" + str(i + 1) + "?_encoding=UTF8&&isAboveTheFold=0&ajax=1&pg=" + str(i + 1)
             listheader = {
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
                 # "Accept-Encoding": "gzip, deflate, br",

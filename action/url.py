@@ -9,6 +9,7 @@ import logging
 from tool.jmysql.mysql import *
 from config.config import *
 import pymysql
+import copy
 
 # 日志
 tool.log.setup_logging()
@@ -65,24 +66,27 @@ def insertpmysql(pmap, dbname, tablename):
     #     "url": "https://www.amazon.com/dp/B004BPOPXS"
     # }
     sql = ""
+    pmaps=copy.deepcopy(pmap)
     try:
-        pmap["tablename"] = tablename
-        if len(pmap["title"]) > 240:
-            pmap["title"] = pmap["title"][0:220]
-        pmap["title"] = pymysql.escape_string(pmap["title"])
-        if "No sold" in pmap["soldby"]:
+        pmaps["tablename"] = tablename
+        if len(pmaps["title"]) > 240:
+            pmaps["title"] = pmaps["title"][0:220]
+        pmaps["title"] = pymysql.escape_string(pmaps["title"])
+        if "No sold" in pmaps["soldby"]:
+            pass
+        if "Amazon.com" in pmaps["soldby"]:
             pass
         else:
-            pmap["soldby"] = "https://www.amazon.com/sp?seller=" + pmap["soldby"]
+            pmaps["soldby"] = "https://www.amazon.com/sp?seller=" + pmaps["soldby"]
         config = getconfig()[dbname]
         db = Mysql(config)
         # escape_string
         sql = "INSERT IGNORE INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`," \
               "`shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`)" \
               "VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
-              "'{shipby}',{price},{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);".format_map(pmap)
+              "'{shipby}',{price},{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);".format_map(pmaps)
         db.ExecNonQuery(sql)
-        logger.warning("插数据库成功,数据库:" + dbname + ",表:" + pmap["tablename"] + ",Id" + pmap["id"])
+        logger.warning("插数据库成功,数据库:" + dbname + ",表:" + pmaps["tablename"] + ",Id:" + pmaps["id"])
 
         return True
     except Exception as err:
@@ -145,28 +149,36 @@ def insertlist(listdata, basedata):
 # 插入已经存在的数据
 def insertexsitlist(pmap, basedata):
     sql = ""
+    pmaps=copy.deepcopy(pmap)
     try:
         # 类目ID
         id = basedata[0]
-        if len(pmap["title"]) > 240:
-            pmap["title"] = pmap["title"][0:220]
-        pmap["title"] = pymysql.escape_string(pmap["title"])
-        pmap["tablename"] = tool.log.TODAYTIME
-        pmap["id"] = id = id + "&" + str(pmap["smallrank"]) + "-" + pmap["asin"]
-        if "No sold" in pmap["soldby"]:
+        catchurl = basedata[1]
+        dbname = basedata[6]
+        pmaps["purl"] = catchurl
+        pmaps["dbname"] = dbname
+        if len(pmaps["title"]) > 240:
+            pmaps["title"] = pmaps["title"][0:220]
+        pmaps["title"] = pymysql.escape_string(pmaps["title"])
+        pmaps["tablename"] = tool.log.TODAYTIME
+        pmaps["id"] = id = id + "&" + str(pmaps["smallrank"]) + "-" + pmaps["asin"]
+        if "No sold" in pmaps["soldby"]:
+            pass
+        if "Amazon.com" in pmaps["soldby"]:
             pass
         else:
-            pmap["soldby"] = "https://www.amazon.com/sp?seller=" + pmap["soldby"]
+            pmaps["soldby"] = "https://www.amazon.com/sp?seller=" + pmaps["soldby"]
         config = getconfig()["db"]
         db = Mysql(config)
-        pmap["iscatch"] = 1
+        pmaps["iscatch"] = 1
         sql = "INSERT INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`," \
-              "`shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`,`iscatch`)" \
+              "`shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`,`iscatch`,`purl`,`dbname`)" \
               "VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
-              "'{shipby}',{price},{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP,{iscatch}) " \
+              "'{shipby}',{price},{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP,{iscatch},'{purl}','{dbname}') " \
               "on duplicate key update `createtime` = CURRENT_TIMESTAMP,`title`='{title}',`rank`={rank}," \
               "`soldby`='{soldby}',`shipby`='{shipby}',`price`={price},`score`={score}," \
-              "`commentnum`={commentnum},`commenttime`='{commenttime}',`iscatch`={iscatch};".format_map(pmap)
+              "`commentnum`={commentnum},`commenttime`='{commenttime}',`iscatch`={iscatch},`purl`='{purl}',`dbname`='{dbname}';".format_map(
+            pmaps)
         db.ExecNonQuery(sql)
         logger.warning("插日期数据库成功" + sql)
     except Exception as e:

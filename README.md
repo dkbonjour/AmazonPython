@@ -1,5 +1,8 @@
 # An Amazon Crawler
 
+# ERROR
+Python function arg change will cause a big problem so must to make a new variable by copy.deepcopy
+
 ## Source Framework
 Develope by Python, Look at the following：
 
