@@ -80,6 +80,7 @@ def unitlogic(url, mysqlconfig):
             for i in temp:
                 try:
                     temptemp = i.split(",")
+                    insertlist(temptemp, url)
                     detailall[temptemp[0]] = temptemp[1]
                 except:
                     logger.error("列表页读取失败：内容行|" + i)

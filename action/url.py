@@ -67,6 +67,8 @@ def insertpmysql(pmap, dbname, tablename):
     sql = ""
     try:
         pmap["tablename"] = tablename
+        if len(pmap["title"]) > 240:
+            pmap["title"] = pmap["title"][0:220]
         pmap["title"] = pymysql.escape_string(pmap["title"])
         if "No sold" in pmap["soldby"]:
             pass
@@ -107,6 +109,8 @@ def insertlist(listdata, basedata):
         except:
             rank = -1
         asin = listdata[1]
+        if len(listdata[2]) > 240:
+            listdata[2] = listdata[2][0:220]
         title = pymysql.escape_string(listdata[2])
         # 标志
         id = id + "&" + str(rank) + "-" + asin
@@ -144,6 +148,8 @@ def insertexsitlist(pmap, basedata):
     try:
         # 类目ID
         id = basedata[0]
+        if len(pmap["title"]) > 240:
+            pmap["title"] = pmap["title"][0:220]
         pmap["title"] = pymysql.escape_string(pmap["title"])
         pmap["tablename"] = tool.log.TODAYTIME
         pmap["id"] = id = id + "&" + str(pmap["rank"]) + "-" + pmap["asin"]
@@ -153,8 +159,9 @@ def insertexsitlist(pmap, basedata):
             pmap["soldby"] = "https://www.amazon.com/sp?seller=" + pmap["soldby"]
         config = getconfig()["db"]
         db = Mysql(config)
+        pmap["iscatch"] = 1
         sql = "INSERT INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`," \
-              "`shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`)" \
+              "`shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`,`iscatch`)" \
               "VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
               "'{shipby}',{price},{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP) " \
               "on duplicate key update `createtime` = CURRENT_TIMESTAMP,`title`='{title}',`rank`={rank}," \
