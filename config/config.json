@@ -37,7 +37,7 @@
   "redispoolnumber":3,
   "redispoolsleeptimes":30,
   "rediserrmaxtimes":2,
-  "notrobbotkoip":true,
+  "notrobbotkoip":false,
   "redispoolconfig":{"host":"45.41.88.189","pwd":"smart2016","port":6379},
   "dbprefix":"db",
   "db": {"host": "45.41.88.189", "user": "root", "pwd": "smart2016","db":"smartdb"},

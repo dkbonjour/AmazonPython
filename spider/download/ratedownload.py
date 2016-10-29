@@ -174,9 +174,9 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                         time.sleep(getconfig()["urlstoptime"] * 60)
             else:
                 if getconfig()["notrobbotkoip"]:
+                    logger.error("其他问题：干掉" + ip)
                     pass
                 else:
-                    logger.error("其他问题：干掉" + ip)
                     puship(ip, times, robottime, getconfig()["redispoolname"])
         logger.error(err)
         if redisneed and getconfig()["proxy"]:
