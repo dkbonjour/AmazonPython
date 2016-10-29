@@ -26,6 +26,7 @@ if __name__ == "__main__":
         changeconfig("redispoolfuckname","ippoolfuck1")
         # category = ["15", "16", "17", "18", "19", "20", "21","22"]
         category = ["9","10","11","12"]
+        changeconfig("catchurl",category)
     except:
         category = ["Appliances", "Arts_ Crafts & Sewing"]
 

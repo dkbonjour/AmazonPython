@@ -208,6 +208,7 @@ def unitlogic(url, mysqlconfig):
 
 # 单进程抓取
 def processlogic(processurls, mysqlconfig):
+    logger.error(getconfig()["catchurl"])
     logger.debug(processurls)
     for url in processurls:
         try:
