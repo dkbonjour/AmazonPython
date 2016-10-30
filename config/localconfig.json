@@ -19,7 +19,7 @@
   "localkeep":false,
   "catchurl":["1","2","3"],
   "catchbywhich":"database",
-  "processnum":5,
+  "processnum":10,
   "urlnum":20000,
   "basedb": {
     "host": "127.0.0.1",

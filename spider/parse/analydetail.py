@@ -78,7 +78,7 @@ def pinfoparse(content):
     try:
         returnlist["title"] = title.get_text().strip().replace(",", "-")
     except Exception as err:
-        logger.error(err, exc_info=1)
+        #logger.error(err, exc_info=1)
         returnlist["title"] = "No title"
 
     # 评论数
@@ -97,7 +97,7 @@ def pinfoparse(content):
             try:
                 returnlist["commentnum"] = int(soup.find("div", attrs={"id": "summaryStars"}).get_text().split("stars")[1].replace('"',"").strip().replace(",", ""))
             except Exception as err:
-                logger.error(err, exc_info=1)
+                #logger.error(err, exc_info=1)
                 returnlist["commentnum"] = -1
         else:
             if commentnum:
@@ -111,7 +111,7 @@ def pinfoparse(content):
                         try:
                             returnlist["commentnum"] = int(soup.find("div", attrs={"id": "summaryStars"}).get_text().split("stars")[1].replace('"',"").replace(",", ""))
                         except Exception as err:
-                            logger.error(err, exc_info=1)
+                            #logger.error(err, exc_info=1)
                             returnlist["commentnum"] = -1
                             commenttime = "None"
 
@@ -120,7 +120,7 @@ def pinfoparse(content):
                     commentnum = soup.find("span", attrs={"id": "acrCustomerReviewText"})
                     returnlist["commentnum"] = int(commentnum.get_text().strip().replace(" customer review", "").replace("s", "").replace(",",""))
                 except Exception as err:
-                    logger.error(err, exc_info=1)
+                    #logger.error(err, exc_info=1)
                     returnlist["commentnum"] = -1
                     commenttime = "None"
 
@@ -146,7 +146,8 @@ def pinfoparse(content):
                                 small = j.split("on ")[1]
                                 smallyear = tempyoukonw
                     except Exception as err:
-                        logger.error(err, exc_info=1)
+                        pass#logger.error(err, exc_info=1)
+                        #logger.error(err, exc_info=1)
             returnlist["commenttime"] = small.replace(",", "-").strip()
             if len(returnlist["commenttime"]) > 30:
                 returnlist["commenttime"] = ""
@@ -168,7 +169,7 @@ def pinfoparse(content):
                     dafentemp = float(dafen.get_text().strip().replace(" out of 5 stars", ""))
                     returnlist["score"] = dafentemp
                 except Exception as err:
-                    logger.error(err, exc_info=1)
+                    #logger.error(err, exc_info=1)
                     returnlist["score"] = -1
         else:
             try:
@@ -182,7 +183,7 @@ def pinfoparse(content):
                             soup.find("div", attrs={"id": "summaryStars"}).find("i").get_text().strip().replace(" out of 5 stars", ""))
                     returnlist["score"] = dafentemp
                 except Exception as err:
-                    logger.error(err, exc_info=1)
+                    #logger.error(err, exc_info=1)
                     returnlist["score"] = -1
 
     # 价格
@@ -205,7 +206,7 @@ def pinfoparse(content):
                         e1=soup.find("span",attrs={"id":"priceblock_ourprice"}).find("span",attrs={"class","buyingPrice"}).get_text().strip()
                         returnlist["price"]=float(e1.replace("$", "").replace(",",""))
                 except Exception as err:
-                    logger.error(err, exc_info=1)
+                    #logger.error(err, exc_info=1)
                     returnlist["price"] = -1
 
     else:
