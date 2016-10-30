@@ -52,7 +52,7 @@ def pinfoparse(content):
             logger.error("没有大类排名！！！")
             returnlist["rank"] = -1
     else:
-        saveerror(content)
+        #saveerror(content)
         returnlist["rank"] = -1
 
     # 缩小范围
