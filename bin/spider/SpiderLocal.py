@@ -14,7 +14,10 @@ logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     print(copyright("亚马逊大霸王开爬"))
-    shutil.rmtree(getconfig()["datadir"] + "/cookie")
+    try:
+        shutil.rmtree(getconfig()["datadir"] + "/cookie")
+    except:
+        pass
     createjia(getconfig()["datadir"] + "/cookie")
     a = time.clock()
     # 大类名
