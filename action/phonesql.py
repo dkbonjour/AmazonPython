@@ -58,15 +58,15 @@ def phoneinsertpmysql(pmap, dbname, tablename):
         #       "`shipby`,`col1`,`col2`,`score`,`commentnum`,`commenttime`,`createtime`)" \
         #       "VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
         #       "'{shipby}','{price}','{img}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);".format_map(pmaps)
-        sql = "INSERT IGNORE INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`," \
-              "`shipby`,`score`,`commentnum`,`commenttime`,`createtime`)" \
-              "VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
-              "'{shipby}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);".format_map(pmaps)
+        sql = '''INSERT IGNORE INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`,
+              `shipby`,`score`,`commentnum`,`commenttime`,`createtime`)
+              VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}',
+              '{shipby}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);'''.format_map(pmaps)
         db.ExecNonQuery(sql)
         logger.warning("插数据库成功,数据库:" + dbname + ",表:" + pmaps["tablename"] + ",Id:" + pmaps["id"])
         return True
     except Exception as err:
-        logger.error("插数据库出错")
+        logger.error("插数据库出错："+sql)
         logger.error(err, exc_info=1)
     return False
 
@@ -86,6 +86,7 @@ def phoneinsertlist(parsecontent, url):
         # 数据库
         dbname = url[6]
         mysqlconfig = getconfig()["db"]
+        insertsql=""
         db = Mysql(mysqlconfig)
         for item in parsecontent:
             try:
@@ -155,14 +156,12 @@ def phoneinsertexsitlist(pmap, basedata):
         config = getconfig()["db"]
         db = Mysql(config)
         pmaps["iscatch"] = 1
-        sql = "INSERT INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`," \
-              "`shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`,`iscatch`,`purl`,`dbname`)" \
-              "VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
-              "'{shipby}','{price}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP,{iscatch},'{purl}','{dbname}') " \
-              "on duplicate key update `createtime` = CURRENT_TIMESTAMP,`rank`={rank}," \
-              "`soldby`='{soldby}',`shipby`='{shipby}',`score`={score}," \
-              "`commentnum`={commentnum},`commenttime`='{commenttime}',`iscatch`={iscatch};".format_map(
-                pmaps)
+        sql = '''INSERT INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`,
+              `shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`,`iscatch`,`purl`,`dbname`)
+              VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}',
+              '{shipby}','{price}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP,{iscatch},'{purl}','{dbname}')
+              on duplicate key update `createtime` = CURRENT_TIMESTAMP,`rank`={rank},`soldby`='{soldby}',`shipby`='{shipby}',`score`={score},
+              `commentnum`={commentnum},`commenttime`='{commenttime}',`iscatch`={iscatch};'''.format_map(pmaps)
         db.ExecNonQuery(sql)
         logger.warning("插日期数据库成功" + sql)
     except Exception as e:
