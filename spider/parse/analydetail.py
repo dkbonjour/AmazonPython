@@ -48,8 +48,8 @@ def pinfoparse(content):
             text = temp.get_text().strip()
             returnlist["rank"] = getrank2reg(text)
         except Exception as err:
-            saveerror(content)
-            logger.error(err, exc_info=1)
+            #saveerror(content)
+            logger.error("没有大类排名！！！")
             returnlist["rank"] = -1
     else:
         saveerror(content)
