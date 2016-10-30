@@ -12,6 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import ProcessPoolExecutor
 from spider.download.ratedownload import *
 from spider.parse.phonedetail import *
+from spider.parse.analydetail import *
 
 # 日志
 tool.log.setup_logging()
@@ -68,64 +69,71 @@ def unitlogic(url, mysqlconfig):
                 phoneinsertlist(parsecontent, url)
 
     for asin in parsecontent:
-        # smallrank-asin
-        smallrank = parsecontent[asin][0]
-        detailname = str(smallrank) + "-" + asin
-        rankeep = detaildir + "/" + detailname
-        if fileexsit(rankeep + ".md"):
-            loggers.warning("存在!" + rankeep)
-            continue
-        if fileexsit(rankeep + ".emd"):
-            loggers.warning("存在(页面找不到）)!" + rankeep)
-            continue
-        detailurl = "https://www.amazon.com/dp/" + asin
+        try:
+            # smallrank-asin
+            smallrank = parsecontent[asin][0]
+            detailname = str(smallrank) + "-" + asin
+            rankeep = detaildir + "/" + detailname
+            if fileexsit(rankeep + ".md"):
+                loggers.warning("存在!" + rankeep)
+                continue
+            if fileexsit(rankeep + ".emd"):
+                loggers.warning("存在(页面找不到）)!" + rankeep)
+                continue
+            detailurl = "https://www.amazon.com/dp/" + asin
 
-        if fileexsit(rankeep + ".html"):
-            with open(rankeep + ".html", "rb") as ff:
-                detailpage = ff.read()
-        else:
-            detailheader = {
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-                "Connection": "keep-alive",
-                "Accept-Language": "en-US;q=0.8,en;q=0.5",
-                "Upgrade-Insecure-Requests": "1",
-                'Host': 'www.amazon.com'
-            }
-            detailpage = ratedownload(url=detailurl, where=where, config=mysqlconfig, header=detailheader)
-            if detailpage == None:
-                continue
-            if detailpage == 0:
-                with open(rankeep + ".emd", "wt") as f:
-                    f.write("1")
-                continue
+            if fileexsit(rankeep + ".html"):
+                with open(rankeep + ".html", "rb") as ff:
+                    detailpage = ff.read()
             else:
-                with open(rankeep + ".html", "wb") as f:
-                    f.write(detailpage)
-        try:
-            pinfo = phonedetailparse(detailpage.decode("utf-8", "ignore"))
-        except:
-            logger.error("解析詳情頁出錯:" + detailurl)
-            savedetailerror(detailpage, asin)
-            continue
-        try:
-            pinfo["smallrank"] = int(smallrank)
-        except:
-            pinfo["smallrank"] = -1
-        pinfo["title"] = parsecontent[asin][3]
-        pinfo["price"] = parsecontent[asin][4]
-        pinfo["asin"] = asin
-        pinfo["url"] = detailurl
-        pinfo["img"] = parsecontent[asin][2]
-        if len(pinfo["img"]) > 240:
-            pinfo["img"] = ""
-        pinfo["name"] = catchname
-        pinfo["bigname"] = bigpname
-        pinfo["id"] = todays + "-" + detailname
+                detailheader = {
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                    "Connection": "keep-alive",
+                    "Accept-Language": "en-US;q=0.8,en;q=0.5",
+                    "Upgrade-Insecure-Requests": "1",
+                    'Host': 'www.amazon.com'
+                }
+                detailpage = ratedownload(url=detailurl, where=where, config=mysqlconfig, header=detailheader)
+                if detailpage == None:
+                    continue
+                if detailpage == 0:
+                    with open(rankeep + ".emd", "wt") as f:
+                        f.write("1")
+                    continue
+                else:
+                    with open(rankeep + ".html", "wb") as f:
+                        f.write(detailpage)
+            try:
+                pinfo = phonedetailparse(detailpage.decode("utf-8", "ignore"))
+            except:
+                try:
+                     # 不是手机端
+                    pinfo = pinfoparse(detailpage.decode("utf-8", "ignore"))
+                except:
+                    logger.error("解析詳情頁出錯:" + detailurl)
+                    savedetailerror(detailpage, asin)
+                    continue
+            try:
+                pinfo["smallrank"] = int(smallrank)
+            except:
+                pinfo["smallrank"] = -1
+            pinfo["title"] = parsecontent[asin][3]
+            pinfo["price"] = parsecontent[asin][4]
+            pinfo["asin"] = asin
+            pinfo["url"] = detailurl
+            pinfo["img"] = parsecontent[asin][2]
+            if len(pinfo["img"]) > 240:
+                pinfo["img"] = ""
+            pinfo["name"] = catchname
+            pinfo["bigname"] = bigpname
+            pinfo["id"] = todays + "-" + detailname
 
-        # 插入数据库，失败也不要紧
-        phoneinsertexsitlist(pinfo, url)
-        phoneinsertpmysql(pinfo, db, id)
-
+            # 插入数据库，失败也不要紧
+            phoneinsertexsitlist(pinfo, url)
+            phoneinsertpmysql(pinfo, db, id)
+        except:
+            logger.error(asin+":ERROR")
+            pass
     # 成功
     logger.warning(todays + "|" + bigpname + "|" + db + ":" + id + " completed")
 
