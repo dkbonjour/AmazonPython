@@ -33,7 +33,7 @@ if __name__ == "__main__":
         # data=requests.get(url=url, headers=header, proxies=proxies, timeout=60)
         # print(data.text)
         try:
-            mulspider(url="https://www.amazon.com/gp/aw", headers=header, ua=str(i), timeout=5)
+            mulspider(url="https://www.amazon.com/gp/anywhere/site-view.html/ref=footer_opt_in_mobile?ie=UTF8&opt=mobile", headers=header, ua=str(i), timeout=5)
             resdata = mulspider(url=url, headers=header, ua=str(i), timeout=5)
         except Exception as e:
             print(e)

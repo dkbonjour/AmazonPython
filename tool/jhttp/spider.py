@@ -146,6 +146,11 @@ def mulspider(url, proxies={}, postdata={}, headers={}, ua="ua", path=".", timeo
         # 如果存在，则读取主要COOKIE
         if os.path.exists(filename):
             cj.load(filename, ignore_discard=True, ignore_expires=True)
+        else:
+            # TODO
+            # 以手机形式访问
+            # spider(url=url, headers=header, ua=ua, path=path,timeout=timeout)
+            pass
         # 读取其他COOKIE
         if os.path.exists('../subcookie.txt'):
             cookie = open('../subcookie.txt', 'r').read()
