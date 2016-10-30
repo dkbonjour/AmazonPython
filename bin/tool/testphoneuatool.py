@@ -10,7 +10,7 @@ from tool.jfile.file import *
 import tool
 
 if __name__ == "__main__":
-
+    createjia(tool.log.BASE_DIR + "/data/phonelist/")
     passua = []
     uas = readfilelist(tool.log.BASE_DIR + "/config/base/UA.txt")
     i = 0
