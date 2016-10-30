@@ -47,7 +47,7 @@ def phoneinsertpmysql(pmap, dbname, tablename):
         if "Amazon.com" in pmaps["soldby"]:
             pass
         else:
-            pmaps["soldby"] = "https://www.amazon.com/sp?seller=" + pmaps["soldby"]
+            pmaps["soldby"] = pymysql.escape_string("https://www.amazon.com/sp?seller=" + pmaps["soldby"])
         config = getconfig()[getconfig()["dbprefix"] + dbname]
         db = Mysql(config)
         # escape_string
@@ -145,7 +145,7 @@ def phoneinsertexsitlist(pmap, basedata):
         if "Amazon.com" in pmaps["soldby"]:
             pass
         else:
-            pmaps["soldby"] = "https://www.amazon.com/sp?seller=" + pmaps["soldby"]
+            pmaps["soldby"] = pymysql.escape_string("https://www.amazon.com/sp?seller=" + pmaps["soldby"])
         config = getconfig()["db"]
         db = Mysql(config)
         pmaps["iscatch"] = 1
