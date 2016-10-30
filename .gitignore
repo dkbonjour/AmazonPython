@@ -14,3 +14,4 @@ v2/file/*.html
 v2/*.txt
 tool/jhttp/*.txt
 config/ip/*
+*cookie.txt

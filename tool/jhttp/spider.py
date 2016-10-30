@@ -210,7 +210,7 @@ if __name__ == "__main__":
     # ip="http://smart:smart2016@146.148.149.209:808"
     # ip = "http://36.42.32.32:8080"
     # proxies = {"http": ip}
-    url = "http://www.amazon.com"
+    url = "https://www.amazon.com/dp/B000TYSB8K"
     # data=requests.get(url=url, headers=header, proxies=proxies, timeout=60)
     # print(data.text)
     resdata = mulspider(url=url, headers=header, ua="1", timeout=5)

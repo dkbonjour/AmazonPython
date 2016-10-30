@@ -7,6 +7,8 @@
 # 日志
 import tool.log
 import logging
+from tool.jfile.file import *
+
 
 tool.log.setup_logging()
 smartlogger = logging.getLogger("smart")
@@ -26,7 +28,7 @@ def useragent(filepath="config/base/UA.txt"):
     with open(tool.log.BASE_DIR + "/" + filepath, "rt") as f:
         uas = f.readlines()
         for i in range(len(uas)):
-            UAPOOL.append(str(i + 1) + "*" + uas[i].strip())
+            UAPOOL.append(str(i + 1) + "*" + uas[i].strip().replace("\r",""))
         UAPOOLSUCCESS = True
         return UAPOOL
 
@@ -35,3 +37,4 @@ def useragent(filepath="config/base/UA.txt"):
 if __name__ == "__main__":
     print(useragent())
     print(useragent())
+
