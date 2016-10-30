@@ -83,5 +83,6 @@ if __name__ == "__main__":
             dbconfig = allconfig[db]
             database = allconfig[db]["db"]
             createtable(dbconfig, database, tables)
-        except:
+        except Exception as e:
+            print(e)
             raise Exception("数据库配置出错")
