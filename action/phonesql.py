@@ -38,13 +38,13 @@ def phoneinsertpmysql(pmap, dbname, tablename):
         pmaps["tablename"] = tablename
         if len(pmaps["title"]) > 240:
             pmaps["title"] = pmaps["title"][0:220]
-        pmaps["title"] = pymysql.escape_string(pmaps["title"]).replace("'", "").replace('"', "")
+        pmaps["title"] = pymysql.escape_string(pmaps["title"]).replace("'", "").replace('"', "").replace("\\","")
         if len(pmaps["shipby"]) > 240:
             pmaps["shipby"] = pmaps["title"][0:220]
-        pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"]).replace("'", "").replace('"', "")
-        pmaps["url"]=pmaps["url"].replace("'", "").replace('"', "")
-        pmaps["bigname"]=pmaps["bigname"].replace("'", "").replace('"', "")
-        pmaps["name"]=pmaps["name"].replace("'", "").replace('"', "")
+        pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"]).replace("'", "").replace('"', "").replace("\\","")
+        pmaps["url"]=pmaps["url"].replace("'", "").replace('"', "").replace("\\","")
+        pmaps["bigname"]=pmaps["bigname"].replace("'", "").replace('"', "").replace("\\","")
+        pmaps["name"]=pmaps["name"].replace("'", "").replace('"', "").replace("\\","")
         if "No sold" in pmaps["soldby"]:
             pass
         elif "Amazon.com" in pmaps["soldby"]:
@@ -97,8 +97,8 @@ def phoneinsertlist(parsecontent, url):
                 if len(img) > 240:
                     img = ""
                 title = parsecontent[item][3]
-                title = pymysql.escape_string(title).replace("'", "").replace('"', "")
-                img = pymysql.escape_string(img).replace("'", "").replace('"', "")
+                title = pymysql.escape_string(title).replace("'", "").replace('"', "").replace("\\","")
+                img = pymysql.escape_string(img).replace("'", "").replace('"', "").replace("\\","")
                 price = parsecontent[item][4]
 
                 # 标志
@@ -131,19 +131,19 @@ def phoneinsertexsitlist(pmap, basedata):
     sql = ""
     pmaps = copy.deepcopy(pmap)
     try:
-        pmaps["purl"] = basedata[1].replace("'", "").replace('"', "")
+        pmaps["purl"] = basedata[1].replace("'", "").replace('"', "").replace("\\","")
         pmaps["dbname"] = basedata[6]
         if len(pmaps["title"]) > 240:
             pmaps["title"] = pmaps["title"][0:220]
-        pmaps["title"] = pymysql.escape_string(pmaps["title"]).replace("'", "").replace('"', "")
+        pmaps["title"] = pymysql.escape_string(pmaps["title"]).replace("'", "").replace('"', "").replace("\\","")
         if len(pmaps["shipby"]) > 240:
             pmaps["shipby"] = pmaps["title"][0:220]
-        pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"]).replace("'", "").replace('"', "")
+        pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"]).replace("'", "").replace('"', "").replace("\\","")
         pmaps["tablename"] = tool.log.TODAYTIME
         pmaps["id"] = basedata[0] + "&" + str(pmaps["smallrank"]) + "-" + pmaps["asin"]
-        pmaps["url"]=pmaps["url"].replace("'", "").replace('"', "")
-        pmaps["bigname"]=pmaps["bigname"].replace("'", "").replace('"', "")
-        pmaps["name"]=pmaps["name"].replace("'", "").replace('"', "")
+        pmaps["url"]=pmaps["url"].replace("'", "").replace('"', "").replace("\\","")
+        pmaps["bigname"]=pmaps["bigname"].replace("'", "").replace('"', "").replace("\\","")
+        pmaps["name"]=pmaps["name"].replace("'", "").replace('"', "").replace("\\","")
         if "No sold" in pmaps["soldby"]:
             pass
         elif "Amazon.com" in pmaps["soldby"]:
