@@ -38,10 +38,10 @@ def phoneinsertpmysql(pmap, dbname, tablename):
         pmaps["tablename"] = tablename
         if len(pmaps["title"]) > 240:
             pmaps["title"] = pmaps["title"][0:220]
-        pmaps["title"] = pymysql.escape_string(pmaps["title"])
+        pmaps["title"] = pymysql.escape_string(pmaps["title"]).replace("'","").replace('"',"")
         if len(pmaps["shipby"]) > 240:
             pmaps["shipby"] = pmaps["title"][0:220]
-        pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"])
+        pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"]).replace("'","").replace('"',"")
         if "No sold" in pmaps["soldby"]:
             pass
         if "Amazon.com" in pmaps["soldby"]:
@@ -51,10 +51,14 @@ def phoneinsertpmysql(pmap, dbname, tablename):
         config = getconfig()[getconfig()["dbprefix"] + dbname]
         db = Mysql(config)
         # escape_string
+        # sql = "INSERT IGNORE INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`," \
+        #       "`shipby`,`col1`,`col2`,`score`,`commentnum`,`commenttime`,`createtime`)" \
+        #       "VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
+        #       "'{shipby}','{price}','{img}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);".format_map(pmaps)
         sql = "INSERT IGNORE INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`," \
-              "`shipby`,`col1`,`col2`,`score`,`commentnum`,`commenttime`,`createtime`)" \
+              "`shipby`,`score`,`commentnum`,`commenttime`,`createtime`)" \
               "VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
-              "'{shipby}','{price}','{img}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);".format_map(pmaps)
+              "'{shipby}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);".format_map(pmaps)
         db.ExecNonQuery(sql)
         logger.warning("插数据库成功,数据库:" + dbname + ",表:" + pmaps["tablename"] + ",Id:" + pmaps["id"])
         return True
@@ -92,7 +96,7 @@ def phoneinsertlist(parsecontent, url):
                 if len(img) > 240:
                     img = ""
                 title = parsecontent[item][3]
-                title = pymysql.escape_string(title)
+                title = pymysql.escape_string(title).replace("'","").replace('"',"")
                 price = parsecontent[item][4]
 
                 # 标志
@@ -129,10 +133,10 @@ def phoneinsertexsitlist(pmap, basedata):
         pmaps["dbname"] = basedata[6]
         if len(pmaps["title"]) > 240:
             pmaps["title"] = pmaps["title"][0:220]
-        pmaps["title"] = pymysql.escape_string(pmaps["title"])
+        pmaps["title"] = pymysql.escape_string(pmaps["title"]).replace("'","").replace('"',"")
         if len(pmaps["shipby"]) > 240:
             pmaps["shipby"] = pmaps["title"][0:220]
-        pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"])
+        pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"]).replace("'","").replace('"',"")
         pmaps["tablename"] = tool.log.TODAYTIME
         pmaps["id"] = basedata[0] + "&" + str(pmaps["smallrank"]) + "-" + pmaps["asin"]
         if "No sold" in pmaps["soldby"]:
