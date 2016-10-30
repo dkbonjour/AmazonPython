@@ -165,7 +165,8 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
         if getconfig()["manycookie"]:
             if (str(err) == "机器人"):
                 try:
-                    os.remove(cookiefile)
+                    pass
+                    # os.remove(cookiefile)
                 except:
                     pass
         if redisneed and getconfig()["proxy"]:
@@ -177,7 +178,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                 else:
                     puship(ip, times, robottime + 1, getconfig()["redispoolname"])
                 if getconfig()["urlrobotstop"]:
-                    if ROBBOTTIME > getconfig()["processnum"]:
+                    if ROBBOTTIME > getconfig()["processnum"]*5:
                         logger.error("超大睡眠！严重被防爬虫" + str(getconfig()["urlstoptime"] * 5) + "秒")
                         time.sleep(getconfig()["urlstoptime"] * 60)
             else:
