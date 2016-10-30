@@ -89,7 +89,7 @@ def pinfoparse(content):
     return returnlist
 
 from config.config import *
-if __name__ == '__main__':
+def test():
     getconfig()
     filepath = "../data/"
     files = listfiles(filepath, ".html")
@@ -100,4 +100,14 @@ if __name__ == '__main__':
             content = f.read().decode("utf-8", "ignore")
             print(pinfoparse(content))
     # os.remove("./sh.sh")
-    shutil.rmtree("./dd")
+    try:
+        shutil.rmtree("./dd")
+    except:
+        pass
+        print("tt")
+        return
+    finally:
+        print("ddd")
+
+if __name__ == '__main__':
+    test()

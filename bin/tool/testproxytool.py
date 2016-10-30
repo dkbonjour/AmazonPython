@@ -31,7 +31,7 @@ def testposta(url1, ip="146.148.240.241:808", which="2"):
             t = requests.get(url1, headers=header, proxies=proxies, timeout=10)
             return t.content
         else:
-            return spider(url=url1, proxies=proxies, path=tool.log.BASE_DIR + "/data/cookie", headers=header, ua="1",
+            return mulspider(url=url1, proxies=proxies, path=tool.log.BASE_DIR + "/data/cookie", headers=header, ua="1",
                           timeout=60)
             # print("right")
             # print(r.content)

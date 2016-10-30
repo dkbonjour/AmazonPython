@@ -45,7 +45,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
     if getconfig()["manyua"]:
         uas = useragent()
         ua = uas[random.randint(0, len(uas) - 1)]
-        temp = ua.split(",")
+        temp = ua.split("*")
         uano = temp[0]
         ua = temp[1]
     else:
@@ -107,11 +107,11 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
         if getconfig()["manycookie"]:
             cookiefile = getconfig()["datadir"] + "/cookie" + "/" + ip + "-" + uano + '.txt'
             if getconfig()["proxy"]:
-                resdata = spider(url=url, proxies=proxies, headers=header, ua=uano,
+                resdata = mulspider(url=url, proxies=proxies, headers=header, ua=uano,
                                  path=getconfig()["datadir"] + "/cookie",
                                  timeout=timeout)
             else:
-                resdata = spider(url=url, headers=header, ua=uano, path=getconfig()["datadir"] + "/cookie",
+                resdata = mulspider(url=url, headers=header, ua=uano, path=getconfig()["datadir"] + "/cookie",
                                  timeout=timeout)
         else:
             if getconfig()["proxy"]:
@@ -194,21 +194,21 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                             header=header)
 
 
-if __name__ == "__main__":
-    # 一级
-    level = 4
-    urls = {"1": "https://www.amazon.com/Best-Sellers/zgbs",
-            "2": "https://www.amazon.com/Best-Sellers-Appliances/zgbs/appliances/ref=zg_bs_nav_0/155-7707064-5178447",
-            "3": "https://www.amazon.com/Best-Sellers-Appliances-Freezers/zgbs/appliances/3741331/ref=zg_bs_nav_la_2_3741261",
-            "4": "https://www.amazon.com/Best-Sellers-Grocery-Gourmet-Food-Salad-Dressings/zgbs/grocery/16320901/ref=zg_bs_nav_gro_3_16319881"}
-    for url in urls:
-        if str(level) != url:
-            continue
-        content = ratedownload(urls[url])
-        with open(tool.log.BASE_DIR + "/data/test/rate" + url + ".html", "wb") as f:
-            f.write(content)
+def downloaddetail():
+    # ajaxurl = input("https://www.amazon.com/Best-Sellers-Home-Improvement-Fuse-Accessories/zgbs/hi/6355934011 ：")
+    # ajaxurl="https://www.amazon.com/dp/B017KUENH8"
+    tt = readfilelist(tool.log.BASE_DIR + "/data/test/url.html")
+    print(tt)
+    for i in range(len(tt)):
+        try:
+            content = ratedownload(tt[i].strip().replace("'", "").replace("\r", ""))
+            dudu = tool.log.BASE_DIR + "/data/phonelist/detail" + str(i) + ".html"
+            with open(dudu, "wb") as f:
+                f.write(content)
+            print(dudu)
+        except Exception as e:
+            print(e)
 
-    ajaxurl = "https://www.amazon.com/Best-Sellers-Clothing-Mother-Bride-Dresses/zgbs/apparel/2969490011/161-2441050-2846244?_encoding=UTF8&pg=2&ajax=1&isAboveTheFold=0"
-    content = ratedownload(ajaxurl)
-    with open(tool.log.BASE_DIR + "/data/test/ajax" + ".html", "wb") as f:
-        f.write(content)
+
+if __name__ == "__main__":
+    downloaddetail()

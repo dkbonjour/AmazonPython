@@ -26,7 +26,7 @@ def useragent(filepath="config/base/UA.txt"):
     with open(tool.log.BASE_DIR + "/" + filepath, "rt") as f:
         uas = f.readlines()
         for i in range(len(uas)):
-            UAPOOL.append(str(i + 1) + "," + uas[i].strip())
+            UAPOOL.append(str(i + 1) + "*" + uas[i].strip())
         UAPOOLSUCCESS = True
         return UAPOOL
 
