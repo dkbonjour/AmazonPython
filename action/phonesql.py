@@ -42,6 +42,9 @@ def phoneinsertpmysql(pmap, dbname, tablename):
         if len(pmaps["shipby"]) > 240:
             pmaps["shipby"] = pmaps["title"][0:220]
         pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"]).replace("'", "").replace('"', "")
+        pmaps["url"]=pmaps["url"].replace("'", "").replace('"', "")
+        pmaps["bigname"]=pmaps["bigname"].replace("'", "").replace('"', "")
+        pmaps["name"]=pmaps["name"].replace("'", "").replace('"', "")
         if "No sold" in pmaps["soldby"]:
             pass
         if "Amazon.com" in pmaps["soldby"]:
@@ -130,7 +133,7 @@ def phoneinsertexsitlist(pmap, basedata):
     sql = ""
     pmaps = copy.deepcopy(pmap)
     try:
-        pmaps["purl"] = basedata[1]
+        pmaps["purl"] = basedata[1].replace("'", "").replace('"', "")
         pmaps["dbname"] = basedata[6]
         if len(pmaps["title"]) > 240:
             pmaps["title"] = pmaps["title"][0:220]
@@ -140,6 +143,9 @@ def phoneinsertexsitlist(pmap, basedata):
         pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"]).replace("'", "").replace('"', "")
         pmaps["tablename"] = tool.log.TODAYTIME
         pmaps["id"] = basedata[0] + "&" + str(pmaps["smallrank"]) + "-" + pmaps["asin"]
+        pmaps["url"]=pmaps["url"].replace("'", "").replace('"', "")
+        pmaps["bigname"]=pmaps["bigname"].replace("'", "").replace('"', "")
+        pmaps["name"]=pmaps["name"].replace("'", "").replace('"', "")
         if "No sold" in pmaps["soldby"]:
             pass
         if "Amazon.com" in pmaps["soldby"]:
