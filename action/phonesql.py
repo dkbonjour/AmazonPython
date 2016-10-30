@@ -47,7 +47,7 @@ def phoneinsertpmysql(pmap, dbname, tablename):
         pmaps["name"]=pmaps["name"].replace("'", "").replace('"', "")
         if "No sold" in pmaps["soldby"]:
             pass
-        if "Amazon.com" in pmaps["soldby"]:
+        elif "Amazon.com" in pmaps["soldby"]:
             pass
         else:
             pmaps["soldby"] = pymysql.escape_string("https://www.amazon.com/sp?seller=" + pmaps["soldby"])
@@ -148,7 +148,7 @@ def phoneinsertexsitlist(pmap, basedata):
         pmaps["name"]=pmaps["name"].replace("'", "").replace('"', "")
         if "No sold" in pmaps["soldby"]:
             pass
-        if "Amazon.com" in pmaps["soldby"]:
+        elif "Amazon.com" in pmaps["soldby"]:
             pass
         else:
             pmaps["soldby"] = pymysql.escape_string("https://www.amazon.com/sp?seller=" + pmaps["soldby"])
