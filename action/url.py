@@ -71,15 +71,23 @@ def insertpmysql(pmap, dbname, tablename):
         pmaps["tablename"] = tablename
         if len(pmaps["title"]) > 240:
             pmaps["title"] = pmaps["title"][0:220]
-        pmaps["title"] = pymysql.escape_string(pmaps["title"])
+        pmaps["title"] = pymysql.escape_string(pmaps["title"]).replace("'", "").replace('"', "").replace("\\","")
         if "No sold" in pmaps["soldby"]:
             pass
-        if "Amazon.com" in pmaps["soldby"]:
+        elif "Amazon.com" in pmaps["soldby"]:
             pass
         else:
-            pmaps["soldby"] = "https://www.amazon.com/sp?seller=" + pmaps["soldby"]
+            pmaps["soldby"] = "https://www.amazon.com/sp?seller=" + pmaps["soldby"].replace("'", "").replace('"', "").replace("\\","")
         config = getconfig()[dbname]
         db = Mysql(config)
+
+        for key in pmaps:
+            try:
+                tempp = pymysql.escape_string(pmaps[key]).replace("'", "").replace('"', "").replace("\\","")
+            except:
+                continue
+            pmaps[key] = tempp
+
         # escape_string
         sql = "INSERT IGNORE INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`," \
               "`shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`)" \
@@ -115,7 +123,7 @@ def insertlist(listdata, basedata):
         asin = listdata[1]
         if len(listdata[2]) > 240:
             listdata[2] = listdata[2][0:220]
-        title = pymysql.escape_string(listdata[2])
+        title = pymysql.escape_string(listdata[2]).replace("'", "").replace('"', "").replace("\\","")
         # 标志
         id = id + "&" + str(rank) + "-" + asin
         # SELECT count(*) from `20161028` where id="1-1-1-1&1-YJGSJSGJ" and iscatch=1
@@ -164,7 +172,7 @@ def insertexsitlist(pmap, basedata):
         pmaps["id"] = id = id + "&" + str(pmaps["smallrank"]) + "-" + pmaps["asin"]
         if "No sold" in pmaps["soldby"]:
             pass
-        if "Amazon.com" in pmaps["soldby"]:
+        elif "Amazon.com" in pmaps["soldby"]:
             pass
         else:
             pmaps["soldby"] = "https://www.amazon.com/sp?seller=" + pmaps["soldby"]

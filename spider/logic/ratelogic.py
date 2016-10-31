@@ -99,7 +99,8 @@ def unitlogic(url, mysqlconfig):
             # Referer:https://www.amazon.com/gp/bestsellers/apparel/ref=pd_zg_hrsr_a_1_1
             # X-Requested-With:XMLHttpRequest
             items3 = "/ref=zg_bs_apparel_pg_" + str(i + 1) + "?_encoding=UTF8&ajax=1&pg=" + str(i + 1)
-            items17 = "/ref=zg_bs_apparel_pg_" + str(i + 1) + "?_encoding=UTF8&&isAboveTheFold=0&ajax=1&pg=" + str(i + 1)
+            items17 = "/ref=zg_bs_apparel_pg_" + str(i + 1) + "?_encoding=UTF8&&isAboveTheFold=0&ajax=1&pg=" + str(
+                i + 1)
             listheader = {
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
                 # "Accept-Encoding": "gzip, deflate, br",
@@ -232,6 +233,12 @@ def ratelogic(category=["Appliances"], processnum=1, limitnum=20000):
     createtodaydb()
 
     urls = list(usaurl(config=mysqlconfig, category=category, limitnum=limitnum))
+    for i in range(len(urls)):
+        try:
+            urls[i] = urls[i].split("/ref")[0]
+        except:
+            logger.error(urls[i] + "出错！")
+
     tasklist = devidelist(urls, processnum)
     with ThreadPoolExecutor(max_workers=processnum) as e:
         for task in tasklist:
