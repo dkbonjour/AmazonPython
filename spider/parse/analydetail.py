@@ -24,7 +24,7 @@ def saveerror(content):
 def getrank2reg(string):
     # 这里正则只是选取1-5个字段，然后就匹配 in 。  (#######I live in)
     # 防止抓取到其他的东西，一定要用{1,5}
-    reg = r'#(.{1,8}) in '
+    reg = r'#(.{1,15}) in ('
     all = re.compile(reg)
     alllist = re.findall(all, string)
     rank = int(alllist[0].replace(",", ""))
