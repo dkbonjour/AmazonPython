@@ -1,0 +1,9 @@
+# Netscape HTTP Cookie File
+# http://curl.haxx.se/rfc/cookie_spec.html
+# This is a generated file!  Do not edit.
+
+.amazon.com	TRUE	/	FALSE	2082787201	session-id	155-9043083-0482723
+.amazon.com	TRUE	/	FALSE	2082787201	session-id-time	2082787201l
+.amazon.com	TRUE	/	FALSE	2108538883	session-token	"I00MYV7DBH4wpubp1C2+FF46Snte09ZLzQuO4D9Qc1JmTuF7fNSrabD1wApB8i6ZTPZBjKb+rthdR48bZeqxWsRAaU3chrmoG52rf8m94XhrAIE0mwzxUiVHZ+1xPUDkbID3c65fUjJ7HxxMOV2YvM3gtCDy58ornlgrxmWQX5q/1qAPxmxVwhcRzw7nO/MggPld02KmI6Jza7bE0Gn8XA=="
+.amazon.com	TRUE	/	FALSE	2108538884	ubid-main	153-5852226-0750537
+.amazon.com	TRUE	/	FALSE	2082787201	x-wl-uid	1LPrsKCfLlnsaN1AjAE0ChcMz4pH159orHUjZTIaaUwp9C0Zdb1W/cMMdaR48ZWD7NTlFbbPQhbA=
