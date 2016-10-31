@@ -33,7 +33,7 @@ def testposta(url1, ip="146.148.240.241:808", which="2"):
             return t.content
         else:
             return mulspider(url=url1, proxies=proxies, path=tool.log.BASE_DIR + "/data/cookie", headers=header, ua="1",
-                             timeout=60)
+                             timeout=5)
             # print("right")
             # print(r.content)
     except Exception as e:
@@ -66,8 +66,8 @@ if __name__ == "__main__":
     iperr = []
     for i in ips:
         try:
-             # data = testposta("http://ip.42.pl/short", i, which)
-            data = testposta("http://ip.42.pl/short", i.replace("\r", "") + ":808", which)
+            data = testposta("http://ip.42.pl/short", i, which)
+            # data = testposta("http://ip.42.pl/short", i.replace("\r", "") + ":808", which)
             j = data.decode("utf-8", "ignore")
             print("网站内容：" + j)
             if "无效用户" in j:
