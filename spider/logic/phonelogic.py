@@ -107,6 +107,13 @@ def unitlogic(url, mysqlconfig):
                         f.write(detailpage)
             try:
                 pinfo = phonedetailparse(detailpage.decode("utf-8", "ignore"))
+                if pinfo["rank"] == -1:
+                    try:
+                        pinfos = pinfoparse(detailpage.decode("utf-8", "ignore"))
+                        if pinfos["rank"] != -1:
+                            pinfo = pinfos
+                    except:
+                        pass
             except:
                 try:
                     # 不是手机端

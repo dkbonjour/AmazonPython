@@ -107,20 +107,22 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
         if getconfig()["manycookie"]:
             cookiefile = getconfig()["datadir"] + "/cookie" + "/" + ip + "-" + uano + '.txt'
             if getconfig()["proxy"]:
-                if fileexsit(cookiefile)==False:
-                    mulspider(url=url, proxies=proxies, headers=header, ua=uano,
-                                 path=getconfig()["datadir"] + "/cookie",
-                                 timeout=timeout)
+                if fileexsit(cookiefile) == False:
+                    # mulspider(url=url, proxies=proxies, headers=header, ua=uano,
+                    #              path=getconfig()["datadir"] + "/cookie",
+                    #              timeout=timeout)
+                    pass
                 resdata = mulspider(url=url, proxies=proxies, headers=header, ua=uano,
-                                 path=getconfig()["datadir"] + "/cookie",
-                                 timeout=timeout)
+                                    path=getconfig()["datadir"] + "/cookie",
+                                    timeout=timeout)
             else:
-                if fileexsit(cookiefile)==False:
-                    mulspider(url=url, proxies=proxies, headers=header, ua=uano,
-                                 path=getconfig()["datadir"] + "/cookie",
-                                 timeout=timeout)
+                if fileexsit(cookiefile) == False:
+                    # mulspider(url=url, proxies=proxies, headers=header, ua=uano,
+                    #              path=getconfig()["datadir"] + "/cookie",
+                    #              timeout=timeout)
+                    pass
                 resdata = mulspider(url=url, headers=header, ua=uano, path=getconfig()["datadir"] + "/cookie",
-                                 timeout=timeout)
+                                    timeout=timeout)
         else:
             if getconfig()["proxy"]:
                 res = requests.get(url=url, headers=header, proxies=proxies, timeout=timeout)
@@ -147,11 +149,13 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
             koipv1 = False
         else:
             koipv1 = koip
-        if getconfig()["proxy"] and not robot(resdata, ip, koipv1, url):
+        if robot(resdata, ip, koipv1, url) == False:
             # 放IP
             if redisneed:
-                puship(ip, times, robottime, getconfig()["redispoolname"])
-
+                try:
+                    puship(ip, times, robottime, getconfig()["redispoolname"])
+                except:
+                    pass
             # 頁數不足
             # 或者找不到頁面
             return 0
@@ -165,8 +169,8 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
         if getconfig()["manycookie"]:
             if (str(err) == "机器人"):
                 try:
-                    pass
-                    # os.remove(cookiefile)
+                    os.remove(cookiefile)
+                    time.sleep(10)
                 except:
                     pass
         if redisneed and getconfig()["proxy"]:
@@ -178,7 +182,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                 else:
                     puship(ip, times, robottime + 1, getconfig()["redispoolname"])
                 if getconfig()["urlrobotstop"]:
-                    if ROBBOTTIME > getconfig()["processnum"]*5:
+                    if ROBBOTTIME > getconfig()["processnum"] * 5:
                         logger.error("超大睡眠！严重被防爬虫" + str(getconfig()["urlstoptime"] * 5) + "秒")
                         time.sleep(getconfig()["urlstoptime"] * 60)
             else:
@@ -188,6 +192,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                 else:
                     puship(ip, times, robottime, getconfig()["redispoolname"])
         logger.error(err)
+        # logger.error(err, exc_info=1)
         if redisneed and getconfig()["proxy"]:
             logger.error(
                     "失敗抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip + "-" + str(
@@ -199,8 +204,12 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                                                                                           location=location,
                                                                                           ua=ua,
                                                                                           times=5 - retrytime))
-        return ratedownload(url=url, where=where, config=config, retrytime=retrytime - 1, timeout=timeout,
-                            header=header)
+        if (str(err) == "机器人"):
+            return ratedownload(url=url, where=where, config=config, retrytime=retrytime, timeout=timeout,
+                                header=header)
+        else:
+            return ratedownload(url=url, where=where, config=config, retrytime=retrytime - 1, timeout=timeout,
+                                header=header)
 
 
 def downloaddetail():

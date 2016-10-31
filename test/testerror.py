@@ -8,8 +8,17 @@ import traceback
 from tool.jfile.file import *
 import random
 from lxml import etree
+def getrank2reg(string):
+    # 这里正则只是选取1-5个字段，然后就匹配 in 。  (#######I live in)
+    # 防止抓取到其他的东西，一定要用{1,5}
+    reg = r'#(.{1,15}) in .* [(]'
+    all = re.compile(reg)
+    alllist = re.findall(all, string)
+    rank = int(alllist[0].replace(",", ""))
+    return rank
 
 if __name__ == "__main__":
+    print(getrank2reg("#124,593 in Sports & Outdoors (See Top 100 in Sports & Outd"))
     for i in range(88):
         print(random.randint(5-1,5+2))
     print([] is None)

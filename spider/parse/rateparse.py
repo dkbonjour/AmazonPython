@@ -8,6 +8,7 @@ import tool.log
 import logging
 from bs4 import BeautifulSoup
 import action.proxy
+from tool.jfile.file import *
 
 # 日志
 tool.log.setup_logging()
@@ -57,6 +58,7 @@ def robot(content, ip, koip=False, url=""):
         logger.error("找不到頁面:" + url)
         return False
     if "Robot Check" in robots:
+        saverobot(content)
         if koip:
             try:
                 action.proxy.IPPOOL.pop(ip)
@@ -68,6 +70,13 @@ def robot(content, ip, koip=False, url=""):
         raise Exception("机器人")
     return True
 
+
+def saverobot(content):
+    createjia(tool.log.BASE_DIR + "/robot")
+    k = tool.log.BASE_DIR + "/robot/" + todaystring(6) + ".html"
+    with open(k, "wb") as f:
+        f.write(content)
+    logger.error("机器人保存起来！" + k)
 
 # 暂时用xpath，以后要使用BeautifulSoup
 def rateparse(content):

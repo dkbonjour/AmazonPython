@@ -12,6 +12,14 @@ tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
 
+def savephoneerror(content):
+    createjia(tool.log.BASE_DIR + "/data/merror")
+    k = tool.log.BASE_DIR + "/data/merror/" + todaystring(6) + ".html"
+    with open(k, "wb") as f:
+        f.write(content.encode("utf-8"))
+    logger.error("phone排名强制标记:" + k)
+
+
 # 列表页
 def phonelistparse(content):
     soup = BeautifulSoup(content, 'html.parser')  # 开始解析
@@ -128,6 +136,8 @@ def phonedetailparse(content):
     # rubbish
     else:
         raise Exception("详情页故障")
+    if returnmap["rank"] == -1:
+        savephoneerror(content)
     return returnmap
 
 
