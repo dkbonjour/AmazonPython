@@ -24,15 +24,16 @@ def testposta(url1, ip="146.148.240.241:808", which="2"):
             # 'Referer': 'https://www.amazon.com/',
             # 'Host': 'www.amazon.com'
         }
-
-        proxies = {"http": "http://"+ getconfig()["proxypwd"] + ip}
+        j = "http://" + getconfig()["proxypwd"] + ip
+        print("准备：" + j)
+        proxies = {"http": j}
         # proxies = {"http": "socks5://smart:smart2016@146.148.157.225:1080"}
         if which == "1":
             t = requests.get(url1, headers=header, proxies=proxies, timeout=10)
             return t.content
         else:
             return mulspider(url=url1, proxies=proxies, path=tool.log.BASE_DIR + "/data/cookie", headers=header, ua="1",
-                          timeout=60)
+                             timeout=60)
             # print("right")
             # print(r.content)
     except Exception as e:
@@ -65,14 +66,16 @@ if __name__ == "__main__":
     iperr = []
     for i in ips:
         try:
-            data = testposta("http://ip.42.pl/short", i, which)
+             # data = testposta("http://ip.42.pl/short", i, which)
+            data = testposta("http://ip.42.pl/short", i.replace("\r", "") + ":808", which)
             j = data.decode("utf-8", "ignore")
             print("网站内容：" + j)
             if "无效用户" in j:
                 print("无效用户: " + i)
                 continue
             ipss.append(i)
-        except:
+        except Exception as err:
+            print(err)
             iperr.append(i)
             pass
     todays = todaystring(6)

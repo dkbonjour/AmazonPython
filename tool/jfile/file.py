@@ -186,7 +186,7 @@ def readfilelist(filepath):
         with open(filepath, "rb") as filename:
             namelines = filename.readlines()
             for line in namelines:
-                content = line.decode("utf-8","ignore").replace("\n", "")
+                content = line.decode("utf-8","ignore").replace("\n", "").replace("\r","")
                 if not content:
                     continue
                 returnlist.append(content)
