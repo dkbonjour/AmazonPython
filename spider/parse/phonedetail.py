@@ -46,6 +46,23 @@ def phonelistparse(content):
                 itemlist[asin] = [smallrank, url, img, title, price]
             except Exception as e:
                 logger.error(e, exc_info=1)
+    if itemlist == {} or not itemlist:
+        items = soup.find_all('div', attrs={"class": "zg_itemImmersion"})
+        for item in items:
+            try:
+                temp = BeautifulSoup(str(item), 'html.parser')
+                rank = temp.find('span', attrs={"class": "zg_rankNumber"}).string
+                rank = rank.replace(".", "").replace(",", "")
+                link = temp.find('div', attrs={"class": "zg_title"}).a["href"]
+                try:
+                    asin = link.strip().split("/dp/")[1].split("/")[0]
+                except:
+                    continue
+                title = temp.find('div', attrs={"class": "zg_title"}).a.string
+                title = title.replace(",", "")
+                itemlist[asin] = [rank, "https://www.amazon.com/dp/" + asin, "", title, ""]
+            except:
+                pass
     return itemlist
 
 
@@ -62,7 +79,7 @@ def phonedetailparse(content):
     returnmap = {"rank": -1, "score": -1, "commentnum": -1, "commenttime": "", "shipby": "", "soldby": "No sold"}
     soup = BeautifulSoup(content, 'html.parser')  # 开始解析
     ul = soup.find("ul", attrs={"id": "productDetails_detailBullets_sections"})
-    if ul==None or not ul:
+    if ul == None or not ul:
         ul = soup.find("table", attrs={"id": "productDetails_techSpec_section_1"})
     if ul:
         infolist = []

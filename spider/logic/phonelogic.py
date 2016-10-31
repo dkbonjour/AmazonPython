@@ -67,6 +67,8 @@ def unitlogic(url, mysqlconfig):
                 with open(keepdir + "/" + id + ".md", "wb") as f:
                     f.write(objectToString(parsecontent).encode("utf-8"))
                 phoneinsertlist(parsecontent, url)
+            else:
+                logger.error("列表页解析出错:" + catchurl)
 
     for asin in parsecontent:
         try:
@@ -107,7 +109,7 @@ def unitlogic(url, mysqlconfig):
                 pinfo = phonedetailparse(detailpage.decode("utf-8", "ignore"))
             except:
                 try:
-                     # 不是手机端
+                    # 不是手机端
                     pinfo = pinfoparse(detailpage.decode("utf-8", "ignore"))
                 except:
                     logger.error("解析詳情頁出錯:" + detailurl)
@@ -132,7 +134,7 @@ def unitlogic(url, mysqlconfig):
             phoneinsertexsitlist(pinfo, url)
             phoneinsertpmysql(pinfo, db, id)
         except:
-            logger.error(asin+":ERROR")
+            logger.error(asin + ":ERROR")
             pass
     # 成功
     logger.warning(todays + "|" + bigpname + "|" + db + ":" + id + " completed")
