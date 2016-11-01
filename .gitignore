@@ -15,3 +15,5 @@ v2/*.txt
 tool/jhttp/*.txt
 config/ip/*
 *cookie.txt
+*iperror.txt
+*ipright.txt
