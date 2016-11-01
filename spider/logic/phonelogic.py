@@ -29,6 +29,13 @@ def unitlogic(url, mysqlconfig):
     catchurl = url[1]
     # 类目名
     catchname = url[2]
+
+    # 页数
+    try:
+        page = int(url[3])
+    except:
+        page = 5
+
     # 类目ID
     id = url[0]
     # 大类名
@@ -54,7 +61,7 @@ def unitlogic(url, mysqlconfig):
         "Upgrade-Insecure-Requests": "1",
         'Host': 'www.amazon.com'
     }
-
+    #################
     parsecontent = {}
     if fileexsit(keepdir + "/" + id + ".md"):
         with open(keepdir + "/" + id + ".md", "rb") as f:
@@ -62,14 +69,54 @@ def unitlogic(url, mysqlconfig):
     else:
         listcontent = ratedownload(url=catchurl, where=where, config=mysqlconfig, header=listheader)
         if listcontent:
-            parsecontent = phonelistparse(listcontent.decode("utf-8", "ignore"))
-            if parsecontent:
-                with open(keepdir + "/" + id + ".md", "wb") as f:
-                    f.write(objectToString(parsecontent).encode("utf-8"))
-                phoneinsertlist(parsecontent, url)
+            parsecontent, isphone = phonelistparse(listcontent.decode("utf-8", "ignore"))
+            if isphone:
+                if parsecontent:
+                    with open(keepdir + "/" + id + ".md", "wb") as f:
+                        f.write(objectToString(parsecontent).encode("utf-8"))
+                    phoneinsertlist(parsecontent, url)
+                else:
+                    logger.error("列表页解析出错:" + catchurl)
             else:
-                logger.error("列表页解析出错:" + catchurl)
-
+                # PC端
+                if getconfig()["force"]:
+                    try:
+                        page = int(getconfig()["forcenum"])
+                    except:
+                        page = 5
+                for i in range(1, min(5, page)):
+                    items3 = "/ref=zg_bs_apparel_pg_" + str(i + 1) + "?_encoding=UTF8&ajax=1&pg=" + str(i + 1)
+                    items17 = "/ref=zg_bs_apparel_pg_" + str(i + 1) + "?_encoding=UTF8&&isAboveTheFold=0&ajax=1&pg=" + str(i + 1)
+                    listheader = {
+                        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                        # "Accept-Encoding": "gzip, deflate, br",
+                        "Connection": "keep-alive",
+                        "Accept-Language": "en-US;q=0.8,en;q=0.5",
+                        "Upgrade-Insecure-Requests": "1",
+                        # 'Referer': 'https://www.amazon.com/',
+                        'Host': 'www.amazon.com'
+                    }
+                    content3 = ratedownload(url=catchurl + items3, where=where, config=mysqlconfig, header=listheader)
+                    content17 = ratedownload(url=catchurl + items17, where=where, config=mysqlconfig, header=listheader)
+                    if content3 == 0 or content17 == 0:
+                        break
+                    if content3 == None:
+                        continue
+                    if content17 == None:
+                        continue
+                    temp3 = phonetopclistparse(content3)
+                    temp17 = phonetopclistparse(content17)
+                    for i in temp3:
+                        parsecontent[i] = temp3[i]
+                    for j in temp17:
+                        parsecontent[j] = temp17[j]
+                if parsecontent:
+                    with open(keepdir + "/" + id + ".md", "wb") as f:
+                        f.write(objectToString(parsecontent).encode("utf-8"))
+                    phoneinsertlist(parsecontent, url)
+                else:
+                    logger.error("列表页解析出错:" + catchurl)
+    ##################
     for asin in parsecontent:
         try:
             # smallrank-asin
@@ -107,20 +154,12 @@ def unitlogic(url, mysqlconfig):
                         f.write(detailpage)
             try:
                 pinfo = phonedetailparse(detailpage.decode("utf-8", "ignore"))
-                if pinfo["rank"] == -1:
-                    try:
-                        pinfos = pinfoparse(detailpage.decode("utf-8", "ignore"))
-                        if pinfos["rank"] != -1:
-                            pinfo = pinfos
-                    except:
-                        pass
             except:
                 try:
                     # 不是手机端
                     pinfo = pinfoparse(detailpage.decode("utf-8", "ignore"))
                 except:
-                    logger.error("解析詳情頁出錯:" + detailurl)
-                    savedetailerror(detailpage, asin)
+                    logger.error("PC解析詳情頁出錯:" + detailurl)
                     continue
             try:
                 pinfo["smallrank"] = int(smallrank)
@@ -173,7 +212,7 @@ def ratelogic(category=["Appliances"], processnum=1, limitnum=20000):
     tasklist = devidelist(urls, processnum)
     with ThreadPoolExecutor(max_workers=processnum) as e:
         for task in tasklist:
-            f = e.submit(processlogic, tasklist[task], mysqlconfig)
+            e.submit(processlogic, tasklist[task], mysqlconfig)
 
 
 def savedetailerror(content, asin):

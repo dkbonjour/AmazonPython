@@ -11,7 +11,7 @@ import tool
 import shutil
 
 if __name__ == "__main__":
-    cookiepath=tool.log.BASE_DIR + "/data/cookie"
+    cookiepath = tool.log.BASE_DIR + "/data/cookie"
     try:
         shutil.rmtree(cookiepath)
     except:
@@ -40,16 +40,17 @@ if __name__ == "__main__":
         # data=requests.get(url=url, headers=header, proxies=proxies, timeout=60)
         # print(data.text)
         try:
-            mulspider(url="https://www.amazon.com", headers=header,path=cookiepath, ua=str(i), timeout=5)
-            resdata = mulspider(url=url, headers=header, ua=str(i),path=cookiepath, timeout=5)
+            mulspider(url="https://www.amazon.com", headers=header, path=cookiepath, ua=str(i), timeout=5)
+            resdata = mulspider(url=url, headers=header, ua=str(i), path=cookiepath, timeout=5)
         except Exception as e:
             print(e)
             continue
         print("开始:" + str(i) + ":" + ua)
         try:
-            with open(tool.log.BASE_DIR + "/data/phonelist/" + str(i) + ".html","wb") as f:
+            with open(tool.log.BASE_DIR + "/data/phonelist/" + str(i) + ".html", "wb") as f:
                 f.write(resdata)
-            data=phonelistparse(resdata.decode("utf-8", "ignore"))
+            data, isphone = phonelistparse(resdata.decode("utf-8", "ignore"))
+            print("是手机端吗:" + str(isphone))
             print(data)
             if data:
                 passua.append(ua)

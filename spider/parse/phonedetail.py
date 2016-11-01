@@ -26,6 +26,10 @@ def phonelistparse(content):
     items = soup.find_all('div', attrs={"id": "pg"})
     itemlist = {}
     for i in items:
+        if "Amazon.com Full Site" in soup.get_text():
+            pass
+        else:
+            break
         j = i.find_all("li")
         for jj in j:
             try:
@@ -55,22 +59,70 @@ def phonelistparse(content):
             except Exception as e:
                 logger.error(e, exc_info=1)
     if itemlist == {} or not itemlist:
+        if "Amazon.com Full Site" in soup.get_text():
+            return itemlist, True
         items = soup.find_all('div', attrs={"class": "zg_itemImmersion"})
         for item in items:
             try:
                 temp = BeautifulSoup(str(item), 'html.parser')
                 rank = temp.find('span', attrs={"class": "zg_rankNumber"}).string
-                rank = rank.replace(".", "").replace(",", "")
-                link = temp.find('div', attrs={"class": "zg_title"}).a["href"]
+                rank = rank.replace(".", "").replace(",", "").strip()
+                link = temp.find('div', attrs={"class": "zg_title"}).a["href"].strip()
                 try:
                     asin = link.strip().split("/dp/")[1].split("/")[0]
                 except:
                     continue
-                title = temp.find('div', attrs={"class": "zg_title"}).a.string
-                title = title.replace(",", "")
-                itemlist[asin] = [rank, "https://www.amazon.com/dp/" + asin, "", title, ""]
+                try:
+                    img = temp.find("img")["src"].strip()
+                except:
+                    img = ""
+                try:
+                    price = temp.find("div", attrs={"class": "zg_price"}).get_text().strip()
+                except:
+                    price = ""
+                try:
+                    title = temp.find('div', attrs={"class": "zg_title"}).a.string
+                    title = title.replace(",", "").strip()
+                except:
+                    title = ""
+                itemlist[asin] = [rank, "https://www.amazon.com/dp/" + asin, img, title, price]
             except:
                 pass
+        return itemlist, False
+    return itemlist, True
+
+
+## 额外补充的
+def phonetopclistparse(content):
+    soup = BeautifulSoup(content, 'html.parser')  # 开始解析
+    itemlist = {}
+    items = soup.find_all('div', attrs={"class": "zg_itemImmersion"})
+    for item in items:
+        try:
+            temp = BeautifulSoup(str(item), 'html.parser')
+            rank = temp.find('span', attrs={"class": "zg_rankNumber"}).string
+            rank = rank.replace(".", "").replace(",", "").strip()
+            link = temp.find('div', attrs={"class": "zg_title"}).a["href"].strip()
+            try:
+                asin = link.strip().split("/dp/")[1].split("/")[0]
+            except:
+                continue
+            try:
+                img = temp.find("img")["src"].strip()
+            except:
+                img = ""
+            try:
+                price = temp.find("div", attrs={"class": "zg_price"}).get_text().strip()
+            except:
+                price = ""
+            try:
+                title = temp.find('div', attrs={"class": "zg_title"}).a.string
+                title = title.replace(",", "").strip()
+            except:
+                title = ""
+            itemlist[asin] = [rank, "https://www.amazon.com/dp/" + asin, img, title, price]
+        except:
+            pass
     return itemlist
 
 
@@ -86,6 +138,10 @@ def phonedetailparse(content):
     # }
     returnmap = {"rank": -1, "score": -1, "commentnum": -1, "commenttime": "", "shipby": "", "soldby": "No sold"}
     soup = BeautifulSoup(content, 'html.parser')  # 开始解析
+    if "Amazon.com Full Site" in soup.get_text():
+        pass
+    else:
+        raise Exception("不是手机端详情页")
     ul = soup.find("ul", attrs={"id": "productDetails_detailBullets_sections"})
     if ul == None or not ul:
         ul = soup.find("table", attrs={"id": "productDetails_techSpec_section_1"})
@@ -135,7 +191,7 @@ def phonedetailparse(content):
             pass
     # rubbish
     else:
-        raise Exception("详情页故障")
+        raise Exception("手机详情页故障")
     if returnmap["rank"] == -1:
         savephoneerror(content)
     return returnmap

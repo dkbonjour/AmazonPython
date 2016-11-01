@@ -150,12 +150,13 @@ def mulspider(url, proxies={}, postdata={}, headers={}, ua="ua", path=".", timeo
             # TODO
             # 以手机形式访问
             # https://www.amazon.com/gp/anywhere/site-view.html/ref=footer_opt_in_mobile?ie=UTF8&opt=mobile&url=/gp/aw
-            dudu = "https://www.amazon.com/gp/anywhere/site-view.html/ref=footer_opt_in_mobile?ie=UTF8&opt=mobile&url=%2Fgp%2Faw"
-            dddmulspider(url="https://www.amazon.com", proxies=proxies, headers=headers, ua=ua, path=path,
-                         timeout=timeout)
-            time.sleep(8)
-            dddmulspider(url=dudu, proxies=proxies, headers=headers, ua=ua, path=path, timeout=timeout)
-            time.sleep(8)
+            # dudu = "https://www.amazon.com/gp/anywhere/site-view.html/ref=footer_opt_in_mobile?ie=UTF8&opt=mobile&url=%2Fgp%2Faw"
+            # dddmulspider(url="https://www.amazon.com", proxies=proxies, headers=headers, ua=ua, path=path,
+            #              timeout=timeout)
+            # time.sleep(8)
+            # dddmulspider(url=dudu, proxies=proxies, headers=headers, ua=ua, path=path, timeout=timeout)
+            # time.sleep(8)
+            pass
 
         # 读取其他COOKIE
         if os.path.exists('../subcookie.txt'):
@@ -303,7 +304,7 @@ def dddmulspider(url, proxies={}, postdata={}, headers={}, ua="ua", path=".", ti
 
 
 if __name__ == "__main__":
-    ua = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0"
+    ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1"
     header = {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         'User-Agent': ua,
@@ -320,5 +321,5 @@ if __name__ == "__main__":
     url = "https://www.amazon.com/dp/B000TYSB8K"
     # data=requests.get(url=url, headers=header, proxies=proxies, timeout=60)
     # print(data.text)
-    resdata = mulspider(url=url, headers=header, ua="1", timeout=5)
+    resdata = mulspider(url=url, headers=header, ua="1", timeout=15)
     print(resdata.decode("utf-8", "ignore"))

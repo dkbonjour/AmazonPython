@@ -13,11 +13,11 @@ logger = logging.getLogger(__name__)
 
 
 def saveerror(content):
-    createjia(tool.log.BASE_DIR + "/data/error")
-    k = tool.log.BASE_DIR + "/data/error/" + todaystring(6) + ".html"
+    createjia(tool.log.BASE_DIR + "/data/pc2error")
+    k = tool.log.BASE_DIR + "/data/pc2error/" + todaystring(6) + ".html"
     with open(k, "wb") as f:
         f.write(content.encode("utf-8"))
-    logger.error("排名强制标记:" + k)
+    logger.error("pc2排名强制标记:" + k)
 
 
 # 正则大类排名
