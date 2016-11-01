@@ -153,7 +153,12 @@ def phoneinsertexsitlist(pmap, basedata):
         config = getconfig()["db"]
         db = Mysql(config)
         pmaps["iscatch"] = 1
-        sql = '''INSERT INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`,`shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`,`iscatch`,`purl`,`dbname`)VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}','{shipby}','{price}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP,{iscatch},'{purl}','{dbname}') on duplicate key update `createtime` = CURRENT_TIMESTAMP,`rank`={rank},`soldby`='{soldby}',`shipby`='{shipby}',`score`={score},`commentnum`={commentnum},`commenttime`='{commenttime}',`iscatch`={iscatch};'''.format_map(pmaps)
+        try:
+            if pmaps["rdalei"] == "":
+                raise Exception("真正大类没有")
+        except:
+            pmaps["rdalei"] = pmaps["bigname"]
+        sql = '''INSERT INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`,`shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`,`iscatch`,`purl`,`dbname`,`col1`)VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}','{shipby}','{price}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP,{iscatch},'{purl}','{dbname}','{rdalei}') on duplicate key update `createtime` = CURRENT_TIMESTAMP,`rank`={rank},`soldby`='{soldby}',`shipby`='{shipby}',`score`={score},`commentnum`={commentnum},`commenttime`='{commenttime}',`iscatch`={iscatch},`col1`='{rdalei}';'''.format_map(pmaps)
         db.ExecNonQuery(sql)
         logger.warning("插日期数据库成功" + sql)
     except Exception as e:

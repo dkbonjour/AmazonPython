@@ -8,14 +8,20 @@ import traceback
 from tool.jfile.file import *
 import random
 from lxml import etree
+# 正则大类排名
 def getrank2reg(string):
     # 这里正则只是选取1-5个字段，然后就匹配 in 。  (#######I live in)
     # 防止抓取到其他的东西，一定要用{1,5}
-    reg = r'#(.{1,15}) in .* [(]'
+    reg = r'#(.{1,15}) in (.*) [(]'
     all = re.compile(reg)
     alllist = re.findall(all, string)
-    rank = int(alllist[0].replace(",", ""))
-    return rank
+    print(alllist)
+    rank = int(alllist[0][0].replace(",", "").strip())
+    try:
+        rdalei = alllist[0][1].replace(",","").strip()
+    except:
+        rdalei = ""
+    return rank,rdalei
 
 if __name__ == "__main__":
     print(getrank2reg("#124,593 in Sports & Outdoors (See Top 100 in Sports & Outd"))

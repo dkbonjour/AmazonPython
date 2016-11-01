@@ -112,7 +112,7 @@ def phonetopclistparse(content):
             except:
                 img = ""
             try:
-                price = temp.find("div", attrs={"class": "zg_price"}).get_text().strip()
+                price = temp.find("div", attrs={"class": "zg_price"}).get_text().replace(" ","").strip()
             except:
                 price = ""
             try:

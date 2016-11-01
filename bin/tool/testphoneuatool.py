@@ -18,9 +18,10 @@ if __name__ == "__main__":
         pass
     createjia(cookiepath)
     createjia(tool.log.BASE_DIR + "/data/phonelist/")
-    passua = []
+    passua = {}
     uas = readfilelist(tool.log.BASE_DIR + "/config/base/UA.txt")
     i = 0
+    print(uas)
     for ua in uas:
         ua = ua.strip().replace("\r", "")
         header = {
@@ -40,8 +41,8 @@ if __name__ == "__main__":
         # data=requests.get(url=url, headers=header, proxies=proxies, timeout=60)
         # print(data.text)
         try:
-            mulspider(url="https://www.amazon.com", headers=header, path=cookiepath, ua=str(i), timeout=5)
-            resdata = mulspider(url=url, headers=header, ua=str(i), path=cookiepath, timeout=5)
+            print("准备:" + ua)
+            resdata = mulspider(url=url, headers=header, ua=str(i), path=cookiepath, timeout=20)
         except Exception as e:
             print(e)
             continue
@@ -50,13 +51,18 @@ if __name__ == "__main__":
             with open(tool.log.BASE_DIR + "/data/phonelist/" + str(i) + ".html", "wb") as f:
                 f.write(resdata)
             data, isphone = phonelistparse(resdata.decode("utf-8", "ignore"))
-            print("是手机端吗:" + str(isphone))
-            print(data)
+            print("是手机端吗:" + str(isphone) + ":" + ua)
+            # print(data)
             if data:
-                passua.append(ua)
+                print(data)
+                passua[ua] = 1
+            else:
+                raise Exception("没数据")
         except Exception as e:
+            print("错误")
             print(e)
             print(ua)
+        print('*'*10)
         i = i + 1
     for j in passua:
         print(j)

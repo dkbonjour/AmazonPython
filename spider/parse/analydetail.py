@@ -24,11 +24,16 @@ def saveerror(content):
 def getrank2reg(string):
     # 这里正则只是选取1-5个字段，然后就匹配 in 。  (#######I live in)
     # 防止抓取到其他的东西，一定要用{1,5}
-    reg = r'#(.{1,15}) in .* [(]'
+    reg = r'#(.{1,15}) in (.*) [(]'
     all = re.compile(reg)
     alllist = re.findall(all, string)
-    rank = int(alllist[0].replace(",", ""))
-    return rank
+    print(alllist)
+    rank = int(alllist[0][0].replace(",", "").strip())
+    try:
+        rdalei = alllist[0][1].replace(",","").strip()
+    except:
+        rdalei = ""
+    return rank,rdalei
 
 
 # 评论数 打分 评分
@@ -46,7 +51,7 @@ def pinfoparse(content):
     if temp:
         try:
             text = temp.get_text().strip()
-            returnlist["rank"] = getrank2reg(text)
+            returnlist["rank"],returnlist["rdalei"] = getrank2reg(text)
         except Exception as err:
             # saveerror(content)
             logger.error(err, exc_info=1)
@@ -57,7 +62,7 @@ def pinfoparse(content):
         returnlist["rank"] = -1
     if returnlist["rank"] == -1:
         try:
-            returnlist["rank"] = getrank2reg(content)
+            returnlist["rank"],returnlist["rdalei"] = getrank2reg(content)
         except Exception as err:
             logger.error(err, exc_info=1)
             logger.error("没有大类排名第二次。。！！！")
