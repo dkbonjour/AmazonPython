@@ -27,13 +27,16 @@ def getrank2reg(string):
     reg = r'#(.{1,15}) in (.*) [(]'
     all = re.compile(reg)
     alllist = re.findall(all, string)
-    print(alllist)
-    rank = int(alllist[0][0].replace(",", "").strip())
+    # print(alllist)
     try:
-        rdalei = alllist[0][1].replace(",","").strip()
+        rank = int(alllist[0][0].replace(",", "").strip())
+    except:
+        rank = 0
+    try:
+        rdalei = alllist[0][1].replace(",", "").strip()
     except:
         rdalei = ""
-    return rank,rdalei
+    return rank, rdalei
 
 
 # 评论数 打分 评分
@@ -51,7 +54,7 @@ def pinfoparse(content):
     if temp:
         try:
             text = temp.get_text().strip()
-            returnlist["rank"],returnlist["rdalei"] = getrank2reg(text)
+            returnlist["rank"], returnlist["rdalei"] = getrank2reg(text)
         except Exception as err:
             # saveerror(content)
             logger.error(err, exc_info=1)
@@ -62,7 +65,7 @@ def pinfoparse(content):
         returnlist["rank"] = -1
     if returnlist["rank"] == -1:
         try:
-            returnlist["rank"],returnlist["rdalei"] = getrank2reg(content)
+            returnlist["rank"], returnlist["rdalei"] = getrank2reg(soup.get_text())
         except Exception as err:
             logger.error(err, exc_info=1)
             logger.error("没有大类排名第二次。。！！！")
@@ -108,9 +111,9 @@ def pinfoparse(content):
         if commentnum == None:
             try:
                 returnlist["commentnum"] = int(
-                    soup.find("div", attrs={"id": "summaryStars"}).get_text().split("stars")[1].replace('"',
-                                                                                                        "").strip().replace(
-                        ",", ""))
+                        soup.find("div", attrs={"id": "summaryStars"}).get_text().split("stars")[1].replace('"',
+                                                                                                            "").strip().replace(
+                                ",", ""))
             except Exception as err:
                 # logger.error(err, exc_info=1)
                 returnlist["commentnum"] = -1
@@ -119,18 +122,21 @@ def pinfoparse(content):
                 try:
                     # 1个人没有复数
                     returnlist["commentnum"] = int(
-                        commentnum.get_text().strip().replace(" customer review", "").replace("s", "").replace(",", ""))
+                            commentnum.get_text().strip().replace(" customer review", "").replace("s", "").replace(",",
+                                                                                                                   ""))
                 except Exception as err:
                     try:
                         returnlist["commentnum"] = int(
-                            soup.find("span", attrs={"data-hook": "total-review-count"}).get_text().strip().replace(",",
-                                                                                                                    ""))
+                                soup.find("span", attrs={"data-hook": "total-review-count"}).get_text().strip().replace(
+                                    ",",
+                                    ""))
                     except Exception as err:
                         try:
                             returnlist["commentnum"] = int(
-                                soup.find("div", attrs={"id": "summaryStars"}).get_text().split("stars")[1].replace('"',
-                                                                                                                    "").replace(
-                                    ",", ""))
+                                    soup.find("div", attrs={"id": "summaryStars"}).get_text().split("stars")[1].replace(
+                                        '"',
+                                        "").replace(
+                                            ",", ""))
                         except Exception as err:
                             # logger.error(err, exc_info=1)
                             returnlist["commentnum"] = -1
@@ -140,7 +146,8 @@ def pinfoparse(content):
                 try:
                     commentnum = soup.find("span", attrs={"id": "acrCustomerReviewText"})
                     returnlist["commentnum"] = int(
-                        commentnum.get_text().strip().replace(" customer review", "").replace("s", "").replace(",", ""))
+                            commentnum.get_text().strip().replace(" customer review", "").replace("s", "").replace(",",
+                                                                                                                   ""))
                 except Exception as err:
                     # logger.error(err, exc_info=1)
                     returnlist["commentnum"] = -1
@@ -203,7 +210,7 @@ def pinfoparse(content):
                 try:
                     dafentemp = float(
                             soup.find("div", attrs={"id": "summaryStars"}).find("i").get_text().strip().replace(
-                                " out of 5 stars", ""))
+                                    " out of 5 stars", ""))
                     returnlist["score"] = dafentemp
                 except Exception as err:
                     # logger.error(err, exc_info=1)
