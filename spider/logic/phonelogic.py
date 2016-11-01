@@ -96,20 +96,25 @@ def unitlogic(url, mysqlconfig):
                         # 'Referer': 'https://www.amazon.com/',
                         'Host': 'www.amazon.com'
                     }
-                    content3 = ratedownload(url=catchurl + items3, where=where, config=mysqlconfig, header=listheader)
-                    content17 = ratedownload(url=catchurl + items17, where=where, config=mysqlconfig, header=listheader)
-                    if content3 == 0 or content17 == 0:
-                        break
-                    if content3 == None:
-                        continue
-                    if content17 == None:
-                        continue
-                    temp3 = phonetopclistparse(content3)
-                    temp17 = phonetopclistparse(content17)
-                    for i in temp3:
-                        parsecontent[i] = temp3[i]
-                    for j in temp17:
-                        parsecontent[j] = temp17[j]
+                    try:
+                        content3 = ratedownload(url=catchurl + items3, where=where, config=mysqlconfig, header=listheader)
+                        content17 = ratedownload(url=catchurl + items17, where=where, config=mysqlconfig, header=listheader)
+                        if content3 == 0 or content17 == 0:
+                            break
+                        if content3 == None:
+                            continue
+                        if content17 == None:
+                            continue
+                        temp3 = phonetopclistparse(content3)
+                        temp17 = phonetopclistparse(content17)
+                        for i in temp3:
+                            parsecontent[i] = temp3[i]
+                        for j in temp17:
+                            parsecontent[j] = temp17[j]
+                    except Exception as e:
+                        logger.error("手机到PC列表页出错，跳过")
+                        logger.error(e, exc_info=1)
+
                 if parsecontent:
                     with open(keepdir + "/" + id + ".md", "wb") as f:
                         f.write(objectToString(parsecontent).encode("utf-8"))
