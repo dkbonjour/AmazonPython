@@ -38,13 +38,13 @@ def phoneinsertpmysql(pmap, dbname, tablename):
         pmaps["tablename"] = tablename
         if len(pmaps["title"]) > 240:
             pmaps["title"] = pmaps["title"][0:220]
-        pmaps["title"] = pymysql.escape_string(pmaps["title"]).replace("'", "").replace('"', "").replace("\\","")
+        pmaps["title"] = pymysql.escape_string(pmaps["title"]).replace("'", "").replace('"', "").replace("\\", "")
         if len(pmaps["shipby"]) > 240:
             pmaps["shipby"] = pmaps["title"][0:220]
-        pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"]).replace("'", "").replace('"', "").replace("\\","")
-        pmaps["url"]=pmaps["url"].replace("'", "").replace('"', "").replace("\\","")
-        pmaps["bigname"]=pmaps["bigname"].replace("'", "").replace('"', "").replace("\\","")
-        pmaps["name"]=pmaps["name"].replace("'", "").replace('"', "").replace("\\","")
+        pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"]).replace("'", "").replace('"', "").replace("\\", "")
+        pmaps["url"] = pmaps["url"].replace("'", "").replace('"', "").replace("\\", "")
+        pmaps["bigname"] = pmaps["bigname"].replace("'", "").replace('"', "").replace("\\", "")
+        pmaps["name"] = pmaps["name"].replace("'", "").replace('"', "").replace("\\", "")
         if "No sold" in pmaps["soldby"]:
             pass
         elif "Amazon.com" in pmaps["soldby"]:
@@ -58,12 +58,17 @@ def phoneinsertpmysql(pmap, dbname, tablename):
         #       "`shipby`,`col1`,`col2`,`score`,`commentnum`,`commenttime`,`createtime`)" \
         #       "VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}'," \
         #       "'{shipby}','{price}','{img}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);".format_map(pmaps)
-        sql = '''INSERT IGNORE INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`,`shipby`,`score`,`commentnum`,`commenttime`,`createtime`) VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}','{shipby}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);'''.format_map(pmaps)
+        if pmaps["rank"] == -1:
+            pmaps["rank"] = 20000000
+        if pmaps["rank"] == 0:
+            pmaps["rank"] = 10000000
+        sql = '''INSERT IGNORE INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`,`shipby`,`score`,`commentnum`,`commenttime`,`createtime`) VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}','{shipby}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);'''.format_map(
+            pmaps)
         db.ExecNonQuery(sql)
         logger.warning("插数据库成功,数据库:" + dbname + ",表:" + pmaps["tablename"] + ",Id:" + pmaps["id"])
         return True
     except Exception as err:
-        logger.error("插数据库出错："+sql)
+        logger.error("插数据库出错：" + sql)
         logger.error(err, exc_info=1)
     return False
 
@@ -83,7 +88,7 @@ def phoneinsertlist(parsecontent, url):
         # 数据库
         dbname = url[6]
         mysqlconfig = getconfig()["db"]
-        insertsql=""
+        insertsql = ""
         db = Mysql(mysqlconfig)
         for item in parsecontent:
             try:
@@ -97,8 +102,8 @@ def phoneinsertlist(parsecontent, url):
                 if len(img) > 240:
                     img = ""
                 title = parsecontent[item][3]
-                title = pymysql.escape_string(title).replace("'", "").replace('"', "").replace("\\","")
-                img = pymysql.escape_string(img).replace("'", "").replace('"', "").replace("\\","")
+                title = pymysql.escape_string(title).replace("'", "").replace('"', "").replace("\\", "")
+                img = pymysql.escape_string(img).replace("'", "").replace('"', "").replace("\\", "")
                 price = parsecontent[item][4]
 
                 # 标志
@@ -112,8 +117,8 @@ def phoneinsertlist(parsecontent, url):
                         continue
                 else:
                     insertsql = '''INSERT INTO `{tablename}`
-                    (`id`,`purl`,`iscatch`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`dbname`,`price`,`img`) VALUES
-                    ("{id}","{purl}",{iscatch},{smallrank},"{name}","{bigname}","{title}","{asin}","{url}","{dbname}","{price}","{img}")
+                    (`id`,`purl`,`iscatch`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`dbname`,`price`,`img`,`createtime`) VALUES
+                    ("{id}","{purl}",{iscatch},{smallrank},"{name}","{bigname}","{title}","{asin}","{url}","{dbname}","{price}","{img}",CURRENT_TIMESTAMP)
                     '''.format(tablename=tool.log.TODAYTIME, id=id, purl=catchurl, iscatch=0, smallrank=rank,
                                name=catchname, title=title, url=url, asin=asin, dbname=dbname, price=price, img=img,
                                bigname=bigpname)
@@ -131,19 +136,19 @@ def phoneinsertexsitlist(pmap, basedata):
     sql = ""
     pmaps = copy.deepcopy(pmap)
     try:
-        pmaps["purl"] = basedata[1].replace("'", "").replace('"', "").replace("\\","")
+        pmaps["purl"] = basedata[1].replace("'", "").replace('"', "").replace("\\", "")
         pmaps["dbname"] = basedata[6]
         if len(pmaps["title"]) > 240:
             pmaps["title"] = pmaps["title"][0:220]
-        pmaps["title"] = pymysql.escape_string(pmaps["title"]).replace("'", "").replace('"', "").replace("\\","")
+        pmaps["title"] = pymysql.escape_string(pmaps["title"]).replace("'", "").replace('"', "").replace("\\", "")
         if len(pmaps["shipby"]) > 240:
             pmaps["shipby"] = pmaps["title"][0:220]
-        pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"]).replace("'", "").replace('"', "").replace("\\","")
+        pmaps["shipby"] = pymysql.escape_string(pmaps["shipby"]).replace("'", "").replace('"', "").replace("\\", "")
         pmaps["tablename"] = tool.log.TODAYTIME
         pmaps["id"] = basedata[0] + "&" + str(pmaps["smallrank"]) + "-" + pmaps["asin"]
-        pmaps["url"]=pmaps["url"].replace("'", "").replace('"', "").replace("\\","")
-        pmaps["bigname"]=pmaps["bigname"].replace("'", "").replace('"', "").replace("\\","")
-        pmaps["name"]=pmaps["name"].replace("'", "").replace('"', "").replace("\\","")
+        pmaps["url"] = pmaps["url"].replace("'", "").replace('"', "").replace("\\", "")
+        pmaps["bigname"] = pmaps["bigname"].replace("'", "").replace('"', "").replace("\\", "")
+        pmaps["name"] = pmaps["name"].replace("'", "").replace('"', "").replace("\\", "")
         if "No sold" in pmaps["soldby"]:
             pass
         elif "Amazon.com" in pmaps["soldby"]:
@@ -158,7 +163,12 @@ def phoneinsertexsitlist(pmap, basedata):
                 raise Exception("真正大类没有")
         except:
             pmaps["rdalei"] = pmaps["bigname"]
-        sql = '''INSERT INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`,`shipby`,`price`,`score`,`commentnum`,`commenttime`,`createtime`,`iscatch`,`purl`,`dbname`,`col1`)VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}','{shipby}','{price}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP,{iscatch},'{purl}','{dbname}','{rdalei}') on duplicate key update `createtime` = CURRENT_TIMESTAMP,`rank`={rank},`soldby`='{soldby}',`shipby`='{shipby}',`score`={score},`commentnum`={commentnum},`commenttime`='{commenttime}',`iscatch`={iscatch},`col1`='{rdalei}';'''.format_map(pmaps)
+        if pmaps["rank"] == -1:
+            pmaps["rank"] = 20000000
+        if pmaps["rank"] == 0:
+            pmaps["rank"] = 10000000
+        sql = '''INSERT INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`,`shipby`,`price`,`score`,`commentnum`,`commenttime`,`iscatch`,`purl`,`dbname`,`col1`)VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}','{shipby}','{price}',{score},{commentnum},'{commenttime}',{iscatch},'{purl}','{dbname}','{rdalei}') on duplicate key update `createtime` = CURRENT_TIMESTAMP,`rank`={rank},`soldby`='{soldby}',`shipby`='{shipby}',`score`={score},`commentnum`={commentnum},`commenttime`='{commenttime}',`iscatch`={iscatch},`col1`='{rdalei}';'''.format_map(
+            pmaps)
         db.ExecNonQuery(sql)
         logger.warning("插日期数据库成功" + sql)
     except Exception as e:
