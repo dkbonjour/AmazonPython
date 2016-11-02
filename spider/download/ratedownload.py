@@ -108,18 +108,18 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
             cookiefile = getconfig()["datadir"] + "/cookie" + "/" + ip + "-" + uano + '.txt'
             if getconfig()["proxy"]:
                 if fileexsit(cookiefile) == False:
-                    mulspider(url="https://www.amazon.com", proxies=proxies, headers=header, ua=uano,
-                                 path=getconfig()["datadir"] + "/cookie",
-                                 timeout=timeout)
+                    # mulspider(url="https://www.amazon.com", proxies=proxies, headers=header, ua=uano,
+                    #              path=getconfig()["datadir"] + "/cookie",
+                    #              timeout=timeout)
                     pass
                 resdata = mulspider(url=url, proxies=proxies, headers=header, ua=uano,
                                     path=getconfig()["datadir"] + "/cookie",
                                     timeout=timeout)
             else:
                 if fileexsit(cookiefile) == False:
-                    mulspider(url="https://www.amazon.com", proxies=proxies, headers=header, ua=uano,
-                                 path=getconfig()["datadir"] + "/cookie",
-                                 timeout=timeout)
+                    # mulspider(url="https://www.amazon.com", proxies=proxies, headers=header, ua=uano,
+                    #              path=getconfig()["datadir"] + "/cookie",
+                    #              timeout=timeout)
                     pass
                 resdata = mulspider(url=url, headers=header, ua=uano, path=getconfig()["datadir"] + "/cookie",
                                     timeout=timeout)
