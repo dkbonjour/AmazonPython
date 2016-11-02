@@ -169,7 +169,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
         if getconfig()["manycookie"]:
             if (str(err) == "机器人"):
                 try:
-                    os.remove(cookiefile)
+                    # os.remove(cookiefile)
                     time.sleep(10)
                 except:
                     pass

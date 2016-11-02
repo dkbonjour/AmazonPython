@@ -134,8 +134,8 @@ def unitlogic(url, mysqlconfig):
             if fileexsit(rankeep + ".emd"):
                 loggers.warning("存在(页面找不到）)!" + rankeep)
                 continue
-            detailurl = "https://www.amazon.com/dp/" + asin
-
+            # detailurl = "https://www.amazon.com/dp/" + asin
+            detailurl = "https://www.amazon.com/gp/product/" + asin
             if fileexsit(rankeep + ".html"):
                 with open(rankeep + ".html", "rb") as ff:
                     detailpage = ff.read()
