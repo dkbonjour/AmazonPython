@@ -167,7 +167,7 @@ def phoneinsertexsitlist(pmap, basedata):
             pmaps["rank"] = 20000000
         if pmaps["rank"] == 0:
             pmaps["rank"] = 10000000
-        sql = '''INSERT INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`,`shipby`,`price`,`score`,`commentnum`,`commenttime`,`iscatch`,`purl`,`dbname`,`col1`)VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}','{shipby}','{price}',{score},{commentnum},'{commenttime}',{iscatch},'{purl}','{dbname}','{rdalei}') on duplicate key update `createtime` = CURRENT_TIMESTAMP,`rank`={rank},`soldby`='{soldby}',`shipby`='{shipby}',`score`={score},`commentnum`={commentnum},`commenttime`='{commenttime}',`iscatch`={iscatch},`col1`='{rdalei}';'''.format_map(
+        sql = '''INSERT INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`,`shipby`,`price`,`score`,`commentnum`,`commenttime`,`iscatch`,`purl`,`dbname`,`col1`)VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}','{shipby}','{price}',{score},{commentnum},'{commenttime}',{iscatch},'{purl}','{dbname}','{rdalei}') on duplicate key update `rank`={rank},`soldby`='{soldby}',`shipby`='{shipby}',`score`={score},`commentnum`={commentnum},`commenttime`='{commenttime}',`iscatch`={iscatch},`col1`='{rdalei}';'''.format_map(
             pmaps)
         db.ExecNonQuery(sql)
         logger.warning("插日期数据库成功" + sql)
