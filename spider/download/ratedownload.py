@@ -15,6 +15,7 @@ from config.config import *
 from tool.jfile.file import *
 from action.redispool import *
 from tool.jhttp.spider import *
+import copy
 
 # 日志
 tool.log.setup_logging()
@@ -27,7 +28,7 @@ loggers = logging.getLogger("smart")
 ROBBOTTIME = 0
 
 
-def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header={}):
+def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header={}, isdetail=False):
     cookiefile = ""
     try:
         koip = getconfig()["koip"]
@@ -108,18 +109,18 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
             cookiefile = getconfig()["datadir"] + "/cookie" + "/" + ip + "-" + uano + '.txt'
             if getconfig()["proxy"]:
                 if fileexsit(cookiefile) == False:
-                    # mulspider(url="https://www.amazon.com", proxies=proxies, headers=header, ua=uano,
-                    #              path=getconfig()["datadir"] + "/cookie",
-                    #              timeout=timeout)
+                    mulspider(url="https://www.amazon.com", proxies=proxies, headers=header, ua=uano,
+                                 path=getconfig()["datadir"] + "/cookie",
+                                 timeout=timeout)
                     pass
                 resdata = mulspider(url=url, proxies=proxies, headers=header, ua=uano,
                                     path=getconfig()["datadir"] + "/cookie",
                                     timeout=timeout)
             else:
                 if fileexsit(cookiefile) == False:
-                    # mulspider(url="https://www.amazon.com", proxies=proxies, headers=header, ua=uano,
-                    #              path=getconfig()["datadir"] + "/cookie",
-                    #              timeout=timeout)
+                    mulspider(url="https://www.amazon.com", proxies=proxies, headers=header, ua=uano,
+                                 path=getconfig()["datadir"] + "/cookie",
+                                 timeout=timeout)
                     pass
                 resdata = mulspider(url=url, headers=header, ua=uano, path=getconfig()["datadir"] + "/cookie",
                                     timeout=timeout)
@@ -163,11 +164,37 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
         # 放IP
         if redisneed and getconfig()["proxy"]:
             puship(ip, times, robottime, getconfig()["redispoolname"])
+
+        if isdetail:
+            dog = None
+            try:
+                soup = BeautifulSoup(resdata.decode("utf-8","ignore"), 'html.parser')  # 开始解析
+                dog = soup.find("input",attrs={"id":"cerberus-metrics"})["value"]
+            except:
+                pass
+            if dog!=None:
+                headerss = copy.deepcopy(header)
+                headerss["Referer"] = url
+                headerss["X-Requested-With"] = "XMLHttpRequest"
+                headerss["Origin"]="https://www.amazon.com"
+                headerss["Accept"]="*/*"
+                # 地狱三头犬
+                posturl = "https://www.amazon.com" + dog
+                ddd=mulspider(url=posturl, proxies=proxies, headers=headerss, ua=uano,
+                          path=getconfig()["datadir"] + "/cookie",
+                          timeout=timeout,postdata={"Iloveyou":"yesido"})
+                logger.warning(dog+":"+ddd.decode("utf-8","ignore").replace(" ","").strip())
+
         loggers.error(ip + "   |" + url)
         return resdata
     except Exception as err:
         if getconfig()["manycookie"]:
             if (str(err) == "机器人"):
+                try:
+                    if getconfig()["test"]:
+                        exit()
+                except:
+                    exit()
                 try:
                     os.remove(cookiefile)
                     time.sleep(10)

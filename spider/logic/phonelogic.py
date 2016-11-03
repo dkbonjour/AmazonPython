@@ -67,7 +67,7 @@ def unitlogic(url, mysqlconfig):
         with open(keepdir + "/" + id + ".md", "rb") as f:
             parsecontent = stringToObject(f.read().decode("utf-8", "ignore"))
     else:
-        listcontent = ratedownload(url=catchurl, where=where, config=mysqlconfig, header=listheader)
+        listcontent = ratedownload(url=catchurl, where=where, config=mysqlconfig, header=listheader,isdetail=False)
         if listcontent:
             parsecontent, isphone = phonelistparse(listcontent.decode("utf-8", "ignore"))
             if isphone:
@@ -147,7 +147,7 @@ def unitlogic(url, mysqlconfig):
                     "Upgrade-Insecure-Requests": "1",
                     'Host': 'www.amazon.com'
                 }
-                detailpage = ratedownload(url=detailurl, where=where, config=mysqlconfig, header=detailheader)
+                detailpage = ratedownload(url=detailurl, where=where, config=mysqlconfig, header=detailheader,isdetail=True)
                 if detailpage == None:
                     continue
                 if detailpage == 0:

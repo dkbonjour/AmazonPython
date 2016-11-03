@@ -194,6 +194,7 @@ def mulspider(url, proxies={}, postdata={}, headers={}, ua="ua", path=".", timeo
 
         # 保存COOKIE到文件中
         cj.save(ignore_discard=True, ignore_expires=True)
+
     except Exception as e:
         if hasattr(e, 'code'):
             e = Exception('页面不存在或时间太长.Error code:' + str(e.code))
