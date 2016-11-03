@@ -30,12 +30,18 @@ def getrank2reg(string):
     # print(alllist)
     try:
         rank = int(alllist[0][0].replace(",", "").strip())
-    except:
-        rank = 0
-    try:
         rdalei = alllist[0][1].replace(",", "").strip()
     except:
-        rdalei = ""
+        try:
+            reg = r'#(.{1,15}) in (.*)["]'
+            all = re.compile(reg)
+            alllist = re.findall(all, string)
+            rank = int(alllist[0][0].replace(",", "").strip())
+            rdalei = alllist[0][1].replace(",", "").strip()
+        except Exception as e:
+            # print(e)
+            rank = 0
+            rdalei = ""
     return rank, rdalei
 
 
