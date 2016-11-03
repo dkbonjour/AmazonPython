@@ -116,7 +116,7 @@ def phoneinsertlist(parsecontent, url):
                         logger.warning("数据已存在:" + selectsql)
                         continue
                 else:
-                    insertsql = '''INSERT INTO `{tablename}`
+                    insertsql = '''INSERT IGNORE INTO `{tablename}`
                     (`id`,`purl`,`iscatch`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`dbname`,`price`,`img`,`createtime`) VALUES
                     ("{id}","{purl}",{iscatch},{smallrank},"{name}","{bigname}","{title}","{asin}","{url}","{dbname}","{price}","{img}",CURRENT_TIMESTAMP)
                     '''.format(tablename=tool.log.TODAYTIME, id=id, purl=catchurl, iscatch=0, smallrank=rank,
