@@ -72,9 +72,9 @@ def unitlogic(url, mysqlconfig):
             parsecontent, isphone = phonelistparse(listcontent.decode("utf-8", "ignore"))
             if isphone:
                 if parsecontent:
-                    with open(keepdir + "/" + id + ".md", "wb") as f:
-                        f.write(objectToString(parsecontent).encode("utf-8"))
-                    phoneinsertlist(parsecontent, url)
+                    if phoneinsertlist(parsecontent, url):
+                        with open(keepdir + "/" + id + ".md", "wb") as f:
+                            f.write(objectToString(parsecontent).encode("utf-8"))
                 else:
                     logger.error("列表页解析出错:" + catchurl)
             else:
@@ -116,9 +116,9 @@ def unitlogic(url, mysqlconfig):
                         logger.error(e, exc_info=1)
 
                 if parsecontent:
-                    with open(keepdir + "/" + id + ".md", "wb") as f:
-                        f.write(objectToString(parsecontent).encode("utf-8"))
-                    phoneinsertlist(parsecontent, url)
+                    if phoneinsertlist(parsecontent, url):
+                        with open(keepdir + "/" + id + ".md", "wb") as f:
+                            f.write(objectToString(parsecontent).encode("utf-8"))
                 else:
                     logger.error("列表页解析出错:" + catchurl)
     ##################
@@ -181,11 +181,15 @@ def unitlogic(url, mysqlconfig):
             pinfo["bigname"] = bigpname
             pinfo["id"] = todays + "-" + detailname
 
-            # 插入数据库，失败也不要紧
-            phoneinsertexsitlist(pinfo, url)
+            # 插入数据库
+            if phoneinsertexsitlist(pinfo, url):
+                with open(rankeep + ".md", "wt") as f:
+                    f.write("1")
+            # 可以不管这个！失败也不要紧
             phoneinsertpmysql(pinfo, db, id)
-        except:
-            logger.error(asin + ":ERROR")
+        except Exception as err:
+            logger.error("发生一件商品："+ asin + ":ERROR")
+            logger.error(err, exc_info=1)
             pass
     # 成功
     logger.warning(todays + "|" + bigpname + "|" + db + ":" + id + " completed")

@@ -65,10 +65,10 @@ def phoneinsertpmysql(pmap, dbname, tablename):
         sql = '''INSERT IGNORE INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`,`shipby`,`score`,`commentnum`,`commenttime`,`createtime`) VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}','{shipby}',{score},{commentnum},'{commenttime}',CURRENT_TIMESTAMP);'''.format_map(
             pmaps)
         db.ExecNonQuery(sql)
-        logger.warning("插数据库成功,数据库:" + dbname + ",表:" + pmaps["tablename"] + ",Id:" + pmaps["id"])
+        logger.warning("插详情分表数据库成功,数据库:" + dbname + ",表:" + pmaps["tablename"] + ",Id:" + pmaps["id"])
         return True
     except Exception as err:
-        logger.error("插数据库出错：" + sql)
+        logger.error("插详情分表数据库出错：" + sql)
         logger.error(err, exc_info=1)
     return False
 
@@ -123,12 +123,14 @@ def phoneinsertlist(parsecontent, url):
                                name=catchname, title=title, url=url, asin=asin, dbname=dbname, price=price, img=img,
                                bigname=bigpname)
                     db.ExecNonQuery(insertsql)
-                    logger.warning("预插数据库成功:" + insertsql)
+                    logger.warning("预插列表数据库成功:" + insertsql)
             except Exception as e:
-                logger.error("预插数据库出错" + insertsql)
+                logger.error("预插数据库出错，列表内层错误" + insertsql)
                 logger.error(e, exc_info=1)
+        return True
     except Exception as e:
-        logger.error("??mdzz")
+        logger.error("??mdzz列表外层错误")
+        return False
 
 
 # 插入已经存在的数据
@@ -170,7 +172,9 @@ def phoneinsertexsitlist(pmap, basedata):
         sql = '''INSERT INTO `{tablename}`(`id`,`smallrank`,`name`,`bigname`,`title`,`asin`,`url`,`rank`,`soldby`,`shipby`,`price`,`score`,`commentnum`,`commenttime`,`iscatch`,`purl`,`dbname`,`col1`)VALUES('{id}',{smallrank},'{name}','{bigname}','{title}','{asin}','{url}',{rank},'{soldby}','{shipby}','{price}',{score},{commentnum},'{commenttime}',{iscatch},'{purl}','{dbname}','{rdalei}') on duplicate key update `rank`={rank},`soldby`='{soldby}',`shipby`='{shipby}',`score`={score},`commentnum`={commentnum},`commenttime`='{commenttime}',`iscatch`={iscatch},`col1`='{rdalei}';'''.format_map(
             pmaps)
         db.ExecNonQuery(sql)
-        logger.warning("插日期数据库成功" + sql)
+        logger.warning("插详情日期数据库成功" + sql)
+        return True
     except Exception as e:
-        logger.error("插日期数据库失败" + sql)
+        logger.error("插详情日期数据库失败" + sql)
         logger.error(e, exc_info=1)
+        return False
