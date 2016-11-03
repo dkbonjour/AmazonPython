@@ -183,7 +183,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                 ddd=mulspider(url=posturl, proxies=proxies, headers=headerss, ua=uano,
                           path=getconfig()["datadir"] + "/cookie",
                           timeout=timeout,postdata={"Iloveyou":"yesido"})
-                logger.warning(dog+":"+ddd.decode("utf-8","ignore").replace(" ","").strip())
+                logger.warning("三头狗:"+dog+":"+ddd.decode("utf-8","ignore").replace(" ","").strip())
 
         loggers.error(ip + "   |" + url)
         return resdata
