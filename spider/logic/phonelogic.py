@@ -129,7 +129,7 @@ def unitlogic(url, mysqlconfig):
             detailname = str(smallrank) + "-" + asin
             rankeep = detaildir + "/" + detailname
             if fileexsit(rankeep + ".md"):
-                loggers.warning("存在!" + rankeep)
+                loggers.warning("Look！存在详情页：" + rankeep)
                 continue
             if fileexsit(rankeep + ".emd"):
                 loggers.warning("存在(页面找不到）)!" + rankeep)
