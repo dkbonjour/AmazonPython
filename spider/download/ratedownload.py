@@ -172,18 +172,21 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                 dog = soup.find("input",attrs={"id":"cerberus-metrics"})["value"]
             except:
                 pass
-            if dog!=None:
-                headerss = copy.deepcopy(header)
-                headerss["Referer"] = url
-                headerss["X-Requested-With"] = "XMLHttpRequest"
-                headerss["Origin"]="https://www.amazon.com"
-                headerss["Accept"]="*/*"
-                # 地狱三头犬
-                posturl = "https://www.amazon.com" + dog
-                ddd=mulspider(url=posturl, proxies=proxies, headers=headerss, ua=uano,
-                          path=getconfig()["datadir"] + "/cookie",
-                          timeout=timeout,postdata={"Iloveyou":"yesido"})
-                logger.warning("三头狗:"+dog+":"+ddd.decode("utf-8","ignore").replace(" ","").strip())
+            try:
+                if dog!=None:
+                        headerss = copy.deepcopy(header)
+                        headerss["Referer"] = url
+                        headerss["X-Requested-With"] = "XMLHttpRequest"
+                        headerss["Origin"]="https://www.amazon.com"
+                        headerss["Accept"]="*/*"
+                        # 地狱三头犬
+                        posturl = "https://www.amazon.com" + dog
+                        ddd=mulspider(url=posturl, proxies=proxies, headers=headerss, ua=uano,
+                                  path=getconfig()["datadir"] + "/cookie",
+                                  timeout=timeout,postdata={"Iloveyou":"yesido"})
+                        logger.warning("三头狗:"+dog+":"+ddd.decode("utf-8","ignore").replace(" ","").strip())
+            except:
+                logger.error("三头狗莫名出差！")
 
         loggers.error(ip + "   |" + url)
         return resdata
