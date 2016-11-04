@@ -93,8 +93,9 @@ def unitlogic(url, mysqlconfig):
                         "Connection": "keep-alive",
                         "Accept-Language": "en-US;q=0.8,en;q=0.5",
                         "Upgrade-Insecure-Requests": "1",
-                        # 'Referer': 'https://www.amazon.com/',
-                        'Host': 'www.amazon.com'
+                        'Referer': catchurl,
+                        'Host': 'www.amazon.com',
+                        "X-Requested-With":"XMLHttpRequest"
                     }
                     try:
                         content3 = ratedownload(url=catchurl + items3, where=where, config=mysqlconfig, header=listheader)
