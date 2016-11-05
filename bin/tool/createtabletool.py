@@ -2,7 +2,8 @@
 # -*-coding:utf-8-*-
 # Created by Smartdo Co.,Ltd. on 2016/10/17.
 # 功能:
-#  
+#  数据库建表
+
 import tool.log
 import logging
 from config.config import *

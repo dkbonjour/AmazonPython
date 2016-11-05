@@ -2,7 +2,7 @@
 # -*-coding:utf-8-*-
 # Created by Smartdo Co.,Ltd. on 2016/10/14.
 # 功能:
-#  获取大类下最小的类目
+#  手机/PC端混合！！插数据库
 
 import tool.log
 import logging

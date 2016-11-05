@@ -1,5 +1,7 @@
-# !/usr/bin/python3.4
-# -*- coding: utf-8 -*-
+# -*-coding:utf-8-*-
+# Created by 一只尼玛 on 2016/10/10.
+# 功能:
+#   Redis IP池
 
 import redis
 import time

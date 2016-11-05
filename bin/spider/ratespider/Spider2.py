@@ -1,7 +1,7 @@
 # !/usr/bin/python3.4
 # -*-coding:utf-8-*-
 # Created by Smartdo Co.,Ltd. on 2016/10/17.
-# 功能: 机器二
+# 功能: 机器二 弃用
 #  
 import tool.log
 from spider.logic.ratelogic import *

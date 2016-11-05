@@ -77,7 +77,8 @@ def getFirefox(url, ip, total=1):
 
 
 if __name__ == '__main__':
-    url = "https://www.amazon.com"
+    # url = "http://ip.42.pl"
+    url="https://www.amazon.com"
     while True:
         try:
             ip = input("输入需解救的IP：（如146.148.149.206:808）")

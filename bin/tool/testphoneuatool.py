@@ -1,7 +1,7 @@
 # -*-coding:utf-8-*-
 # Created by 一只尼玛 on 16-8-26.
 # 功能:
-# 　抓取网页
+# 　测试UA找到页面是手机还是pc
 #
 
 from tool.jhttp.spider import *
