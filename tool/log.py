@@ -50,7 +50,7 @@ def setup_logging(default_path='log.json', default_level=logging.INFO, env_key='
             # print(handler)
             for i in handler:
                 if "filename" in handler[i].keys():
-                    handler[i]["filename"] = logkeepdir + "/" + sys.argv[0].replace(".","") + handler[i]["filename"]
+                    handler[i]["filename"] = logkeepdir + "/" + sys.argv[0].split("/")[-1].replace(".","") + handler[i]["filename"]
         # print(config)
         logging.config.dictConfig(config)
     else:
