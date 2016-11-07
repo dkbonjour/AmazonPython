@@ -14,6 +14,11 @@ from spider.download.ratedownload import *
 from spider.parse.phonedetail import *
 from spider.parse.analydetail import *
 
+# import threading
+#
+# # 创建全局ThreadLocal对象:
+# local_school = threading.local()
+
 # 日志
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)

@@ -117,7 +117,7 @@ def puship(ip, times, robottime, poolname="ippool"):
     times = times + 1
     ipstr = ip + "*" + str(nowtime) + "*" + str(times) + "*" + str(robottime)
     try:
-        r.lpush(poolname, ipstr)
+        r.rpush(poolname, ipstr)
     except Exception as err:
         logger.error("放IP失败")
         logger.error(err, exc_info=1)
