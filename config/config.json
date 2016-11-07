@@ -16,7 +16,7 @@
   "forcenum":2,
   "itemnum":60,
   "sleeptimesbool":false,
-  "sleeptimes":1,
+  "sleeptimes":0,
   "koip":true,
   "localkeep":true,
   "catchurl":["1","2","3"],
