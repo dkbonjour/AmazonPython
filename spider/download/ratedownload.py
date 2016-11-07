@@ -188,7 +188,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                         logger.warning("三头狗:"+dog+":"+ddd.decode("utf-8","ignore").replace(" ","").strip())
             except Exception as e:
                 logger.error("三头狗莫名出错！")
-                logger.error(e)
+                logger.error(e, exc_info=1)
 
         loggers.error(ip + "   |" + url)
         return resdata
