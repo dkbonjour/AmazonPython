@@ -5,7 +5,7 @@
   "test":false,
   "time": "2016-11",
   "datadir":"/data/db/usa",
-  "proxy":false,
+  "proxy":true,
   "proxypwd":"smart:smart2016@",
   "manyua":true,
   "manycookie":true,
