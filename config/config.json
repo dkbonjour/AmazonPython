@@ -36,7 +36,7 @@
   "urlrobotstop":false,
   "redispoolname":"ippool",
   "redispoolfuckname":"ippoolfuck",
-  "redispoolnumber":3,
+  "redispoolnumber":9,
   "redispoolsleeptimes":3,
   "rediserrmaxtimes":2,
   "notrobbotkoip":false,
