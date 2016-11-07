@@ -1,26 +1,16 @@
 # !/usr/bin/python3.4
 # -*-coding:utf-8-*-
-# Created by Smartdo Co.,Ltd. on 2016/11/5.
+# Created by Smartdo Co.,Ltd. on 2016/11/7.
 # 功能:
 #  
 import tool.log
 import logging
-import os
+import requests
+import time
 
 # 日志
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
-
-
-def pingips():
-    cmd = 'ping 146.148.123.199'
-    # os.system(cmd)
-    p = os.popen(cmd)
-    data = p.read()
-    if "请求超时" in data:
-        print(cmd + "不通")
-    else:
-        print(cmd + "通!")
 
 
 def createips():
@@ -79,8 +69,9 @@ def createips():
         ]
 
     }
-    dudu = []
+    dudu = {}
     for i in ips:
+        dudu[i] = []
         for j in ips[i]:
             temp = j.split("-")
             ipend = int(temp[1])
@@ -90,13 +81,59 @@ def createips():
             ipprefix = ".".join(temptemp[0:3])
             ipbegin = int(temptemp[3])
             for k in range(ipbegin, ipend + 1):
-                dudu.append(ipprefix + "." + str(k) + ":808-美国加利福尼亚州洛杉矶" + i)
-    with open(tool.log.BASE_DIR + "/config/base/IP.txt", "wb") as f:
-        for o in dudu:
-            print(o)
-            f.write((o + "\n").encode("utf-8"))
+                dudu[i].append(ipprefix + "." + str(k) + ":808")
+    return dudu
 
+
+def proxyconfig():
+    #     acl ip1 myip 192.168.1.2
+    # acl ip2 myip 192.168.1.3
+    # acl ip3 myip 192.168.1.4
+    # tcp_outgoing_address 192.168.1.2 ip1
+    # tcp_outgoing_address 192.168.1.3 ip2
+    # tcp_outgoing_address 192.168.1.4 ip3
+    ipmap = {}
+    dudu = createips()
+    for i in dudu:
+        k = 0
+        ipmap[i] = {}
+        for j in dudu[i]:
+            name = i + str(k)
+            ipmap[i][name] = j
+            k = k + 1
+    o = input("哪个配置需要：")
+    for i in ipmap[o]:
+        print("acl " + i + " localip " + ipmap[o][i].split(":")[0])
+    for i in ipmap[o]:
+        print("tcp_outgoing_address " + ipmap[o][i].split(":")[0] + " " + i)
+
+
+def testproxy(proxies, url):
+    try:
+        header = {
+            'User-Agent': "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0",
+            'Host': 'www.amazon.com'
+        }
+
+        r = requests.get(url, headers=header, proxies=proxies, timeout=15)
+        print("结果:" + r.text)
+        r.raise_for_status()
+    except Exception as e:
+        print(e)
+
+
+def mains():
+    dudu = createips()
+    url = "http://ip.42.pl/short"
+    o = input("测试谁:")
+    for i in dudu[o]:
+        print("测试：" + i)
+        proxies = {"http": "http://smart:smart2016@" + i}
+        testproxy(proxies, url)
+        time.sleep(1)
+
+
+# defh
 
 if __name__ == "__main__":
-    # pingips()
-    createips()
+    proxyconfig()
