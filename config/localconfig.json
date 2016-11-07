@@ -18,7 +18,7 @@
   "sleeptimesbool":true,
   "sleeptimes":4,
   "koip":false,
-  "localkeep":false,
+  "localkeep":true,
   "catchurl":["1","2","3"],
   "catchbywhich":"database",
   "processnum":10,
