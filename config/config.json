@@ -7,7 +7,7 @@
   "datadir":"/data/db/usa",
   "proxy":true,
   "proxypwd":"smart:smart2016@",
-  "manyua":true,
+  "manyua":false,
   "manycookie":true,
   "limitip":false,
   "mysqlipnum":2000,
