@@ -76,14 +76,15 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
     location = "no"
     times = 0
     robottime = 0
-    try:
-        secord = getconfig()["sleeptimes"]
-        secord = random.randint(secord, secord + 3)
-        time.sleep(secord)
-        logger.warning("暂停:" + str(secord) + "秒:" + url)
-    except:
-        logger.error("配置文件出错")
-        exit()
+    if getconfig()["sleeptimesbool"]:
+        try:
+            secord = getconfig()["sleeptimes"]
+            secord = random.randint(secord, secord + 3)
+            time.sleep(secord)
+            logger.warning("暂停:" + str(secord) + "秒:" + url)
+        except:
+            logger.error("配置文件出错")
+            exit()
     if getconfig()["proxy"]:
         if redisneed:
             ip, times, robottime = popip(getconfig()["redispoolsleeptimes"], getconfig()["redispoolname"])
