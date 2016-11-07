@@ -136,4 +136,5 @@ def mains():
 # defh
 
 if __name__ == "__main__":
-    proxyconfig()
+    # proxyconfig()
+    mains()
