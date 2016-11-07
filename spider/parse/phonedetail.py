@@ -22,6 +22,8 @@ def savephoneerror(content):
 
 # 列表页
 def phonelistparse(content):
+    if not content:
+        return {},True
     soup = BeautifulSoup(content, 'html.parser')  # 开始解析
     items = soup.find_all('div', attrs={"id": "pg"})
     itemlist = {}
@@ -108,6 +110,8 @@ def phonelistparse(content):
 
 ## 额外补充的
 def phonetopclistparse(content):
+    if not content:
+        return {}
     soup = BeautifulSoup(content, 'html.parser')  # 开始解析
     itemlist = {}
     items = soup.find_all('div', attrs={"class": "zg_itemImmersion"})
