@@ -12,7 +12,7 @@
   "limitip":false,
   "mysqlipnum":2000,
   "iperror":20000,
-  "force":false,
+  "force":true,
   "forcenum":2,
   "itemnum":60,
   "sleeptimes":2,
