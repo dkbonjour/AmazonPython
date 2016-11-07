@@ -70,12 +70,12 @@ def phonelistparse(content):
                 try:
                     ## p13n-asin
                     link = temp.find('div', attrs={"class": "zg_title"})
-                    if link==None:
+                    if not link or link==None:
                         link=temp.find('div', attrs={"class": "p13n-asin"})
-                    link = link.a["href"].strip()
+                    link = link.find("a",attrs={"class":"a-link-normal"})["href"].strip()
                     asin = link.strip().split("/dp/")[1].split("/")[0]
                 except Exception as e:
-                    logger.error(e, exc_info=1)
+                    # logger.error(e, exc_info=1)
                     continue
                 try:
                     img = temp.find("img")["src"].strip()
@@ -84,11 +84,20 @@ def phonelistparse(content):
                 try:
                     price = temp.find("div", attrs={"class": "zg_price"}).get_text().strip()
                 except:
-                    price = ""
+                    try:
+                        price=temp.find("span",attrs={"class":"a-color-price"}).get_text().strip()
+                    except Exception as e:
+                        # logger.error(e, exc_info=1)
+                        price = ""
                 try:
-                    title = temp.find('div', attrs={"class": "zg_title"}).a.string
+                    title = temp.find('div', attrs={"class": "zg_title"})
+                    if not title or title==None:
+                        title=temp.find('div', attrs={"class": "p13n-asin"})
+                    # print(title)
+                    title=title.find("a",attrs={"class":"a-link-normal"}).get_text()
                     title = title.replace(",", "").strip()
-                except:
+                except Exception as e:
+                    # logger.error(e, exc_info=1)
                     title = ""
                 itemlist[asin] = [rank, "https://www.amazon.com/dp/" + asin, img, title, price]
             except Exception as e:
@@ -110,25 +119,34 @@ def phonetopclistparse(content):
             try:
                 ## p13n-asin
                 link = temp.find('div', attrs={"class": "zg_title"})
-                if link==None:
+                if not link or link==None:
                     link=temp.find('div', attrs={"class": "p13n-asin"})
-                link = link.a["href"].strip()
+                link = link.find("a",attrs={"class":"a-link-normal"})["href"].strip()
                 asin = link.strip().split("/dp/")[1].split("/")[0]
             except Exception as e:
-                logger.error(e, exc_info=1)
+                # logger.error(e, exc_info=1)
                 continue
             try:
                 img = temp.find("img")["src"].strip()
             except:
                 img = ""
             try:
-                price = temp.find("div", attrs={"class": "zg_price"}).get_text().replace(" ","").strip()
+                price = temp.find("div", attrs={"class": "zg_price"}).get_text().strip()
             except:
-                price = ""
+                try:
+                    price=temp.find("span",attrs={"class":"a-color-price"}).get_text().strip()
+                except Exception as e:
+                    # logger.error(e, exc_info=1)
+                    price = ""
             try:
-                title = temp.find('div', attrs={"class": "zg_title"}).a.string
+                title = temp.find('div', attrs={"class": "zg_title"})
+                if not title or title==None:
+                    title=temp.find('div', attrs={"class": "p13n-asin"})
+                # print(title)
+                title=title.find("a",attrs={"class":"a-link-normal"}).get_text()
                 title = title.replace(",", "").strip()
-            except:
+            except Exception as e:
+                # logger.error(e, exc_info=1)
                 title = ""
             itemlist[asin] = [rank, "https://www.amazon.com/dp/" + asin, img, title, price]
         except Exception as e:
@@ -244,7 +262,7 @@ def testlist():
         with open(temp, "rb") as f:
             content = f.read().decode("utf-8", "ignore")
             try:
-                phonelistparse(content)
+                return phonelistparse(content)
             except:
                 print(i)
     b = time.clock()
@@ -252,5 +270,5 @@ def testlist():
 
 
 if __name__ == '__main__':
-    # testlist()
-    testdetail()
+    print(testlist())
+    # testdetail()
