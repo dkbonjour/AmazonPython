@@ -13,11 +13,8 @@ tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
-    print(copyright("亚马逊大霸王10,11,12开爬"))
-    try:
-        shutil.rmtree(getconfig()["datadir"] + "/cookie")
-    except:
-        pass
+    print(copyright("亚马逊大霸王4开爬"))
+
     createjia(getconfig()["datadir"] + "/cookie")
     a = time.clock()
     # 大类名
@@ -27,7 +24,7 @@ if __name__ == "__main__":
         changeconfig("catchbywhich", "database")
         changeconfig("redispoolname","ippool4")
         changeconfig("redispoolfuckname","ippoolfuck4")
-        category = ["10","11","12"]
+        category = ["4"]
         # category = ["9","10","11","12"]
         changeconfig("catchurl",category)
     except:

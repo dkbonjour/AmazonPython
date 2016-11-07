@@ -13,7 +13,7 @@ tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
-    print(copyright("亚马逊大霸王1开爬"))
+    print(copyright("亚马逊大霸王13开爬"))
 
     createjia(getconfig()["datadir"] + "/cookie")
     a = time.clock()
@@ -22,9 +22,9 @@ if __name__ == "__main__":
         # changeconfig("catchbywhich","bigpname")
         # category = getconfig()["catchurl"]
         changeconfig("catchbywhich", "database")
-        changeconfig("redispoolname","ippool1")
-        changeconfig("redispoolfuckname","ippoolfuck1")
-        category = ["15", "16", "17", "18", "19", "20", "21","22"]
+        changeconfig("redispoolname","ippool13")
+        changeconfig("redispoolfuckname","ippoolfuck13")
+        category = ["13"]
         # category = ["9","10","11","12"]
         changeconfig("catchurl",category)
     except:

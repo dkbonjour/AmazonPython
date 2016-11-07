@@ -14,7 +14,6 @@ REDISSERVER = None
 tool.log.setup_logging()
 logger = logging.getLogger(__name__)
 
-
 def initredis():
     redisconfig = getconfig()["redispoolconfig"]
     global REDISSERVER
@@ -103,7 +102,7 @@ def popip(secord=5, poolname="ippool"):
         return ip, times, robottime
     else:
         # secord = random.randint(secord, secord + 1)
-        if secord>0:
+        if secord > 0:
             logger.warning(ip + ":" + str(times) + "-" + str(robottime) + ":redis暂停:" + str(secord))
             time.sleep(secord)
         return ip, times, robottime
