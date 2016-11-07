@@ -221,8 +221,8 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                     pass
                 else:
                     puship(ip, times, robottime, getconfig()["redispoolname"])
-        logger.error(err)
-        # logger.error(err, exc_info=1)
+        # logger.error(err)
+        logger.error(err, exc_info=1)
         if redisneed and getconfig()["proxy"]:
             logger.error(
                     "失敗抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip + "-" + str(
