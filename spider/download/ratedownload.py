@@ -106,7 +106,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
     try:
         # manycookie
         if getconfig()["manycookie"]:
-            cookiefile = getconfig()["datadir"] + "/cookie" + "/" + ip + "-" + uano + '.txt'
+            cookiefile = getconfig()["datadir"] + "/cookie" + "/" + ip + "-" + str(uano) + '.txt'
             if getconfig()["proxy"]:
                 if fileexsit(cookiefile) == False:
                     mulspider(url="https://www.amazon.com", proxies=proxies, headers=header, ua=uano,
