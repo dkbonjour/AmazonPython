@@ -186,8 +186,9 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                                   path=getconfig()["datadir"] + "/cookie",
                                   timeout=timeout,postdata={"Iloveyou":"yesido"})
                         logger.warning("三头狗:"+dog+":"+ddd.decode("utf-8","ignore").replace(" ","").strip())
-            except:
-                logger.error("三头狗莫名出差！")
+            except Exception as e:
+                logger.error("三头狗莫名出错！")
+                logger.error(e)
 
         loggers.error(ip + "   |" + url)
         return resdata
@@ -223,7 +224,10 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
                 else:
                     puship(ip, times, robottime, getconfig()["redispoolname"])
         # logger.error(err)
-        logger.error(err, exc_info=1)
+        if str(err)=="网络超时":
+            logger.error(err)
+        else:
+            logger.error(err, exc_info=1)
         if redisneed and getconfig()["proxy"]:
             logger.error(
                     "失敗抓取URL:{url},代理IP:{ip},IP位置:{location},UA:{ua},重试次数:{times}".format(url=url, ip=ip + "-" + str(

@@ -30,7 +30,7 @@
     "db": "smart_base"
   },
   "ipinmysql":false,
-  "redispool":true,
+  "redispool":false,
   "urlstop":false,
   "urlstoptime":10,
   "urlrobotstop":false,

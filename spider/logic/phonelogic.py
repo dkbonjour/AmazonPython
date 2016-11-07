@@ -81,7 +81,7 @@ def unitlogic(url, mysqlconfig):
                         with open(keepdir + "/" + id + ".md", "wb") as f:
                             f.write(objectToString(parsecontent).encode("utf-8"))
                 else:
-                    logger.error("列表页解析出错:" + catchurl)
+                    logger.error("手机列表页解析出错:" + catchurl)
             else:
                 # PC端
                 if getconfig()["force"]:
@@ -118,7 +118,7 @@ def unitlogic(url, mysqlconfig):
                         for j in temp17:
                             parsecontent[j] = temp17[j]
                     except Exception as e:
-                        logger.error("手机到PC列表页出错，跳过")
+                        logger.error("手机到PC列表页出错"+str(i+1)+"，跳过")
                         logger.error(e, exc_info=1)
 
                 if parsecontent:
@@ -126,7 +126,7 @@ def unitlogic(url, mysqlconfig):
                         with open(keepdir + "/" + id + ".md", "wb") as f:
                             f.write(objectToString(parsecontent).encode("utf-8"))
                 else:
-                    logger.error("列表页解析出错:" + catchurl)
+                    logger.error("最后列表页解析出错:" + catchurl)
     ##################
     for asin in parsecontent:
         try:

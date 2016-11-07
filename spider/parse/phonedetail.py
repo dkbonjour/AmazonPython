@@ -67,10 +67,15 @@ def phonelistparse(content):
                 temp = BeautifulSoup(str(item), 'html.parser')
                 rank = temp.find('span', attrs={"class": "zg_rankNumber"}).string
                 rank = rank.replace(".", "").replace(",", "").strip()
-                link = temp.find('div', attrs={"class": "zg_title"}).a["href"].strip()
                 try:
+                    ## p13n-asin
+                    link = temp.find('div', attrs={"class": "zg_title"})
+                    if link==None:
+                        link=temp.find('div', attrs={"class": "p13n-asin"})
+                    link = link.a["href"].strip()
                     asin = link.strip().split("/dp/")[1].split("/")[0]
-                except:
+                except Exception as e:
+                    logger.error(e, exc_info=1)
                     continue
                 try:
                     img = temp.find("img")["src"].strip()
@@ -86,8 +91,8 @@ def phonelistparse(content):
                 except:
                     title = ""
                 itemlist[asin] = [rank, "https://www.amazon.com/dp/" + asin, img, title, price]
-            except:
-                pass
+            except Exception as e:
+                logger.error(e, exc_info=1)
         return itemlist, False
     return itemlist, True
 
@@ -102,10 +107,15 @@ def phonetopclistparse(content):
             temp = BeautifulSoup(str(item), 'html.parser')
             rank = temp.find('span', attrs={"class": "zg_rankNumber"}).string
             rank = rank.replace(".", "").replace(",", "").strip()
-            link = temp.find('div', attrs={"class": "zg_title"}).a["href"].strip()
             try:
+                ## p13n-asin
+                link = temp.find('div', attrs={"class": "zg_title"})
+                if link==None:
+                    link=temp.find('div', attrs={"class": "p13n-asin"})
+                link = link.a["href"].strip()
                 asin = link.strip().split("/dp/")[1].split("/")[0]
-            except:
+            except Exception as e:
+                logger.error(e, exc_info=1)
                 continue
             try:
                 img = temp.find("img")["src"].strip()
@@ -121,7 +131,8 @@ def phonetopclistparse(content):
             except:
                 title = ""
             itemlist[asin] = [rank, "https://www.amazon.com/dp/" + asin, img, title, price]
-        except:
+        except Exception as e:
+            logger.error(e, exc_info=1)
             pass
     return itemlist
 
@@ -187,7 +198,8 @@ def phonedetailparse(content):
                     returnmap["soldby"] = linka["href"].split("seller=")[1].split("&")[0]
                 except:
                     pass
-        except:
+        except Exception as e:
+            logger.error(e, exc_info=1)
             pass
     # rubbish
     else:
