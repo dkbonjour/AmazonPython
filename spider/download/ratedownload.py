@@ -42,7 +42,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
         return None
     # 制作头部
     # UA编号
-    uano = 0
+    uano = "0"
     if getconfig()["manyua"]:
         uas = useragent()
         ua = uas[random.randint(0, len(uas) - 1)]
@@ -106,7 +106,7 @@ def ratedownload(url, where="local", config={}, retrytime=5, timeout=60, header=
     try:
         # manycookie
         if getconfig()["manycookie"]:
-            cookiefile = getconfig()["datadir"] + "/cookie" + "/" + ip + "-" + str(uano) + '.txt'
+            cookiefile = getconfig()["datadir"] + "/cookie" + "/" + ip + "-" + uano + '.txt'
             if getconfig()["proxy"]:
                 if fileexsit(cookiefile) == False:
                     mulspider(url="https://www.amazon.com", proxies=proxies, headers=header, ua=uano,
